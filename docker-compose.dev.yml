@@ -42,8 +42,6 @@ services:
       - /app/node_modules
       - /app/apps/backend/node_modules
       - /app/packages/shared/node_modules
-    working_dir: /app/apps/backend
-    command: sh -c "npx prisma generate && npx prisma migrate dev --name init && npm run dev"
     networks:
       - ftsmotors-network
 

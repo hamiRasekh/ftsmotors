@@ -1,5 +1,11 @@
 FROM node:18-alpine
 
+# Install OpenSSL and other dependencies for Prisma
+RUN apk add --no-cache openssl openssl-dev libc6-compat python3 make g++
+
+# Set Prisma binary target
+ENV PRISMA_CLI_BINARY_TARGETS=linux-musl-openssl-1.1.x
+
 WORKDIR /app
 
 # Copy all necessary files
@@ -22,5 +28,8 @@ RUN npm install --legacy-peer-deps
 # Expose port
 EXPOSE 4000
 
+# Set working directory
+WORKDIR /app/apps/backend
+
 # Start development server
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "echo 'Generating Prisma Client...' && npx prisma generate && echo 'Waiting for database...' && sleep 5 && echo 'Running migrations...' && npx prisma migrate dev --name init || npx prisma migrate deploy || true && echo 'Starting server...' && npm run dev"]
