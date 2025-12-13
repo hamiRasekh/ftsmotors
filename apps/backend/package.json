@@ -44,7 +44,7 @@
     "compression": "^1.7.4",
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1",
-    "@ftsmotors/shared": "*"
+    "@ftsmotors/shared": "file:../../packages/shared"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.2.1",

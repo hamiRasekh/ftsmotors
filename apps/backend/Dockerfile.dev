@@ -2,16 +2,25 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
-RUN npm install
+# Copy all necessary files
+COPY package.json ./
+COPY turbo.json ./
+COPY packages/shared ./packages/shared
+COPY apps/backend ./apps/backend
 
-# Copy source code
-COPY . .
+# Install root dependencies
+RUN npm install --legacy-peer-deps
+
+# Install shared package dependencies
+WORKDIR /app/packages/shared
+RUN npm install --legacy-peer-deps
+
+# Install backend dependencies (will use file: protocol for shared)
+WORKDIR /app/apps/backend
+RUN npm install --legacy-peer-deps
 
 # Expose port
 EXPOSE 4000
 
 # Start development server
 CMD ["npm", "run", "dev"]
-

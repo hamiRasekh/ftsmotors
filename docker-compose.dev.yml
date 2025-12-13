@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   postgres:
@@ -22,8 +21,8 @@ services:
 
   backend:
     build:
-      context: ./apps/backend
-      dockerfile: Dockerfile.dev
+      context: .
+      dockerfile: ./apps/backend/Dockerfile.dev
     container_name: ftsmotors-backend-dev
     environment:
       DATABASE_URL: postgresql://ftsmotors:ftsmotors123@postgres:5432/ftsmotors?schema=public
@@ -38,16 +37,20 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./apps/backend:/app
+      - ./apps/backend:/app/apps/backend
+      - ./packages/shared:/app/packages/shared
       - /app/node_modules
+      - /app/apps/backend/node_modules
+      - /app/packages/shared/node_modules
+    working_dir: /app/apps/backend
     command: sh -c "npx prisma generate && npx prisma migrate dev --name init && npm run dev"
     networks:
       - ftsmotors-network
 
   frontend:
     build:
-      context: ./apps/frontend
-      dockerfile: Dockerfile.dev
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile.dev
     container_name: ftsmotors-frontend-dev
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:4000
@@ -56,10 +59,14 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+    working_dir: /app/apps/frontend
     volumes:
-      - ./apps/frontend:/app
+      - ./apps/frontend:/app/apps/frontend
+      - ./packages/shared:/app/packages/shared
       - /app/node_modules
-      - /app/.next
+      - /app/apps/frontend/node_modules
+      - /app/packages/shared/node_modules
+      - /app/apps/frontend/.next
     networks:
       - ftsmotors-network
 

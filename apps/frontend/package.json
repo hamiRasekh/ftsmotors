@@ -23,7 +23,6 @@
     "zustand": "^4.4.7",
     "react-markdown": "^9.0.1",
     "date-fns": "^3.0.6",
-    "date-fns-jalali": "^2.1.0-rc.1",
     "clsx": "^2.1.0",
     "tailwind-merge": "^2.2.0",
     "lucide-react": "^0.309.0",
@@ -33,7 +32,7 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-tabs": "^1.0.4",
     "tailwindcss-animate": "^1.0.7",
-    "@ftsmotors/shared": "*"
+    "@ftsmotors/shared": "file:../../packages/shared"
   },
   "devDependencies": {
     "typescript": "^5.3.3",
