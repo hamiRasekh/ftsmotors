@@ -1,13 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { FadeIn } from '@/components/animations/FadeIn';
+import { StaggerContainer } from '@/components/animations/StaggerContainer';
+import { StaggerItem } from '@/components/animations/StaggerItem';
 import { api } from '@/lib/api';
 
 export const metadata: Metadata = {
   title: 'اخبار',
   description: 'آخرین اخبار خودرو و صنعت خودرو - FTS Motors',
-  keywords: ['اخبار خودرو', 'اخبار صنعت خودرو', 'تازه‌های خودرو'],
+  keywords: ['اخبار خودرو', 'اخبار صنعت خودرو', 'تازه‌ترین اخبار'],
   openGraph: {
     title: 'اخبار | FTS Motors',
     description: 'آخرین اخبار خودرو و صنعت خودرو',
@@ -30,52 +34,74 @@ export default async function NewsPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen">
-        <div className="container mx-auto px-4 py-16">
-          <h1 className="text-4xl font-bold mb-8">اخبار</h1>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {newsData.data?.map((news: any) => (
-              <Link
-                key={news.id}
-                href={`/news/${news.slug}`}
-                className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-              >
-                {news.image && (
-                  <div className="aspect-video bg-muted">
-                    <img
-                      src={news.image}
-                      alt={news.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold mb-2">{news.title}</h3>
-                  {news.excerpt && (
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {news.excerpt}
-                    </p>
-                  )}
-                  {news.publishedAt && (
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {new Date(news.publishedAt).toLocaleDateString('fa-IR')}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            ))}
+      <main className="min-h-screen bg-white pt-20">
+        {/* Hero Section */}
+        <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
+          <div className="container mx-auto px-4">
+            <FadeIn>
+              <div className="text-center mb-12">
+                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                  اخبار
+                </h1>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  تازه‌ترین اخبار خودرو و صنعت خودرو
+                </p>
+              </div>
+            </FadeIn>
           </div>
+        </section>
 
-          {newsData.data?.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">خبری یافت نشد.</p>
-            </div>
-          )}
-        </div>
+        {/* News Grid */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            {newsData.data && newsData.data.length > 0 ? (
+              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {newsData.data.map((newsItem: any, index: number) => (
+                  <StaggerItem key={newsItem.id}>
+                    <Link href={`/news/${newsItem.slug}`} className="block group">
+                      <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-full">
+                        {newsItem.image && (
+                          <div className="aspect-video relative overflow-hidden">
+                            <Image
+                              src={newsItem.image}
+                              alt={newsItem.title}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          </div>
+                        )}
+                        <div className="p-6">
+                          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                            {newsItem.title}
+                          </h3>
+                          {newsItem.excerpt && (
+                            <p className="text-gray-600 line-clamp-3 text-sm mb-4">
+                              {newsItem.excerpt}
+                            </p>
+                          )}
+                          <span className="text-blue-600 font-semibold text-sm inline-flex items-center gap-2">
+                            ادامه مطلب
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+            ) : (
+              <FadeIn>
+                <div className="text-center py-20">
+                  <p className="text-xl text-gray-600">خبری یافت نشد</p>
+                </div>
+              </FadeIn>
+            )}
+          </div>
+        </section>
       </main>
       <Footer />
     </>
   );
 }
-

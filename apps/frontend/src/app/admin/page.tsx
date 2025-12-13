@@ -3,6 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { API_URL } from '@/lib/utils';
+import { FadeIn } from '@/components/animations/FadeIn';
+import { StaggerContainer } from '@/components/animations/StaggerContainer';
+import { StaggerItem } from '@/components/animations/StaggerItem';
+import { motion } from 'framer-motion';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -51,138 +55,132 @@ export default function AdminDashboard() {
     fetchStats();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>در حال بارگذاری...</p>
-        </div>
-      </div>
-    );
-  }
-
   const statCards = [
     {
       title: 'خودروها',
       value: stats.cars,
       icon: '🚗',
-      href: '/admin/cars',
       color: 'bg-blue-500',
+      href: '/admin/cars',
     },
     {
       title: 'دسته‌بندی‌ها',
       value: stats.categories,
       icon: '📁',
-      href: '/admin/categories',
       color: 'bg-green-500',
+      href: '/admin/categories',
     },
     {
       title: 'مقالات',
       value: stats.articles,
       icon: '📝',
-      href: '/admin/articles',
       color: 'bg-purple-500',
+      href: '/admin/articles',
     },
     {
       title: 'اخبار',
       value: stats.news,
       icon: '📰',
-      href: '/admin/news',
       color: 'bg-orange-500',
+      href: '/admin/news',
     },
     {
       title: 'پیام‌ها',
       value: stats.messages,
       icon: '✉️',
-      href: '/admin/contact',
       color: 'bg-red-500',
+      href: '/admin/contact',
       badge: stats.unreadMessages > 0 ? stats.unreadMessages : undefined,
     },
   ];
 
+  const quickActions = [
+    { title: 'افزودن خودرو', href: '/admin/cars/new', icon: '➕' },
+    { title: 'افزودن مقاله', href: '/admin/articles/new', icon: '📝' },
+    { title: 'افزودن خبر', href: '/admin/news/new', icon: '📰' },
+    { title: 'افزودن دسته‌بندی', href: '/admin/categories/new', icon: '📁' },
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl">در حال بارگذاری...</div>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">داشبورد</h1>
-        <p className="text-muted-foreground">خوش آمدید به پنل مدیریت FTS Motors</p>
-      </div>
+    <div className="p-8">
+      <FadeIn>
+        <h1 className="text-4xl font-bold text-gray-900 mb-8">داشبورد</h1>
+      </FadeIn>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-        {statCards.map((stat) => (
-          <Link
-            key={stat.href}
-            href={stat.href}
-            className="group relative p-6 border rounded-xl hover:shadow-lg transition-all bg-card"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className={`text-4xl p-3 rounded-lg ${stat.color} text-white`}>
-                {stat.icon}
-              </div>
-              {stat.badge && (
-                <span className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded-full">
-                  {stat.badge} جدید
-                </span>
-              )}
-            </div>
-            <h3 className="text-lg font-semibold mb-2">{stat.title}</h3>
-            <p className="text-3xl font-bold">{stat.value}</p>
-            <div className="mt-4 text-sm text-muted-foreground group-hover:text-primary transition-colors">
-              مشاهده همه →
-            </div>
-          </Link>
+      {/* Stats Cards */}
+      <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        {statCards.map((stat, index) => (
+          <StaggerItem key={index}>
+            <Link href={stat.href}>
+              <motion.div
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 relative"
+              >
+                {stat.badge && (
+                  <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                    {stat.badge}
+                  </span>
+                )}
+                <div className={`${stat.color} w-12 h-12 rounded-lg flex items-center justify-center text-2xl mb-4`}>
+                  {stat.icon}
+                </div>
+                <div className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</div>
+                <div className="text-gray-600">{stat.title}</div>
+              </motion.div>
+            </Link>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-6 border rounded-xl bg-card">
-          <h2 className="text-2xl font-semibold mb-4">دسترسی سریع</h2>
-          <div className="space-y-2">
-            <Link
-              href="/admin/cars/new"
-              className="block p-3 border rounded-lg hover:bg-muted transition-colors"
-            >
-              ➕ افزودن خودرو جدید
-            </Link>
-            <Link
-              href="/admin/articles/new"
-              className="block p-3 border rounded-lg hover:bg-muted transition-colors"
-            >
-              ➕ افزودن مقاله جدید
-            </Link>
-            <Link
-              href="/admin/news/new"
-              className="block p-3 border rounded-lg hover:bg-muted transition-colors"
-            >
-              ➕ افزودن خبر جدید
-            </Link>
-            <Link
-              href="/admin/categories/new"
-              className="block p-3 border rounded-lg hover:bg-muted transition-colors"
-            >
-              ➕ افزودن دسته‌بندی جدید
-            </Link>
+      {/* Quick Actions */}
+      <FadeIn delay={0.3}>
+        <div className="bg-white rounded-xl p-6 shadow-lg mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">دسترسی سریع</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {quickActions.map((action, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+              >
+                <Link
+                  href={action.href}
+                  className="block p-4 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors text-center"
+                >
+                  <div className="text-3xl mb-2">{action.icon}</div>
+                  <div className="font-semibold text-gray-900">{action.title}</div>
+                </Link>
+              </motion.div>
+            ))}
           </div>
         </div>
+      </FadeIn>
 
-        <div className="p-6 border rounded-xl bg-card">
-          <h2 className="text-2xl font-semibold mb-4">اطلاعات سیستم</h2>
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">وضعیت API:</span>
-              <span className="text-green-600">✓ آنلاین</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">وضعیت دیتابیس:</span>
-              <span className="text-green-600">✓ متصل</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">نسخه:</span>
-              <span>1.0.0</span>
+      {/* Recent Activity */}
+      <FadeIn delay={0.4}>
+        <div className="bg-white rounded-xl p-6 shadow-lg">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">فعالیت‌های اخیر</h2>
+          <div className="space-y-4">
+            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+              <div className="text-2xl">📊</div>
+              <div>
+                <div className="font-semibold text-gray-900">آمار به‌روزرسانی شد</div>
+                <div className="text-sm text-gray-600">هم اکنون</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </FadeIn>
     </div>
   );
 }

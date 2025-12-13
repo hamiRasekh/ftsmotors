@@ -3,10 +3,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatedButton } from './ui/AnimatedButton';
+import { Sidebar } from './layout/Sidebar';
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,129 +20,159 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navItems = [
+    { href: '/', label: 'خانه' },
+    { href: '/cars', label: 'خودروها' },
+    { href: '/blog', label: 'مقالات' },
+    { href: '/news', label: 'اخبار' },
+    { href: '/about', label: 'درباره ما' },
+    { href: '/contact', label: 'تماس با ما' },
+  ];
+
   return (
-    <header
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-white'
       }`}
     >
       <div className="container mx-auto px-4 py-4">
         <nav className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-              alt="FTS Motors Logo"
-              width={50}
-              height={50}
-              className="object-contain"
-            />
-            <span className="text-2xl font-bold text-gray-900">FTS Motors</span>
-          </Link>
-          
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src="/photo_2025-12-08_17-46-46-removebg-preview.png"
+                alt="FTS Motors Logo"
+                width={50}
+                height={50}
+                className="object-contain"
+              />
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                FTS Motors
+              </span>
+            </Link>
+          </motion.div>
+
           {/* Desktop Menu */}
-          <ul className="hidden md:flex gap-8 items-center">
-            <li>
-              <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                خانه
-              </Link>
-            </li>
-            <li>
-              <Link href="/cars" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                خودروها
-              </Link>
-            </li>
-            <li>
-              <Link href="/blog" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                مقالات
-              </Link>
-            </li>
-            <li>
-              <Link href="/news" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                اخبار
-              </Link>
-            </li>
-            <li>
-              <Link href="/about" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                درباره ما
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                تماس با ما
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/contact"
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-medium"
+          <ul className="hidden md:flex gap-6 items-center">
+            {navItems.map((item, index) => (
+              <motion.li
+                key={item.href}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
               >
+                <Link
+                  href={item.href}
+                  className="relative text-gray-700 font-medium transition-colors group"
+                >
+                  <span className="relative z-10">{item.label}</span>
+                  <motion.span
+                    className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"
+                    whileHover={{ width: '100%' }}
+                  />
+                </Link>
+              </motion.li>
+            ))}
+            <motion.li
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.6 }}
+            >
+              <motion.button
+                onClick={() => setSidebarOpen(true)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors"
+                aria-label="منوی کناری"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </motion.button>
+            </motion.li>
+            <motion.li
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.7 }}
+            >
+              <AnimatedButton href="/contact" variant="primary" size="md">
                 دریافت مشاوره
-              </Link>
-            </li>
+              </AnimatedButton>
+            </motion.li>
           </ul>
 
           {/* Mobile Menu Button */}
-          <button
+          <motion.button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 text-gray-700"
             aria-label="منو"
+            whileTap={{ scale: 0.9 }}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <motion.svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
               {mobileMenuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               )}
-            </svg>
-          </button>
+            </motion.svg>
+          </motion.button>
         </nav>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
-            <ul className="flex flex-col gap-4 pt-4">
-              <li>
-                <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors font-medium block">
-                  خانه
-                </Link>
-              </li>
-              <li>
-                <Link href="/cars" className="text-gray-700 hover:text-blue-600 transition-colors font-medium block">
-                  خودروها
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-gray-700 hover:text-blue-600 transition-colors font-medium block">
-                  مقالات
-                </Link>
-              </li>
-              <li>
-                <Link href="/news" className="text-gray-700 hover:text-blue-600 transition-colors font-medium block">
-                  اخبار
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-gray-700 hover:text-blue-600 transition-colors font-medium block">
-                  درباره ما
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-gray-700 hover:text-blue-600 transition-colors font-medium block">
-                  تماس با ما
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-medium inline-block text-center w-full"
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden mt-4 pb-4 border-t border-gray-200 overflow-hidden"
+            >
+              <ul className="flex flex-col gap-4 pt-4">
+                {navItems.map((item, index) => (
+                  <motion.li
+                    key={item.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-gray-700 hover:text-blue-600 transition-colors font-medium block py-2"
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.li>
+                ))}
+                <motion.li
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: navItems.length * 0.1 }}
                 >
-                  دریافت مشاوره
-                </Link>
-              </li>
-            </ul>
-          </div>
-        )}
+                  <AnimatedButton href="/contact" variant="primary" size="md" className="w-full">
+                    دریافت مشاوره
+                  </AnimatedButton>
+                </motion.li>
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </header>
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    </motion.header>
   );
 }

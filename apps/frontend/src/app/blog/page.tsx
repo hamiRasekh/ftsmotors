@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { FadeIn } from '@/components/animations/FadeIn';
+import { StaggerContainer } from '@/components/animations/StaggerContainer';
+import { StaggerItem } from '@/components/animations/StaggerItem';
 import { api } from '@/lib/api';
 
 export const metadata: Metadata = {
@@ -30,52 +34,74 @@ export default async function BlogPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen">
-        <div className="container mx-auto px-4 py-16">
-          <h1 className="text-4xl font-bold mb-8">مقالات</h1>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {articlesData.data?.map((article: any) => (
-              <Link
-                key={article.id}
-                href={`/blog/${article.slug}`}
-                className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-              >
-                {article.image && (
-                  <div className="aspect-video bg-muted">
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
-                  {article.excerpt && (
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {article.excerpt}
-                    </p>
-                  )}
-                  {article.publishedAt && (
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {new Date(article.publishedAt).toLocaleDateString('fa-IR')}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            ))}
+      <main className="min-h-screen bg-white pt-20">
+        {/* Hero Section */}
+        <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
+          <div className="container mx-auto px-4">
+            <FadeIn>
+              <div className="text-center mb-12">
+                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                  مقالات
+                </h1>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  مطالب آموزشی و راهنمای خرید خودرو
+                </p>
+              </div>
+            </FadeIn>
           </div>
+        </section>
 
-          {articlesData.data?.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">مقاله‌ای یافت نشد.</p>
-            </div>
-          )}
-        </div>
+        {/* Articles Grid */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            {articlesData.data && articlesData.data.length > 0 ? (
+              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {articlesData.data.map((article: any, index: number) => (
+                  <StaggerItem key={article.id}>
+                    <Link href={`/blog/${article.slug}`} className="block group">
+                      <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-full">
+                        {article.image && (
+                          <div className="aspect-video relative overflow-hidden">
+                            <Image
+                              src={article.image}
+                              alt={article.title}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          </div>
+                        )}
+                        <div className="p-6">
+                          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                            {article.title}
+                          </h3>
+                          {article.excerpt && (
+                            <p className="text-gray-600 line-clamp-3 text-sm mb-4">
+                              {article.excerpt}
+                            </p>
+                          )}
+                          <span className="text-blue-600 font-semibold text-sm inline-flex items-center gap-2">
+                            ادامه مطلب
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+            ) : (
+              <FadeIn>
+                <div className="text-center py-20">
+                  <p className="text-xl text-gray-600">مقاله‌ای یافت نشد</p>
+                </div>
+              </FadeIn>
+            )}
+          </div>
+        </section>
       </main>
       <Footer />
     </>
   );
 }
-

@@ -1,9 +1,12 @@
 'use client';
 
-import type { Metadata } from 'next';
 import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { FadeIn } from '@/components/animations/FadeIn';
+import { SlideIn } from '@/components/animations/SlideIn';
+import { AnimatedButton } from '@/components/ui/AnimatedButton';
+import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
 
 export default function ContactPage() {
@@ -24,6 +27,7 @@ export default function ContactPage() {
       await api.contact.send(formData);
       setSuccess(true);
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+      setTimeout(() => setSuccess(false), 5000);
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -31,126 +35,179 @@ export default function ContactPage() {
     }
   };
 
+  const contactInfo = [
+    {
+      icon: '📍',
+      title: 'آدرس',
+      content: 'تهران، خیابان ولیعصر، پلاک 123',
+    },
+    {
+      icon: '📞',
+      title: 'تلفن',
+      content: '021-12345678',
+    },
+    {
+      icon: '✉️',
+      title: 'ایمیل',
+      content: 'info@ftsmotors.com',
+    },
+    {
+      icon: '🕐',
+      title: 'ساعات کاری',
+      content: 'شنبه تا پنجشنبه: 9 صبح تا 6 عصر',
+    },
+  ];
+
   return (
     <>
       <Header />
-      <main className="min-h-screen">
-        <div className="container mx-auto px-4 py-16">
-          <h1 className="text-4xl font-bold mb-8">تماس با ما</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-2xl font-semibold mb-6">اطلاعات تماس</h2>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-2">آدرس</h3>
-                  <p className="text-muted-foreground">
-                    تهران، خیابان ولیعصر، پلاک 123
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">تلفن</h3>
-                  <p className="text-muted-foreground">021-12345678</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">ایمیل</h3>
-                  <p className="text-muted-foreground">info@ftsmotors.com</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">ساعات کاری</h3>
-                  <p className="text-muted-foreground">
-                    شنبه تا پنج‌شنبه: 9:00 - 18:00
-                    <br />
-                    جمعه: تعطیل
-                  </p>
-                </div>
+      <main className="min-h-screen bg-white pt-20">
+        {/* Hero Section */}
+        <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
+          <div className="container mx-auto px-4">
+            <FadeIn>
+              <div className="text-center mb-12">
+                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                  تماس با ما
+                </h1>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  ما آماده پاسخگویی به سوالات و درخواست‌های شما هستیم
+                </p>
               </div>
-            </div>
-            <div>
-              <h2 className="text-2xl font-semibold mb-6">فرم تماس</h2>
-              {success && (
-                <div className="mb-4 p-4 bg-green-100 text-green-800 rounded-lg">
-                  پیام شما با موفقیت ارسال شد!
-                </div>
-              )}
-              <form onSubmit={handleSubmit} className="space-y-4">
+            </FadeIn>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {/* Contact Info */}
+              <SlideIn direction="right">
                 <div>
-                  <label htmlFor="name" className="block mb-2 font-medium">
-                    نام و نام خانوادگی
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg"
-                  />
+                  <h2 className="text-3xl font-bold text-gray-900 mb-8">اطلاعات تماس</h2>
+                  <div className="space-y-6">
+                    {contactInfo.map((info, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        whileHover={{ x: 10 }}
+                        className="flex items-start gap-4 p-6 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors"
+                      >
+                        <div className="text-3xl">{info.icon}</div>
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-1">{info.title}</h3>
+                          <p className="text-gray-600">{info.content}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <label htmlFor="email" className="block mb-2 font-medium">
-                    ایمیل
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg"
-                  />
+              </SlideIn>
+
+              {/* Contact Form */}
+              <SlideIn direction="left">
+                <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-8">ارسال پیام</h2>
+                  {success && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800"
+                    >
+                      پیام شما با موفقیت ارسال شد!
+                    </motion.div>
+                  )}
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                        نام و نام خانوادگی
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                        ایمیل
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        required
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                        تلفن
+                      </label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                        موضوع
+                      </label>
+                      <input
+                        type="text"
+                        id="subject"
+                        required
+                        value={formData.subject}
+                        onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                        پیام
+                      </label>
+                      <textarea
+                        id="message"
+                        required
+                        rows={5}
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"
+                      />
+                    </div>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <AnimatedButton
+                        type="submit"
+                        variant="primary"
+                        size="lg"
+                        className="w-full"
+                        onClick={() => {}}
+                      >
+                        {loading ? 'در حال ارسال...' : 'ارسال پیام'}
+                      </AnimatedButton>
+                    </motion.div>
+                  </form>
                 </div>
-                <div>
-                  <label htmlFor="phone" className="block mb-2 font-medium">
-                    تلفن (اختیاری)
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="subject" className="block mb-2 font-medium">
-                    موضوع
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    required
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="message" className="block mb-2 font-medium">
-                    پیام
-                  </label>
-                  <textarea
-                    id="message"
-                    required
-                    rows={6}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
-                >
-                  {loading ? 'در حال ارسال...' : 'ارسال پیام'}
-                </button>
-              </form>
+              </SlideIn>
             </div>
           </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </>
   );
 }
-
