@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { HeroSlider } from '@/components/sections/HeroSlider';
+import LogoLoop from '@/components/sections/LogoLoop';
 import { Features } from '@/components/sections/Features';
 import { Stats } from '@/components/sections/Stats';
 import { Testimonials } from '@/components/sections/Testimonials';
@@ -52,6 +53,31 @@ export default async function HomePage() {
         {/* Hero Slider */}
         <section className="relative">
           <HeroSlider />
+        </section>
+
+        {/* Brand Logos Slider */}
+        <section className="relative bg-white py-12 md:py-16 overflow-hidden">
+          <div className="container mx-auto px-4">
+            <div className="w-full overflow-hidden">
+              <LogoLoop
+                logos={[
+                  { src: '/4photoshop-bmw-vector-logo-لوگو-بی-ام-و-removebg-preview.png', alt: 'BMW', href: 'https://www.bmw.com' },
+                  { src: '/images-removebg-preview.png', alt: 'Brand Logo' },
+                  { src: '/3952193-removebg-preview.png', alt: 'Brand Logo' },
+                ]}
+                speed={120}
+                direction="left"
+                logoHeight={60}
+                gap={40}
+                fadeOut
+                fadeOutColor="#ffffff"
+                scaleOnHover
+                pauseOnHover
+                ariaLabel="برندهای خودرو"
+                width="100%"
+              />
+            </div>
+          </div>
         </section>
 
         {/* Features Section */}
