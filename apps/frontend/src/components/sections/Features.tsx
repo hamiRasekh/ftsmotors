@@ -1,8 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { StaggerContainer, StaggerItem } from '../animations/StaggerContainer';
-import { StaggerItem as StaggerItemComponent } from '../animations/StaggerItem';
+import { StaggerContainer } from '../animations/StaggerContainer';
+import { StaggerItem } from '../animations/StaggerItem';
 
 const features = [
   {
@@ -58,7 +58,7 @@ export function Features() {
 
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
-            <StaggerItemComponent key={index}>
+            <StaggerItem key={index}>
               <motion.div
                 whileHover={{ y: -5 }}
                 className="bg-white border border-gray-200 rounded-lg p-6 hover:bg-gray-50 transition-all duration-300"
@@ -67,7 +67,7 @@ export function Features() {
                 <h3 className="text-xl font-bold text-black mb-2">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
               </motion.div>
-            </StaggerItemComponent>
+            </StaggerItem>
           ))}
         </StaggerContainer>
       </div>

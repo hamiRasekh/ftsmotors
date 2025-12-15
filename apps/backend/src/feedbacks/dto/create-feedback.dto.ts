@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsString, IsNotEmpty, IsOptional, Min, Max, IsInt } from 'class-validator';
+import { IsEnum, IsString, IsNotEmpty, IsOptional, Min, Max, IsInt, MinLength } from 'class-validator';
 import { FeedbackType } from '@prisma/client';
 
 export class CreateFeedbackDto {

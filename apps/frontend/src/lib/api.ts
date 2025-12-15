@@ -29,11 +29,12 @@ export const api = {
       fetch(`${API_URL}/api/categories/slug/${slug}`).then((r) => r.json()),
   },
   cars: {
-    getAll: (params?: { categoryId?: string; page?: number; limit?: number }) => {
+    getAll: (params?: { categoryId?: string; page?: number; limit?: number; published?: boolean }) => {
       const searchParams = new URLSearchParams();
       if (params?.categoryId) searchParams.append('categoryId', params.categoryId);
       if (params?.page) searchParams.append('page', params.page.toString());
       if (params?.limit) searchParams.append('limit', params.limit.toString());
+      if (params?.published !== undefined) searchParams.append('published', params.published.toString());
       return fetch(`${API_URL}/api/cars?${searchParams}`).then((r) => r.json());
     },
     getBySlug: (slug: string) =>

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { HeroSlider } from '@/components/sections/HeroSlider';
@@ -8,11 +7,10 @@ import LogoLoop from '@/components/sections/LogoLoop';
 import { Features } from '@/components/sections/Features';
 import { Stats } from '@/components/sections/Stats';
 import { Testimonials } from '@/components/sections/Testimonials';
-import { CarCard } from '@/components/ui/CarCard';
+import { CarPriceSection } from '@/components/sections/CarPriceSection';
+import { ImportedCarsSection } from '@/components/sections/ImportedCarsSection';
+import { MasonryGallery } from '@/components/sections/MasonryGallery';
 import { FadeIn } from '@/components/animations/FadeIn';
-import { SlideIn } from '@/components/animations/SlideIn';
-import { StaggerContainer } from '@/components/animations/StaggerContainer';
-import { StaggerItem } from '@/components/animations/StaggerItem';
 import { api } from '@/lib/api';
 
 export const metadata: Metadata = {
@@ -27,15 +25,13 @@ export const metadata: Metadata = {
 
 async function getHomeData() {
   try {
-    const [cars, articles, news] = await Promise.all([
-      api.cars.getAll({ limit: 6 }),
-      api.articles.getAll({ published: true, limit: 3 }),
-      api.news.getAll({ published: true, limit: 3 }),
+    const [articles, news] = await Promise.all([
+      api.articles.getAll({ published: true, limit: 10 }),
+      api.news.getAll({ published: true, limit: 10 }),
     ]);
-    return { cars, articles, news };
+    return { articles, news };
   } catch (error) {
     return {
-      cars: { data: [] },
       articles: { data: [] },
       news: { data: [] },
     };
@@ -43,7 +39,7 @@ async function getHomeData() {
 }
 
 export default async function HomePage() {
-  const { cars, articles, news } = await getHomeData();
+  const { articles, news } = await getHomeData();
 
   return (
     <>
@@ -85,174 +81,83 @@ export default async function HomePage() {
         {/* Stats Section */}
         <Stats />
 
-        {/* Featured Cars Section */}
-        {cars.data && cars.data.length > 0 && (
-          <section className="py-20 bg-white">
-            <div className="container mx-auto px-4">
-              <FadeIn>
-                <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-                    خودروهای برتر
-                  </h2>
-                  <p className="text-xl text-gray-600">
-                    انتخاب از بهترین خودروهای موجود
-                  </p>
-                </div>
-              </FadeIn>
+        {/* Car Price Sections - 3D Models with Scroll Animations */}
+        
+        {/* Section 1: تا 25 هزار دلار - Toyota Corolla */}
+        <CarPriceSection
+          modelPath="/glb/toyota_corolla_2020.glb"
+          title="خودروهای تا 25 هزار دلار"
+          priceRange="تا 25,000 دلار"
+          description="خودروهای اقتصادی و مقرون به صرفه با کیفیت بالا و مصرف سوخت بهینه. مناسب برای استفاده روزمره و سفرهای شهری."
+          features={[
+            'مصرف سوخت بهینه',
+            'قیمت مناسب',
+            'قابلیت اطمینان بالا',
+            'خدمات پس از فروش کامل',
+          ]}
+          reverse={false}
+        />
 
-              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {cars.data.map((car: any, index: number) => (
-                  <StaggerItem key={car.id}>
-                    <CarCard car={car} index={index} />
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
+        {/* Section 2: 30 هزار دلار - BMW X2 */}
+        <CarPriceSection
+          modelPath="/glb/2019_bmw_x2_xdrive20d_m_sport_x.glb"
+          title="خودروهای 30 هزار دلار"
+          priceRange="حدود 30,000 دلار"
+          description="خودروهای لوکس و مدرن با طراحی جذاب و امکانات پیشرفته. ترکیبی از راحتی، عملکرد و سبک."
+          features={[
+            'طراحی مدرن و جذاب',
+            'امکانات پیشرفته',
+            'عملکرد عالی',
+            'کیفیت ساخت بالا',
+          ]}
+          reverse={true}
+        />
 
-              <FadeIn delay={0.3}>
-                <div className="text-center">
-                  <Link
-                    href="/cars"
-                    className="inline-block px-8 py-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold text-lg"
-                  >
-                    مشاهده همه خودروها
-                  </Link>
-                </div>
-              </FadeIn>
-            </div>
-          </section>
-        )}
+        {/* Section 3: 35 هزار دلار - BMW 325 */}
+        <CarPriceSection
+          modelPath="/glb/2021_bmw_3_series_325li.glb"
+          title="خودروهای 35 هزار دلار"
+          priceRange="حدود 35,000 دلار"
+          description="خودروهای پریمیوم با بهترین تکنولوژی‌ها و امکانات لوکس. انتخابی ایده‌آل برای کسانی که به کیفیت و راحتی اهمیت می‌دهند."
+          features={[
+            'تکنولوژی پیشرفته',
+            'راحتی و لوکس',
+            'عملکرد حرفه‌ای',
+            'امنیت بالا',
+          ]}
+          reverse={false}
+        />
 
-        {/* Articles Section */}
-        {articles.data && articles.data.length > 0 && (
-          <section className="py-20 bg-gray-50">
-            <div className="container mx-auto px-4">
-              <SlideIn direction="up">
-                <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-                    آخرین مقالات
-                  </h2>
-                  <p className="text-xl text-gray-600">
-                    مطالب آموزشی و راهنمای خرید خودرو
-                  </p>
-                </div>
-              </SlideIn>
+        {/* Section 4: خودروهای وارداتی - Kia Sportage + Kia K5 */}
+        <ImportedCarsSection />
 
-              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {articles.data.map((article: any, index: number) => (
-                  <StaggerItem key={article.id}>
-                    <Link href={`/blog/${article.slug}`} className="block group">
-                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:bg-gray-50 transition-all duration-300 h-full">
-                        {article.image && (
-                          <div className="aspect-video relative overflow-hidden">
-                            <Image
-                              src={article.image}
-                              alt={article.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500 grayscale"
-                            />
-                          </div>
-                        )}
-                        <div className="p-6">
-                          <h3 className="text-xl font-bold text-black mb-2 group-hover:text-gray-700 transition-colors line-clamp-2">
-                            {article.title}
-                          </h3>
-                          {article.excerpt && (
-                            <p className="text-gray-600 line-clamp-3 text-sm mb-4">
-                              {article.excerpt}
-                            </p>
-                          )}
-                          <span className="text-black font-semibold text-sm inline-flex items-center gap-2">
-                            ادامه مطلب
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-
-              <FadeIn delay={0.3}>
-                <div className="text-center">
-                  <Link
-                    href="/blog"
-                    className="inline-block px-8 py-4 border-2 border-black text-black rounded-lg hover:bg-black hover:text-white transition-colors font-semibold text-lg"
-                  >
-                    مشاهده همه مقالات
-                  </Link>
-                </div>
-              </FadeIn>
-            </div>
-          </section>
-        )}
-
-        {/* News Section */}
-        {news.data && news.data.length > 0 && (
-          <section className="py-20 bg-white">
-            <div className="container mx-auto px-4">
-              <SlideIn direction="up">
-                <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-                    آخرین اخبار
-                  </h2>
-                  <p className="text-xl text-gray-600">
-                    تازه‌ترین اخبار خودرو و صنعت خودرو
-                  </p>
-                </div>
-              </SlideIn>
-
-              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {news.data.map((newsItem: any, index: number) => (
-                  <StaggerItem key={newsItem.id}>
-                    <Link href={`/news/${newsItem.slug}`} className="block group">
-                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:bg-gray-50 transition-all duration-300 h-full">
-                        {newsItem.image && (
-                          <div className="aspect-video relative overflow-hidden">
-                            <Image
-                              src={newsItem.image}
-                              alt={newsItem.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500 grayscale"
-                            />
-                          </div>
-                        )}
-                        <div className="p-6">
-                          <h3 className="text-xl font-bold text-black mb-2 group-hover:text-gray-700 transition-colors line-clamp-2">
-                            {newsItem.title}
-                          </h3>
-                          {newsItem.excerpt && (
-                            <p className="text-gray-600 line-clamp-3 text-sm mb-4">
-                              {newsItem.excerpt}
-                            </p>
-                          )}
-                          <span className="text-black font-semibold text-sm inline-flex items-center gap-2">
-                            ادامه مطلب
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-
-              <FadeIn delay={0.3}>
-                <div className="text-center">
-                  <Link
-                    href="/news"
-                    className="inline-block px-8 py-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold text-lg"
-                  >
-                    مشاهده همه اخبار
-                  </Link>
-                </div>
-              </FadeIn>
-            </div>
-          </section>
-        )}
+        {/* Masonry Gallery - News and Articles */}
+        {(articles.data && articles.data.length > 0) || (news.data && news.data.length > 0) ? (
+          <MasonryGallery
+            articles={
+              articles.data?.map((article: any) => ({
+                id: article.id,
+                title: article.title,
+                excerpt: article.excerpt,
+                image: article.image,
+                slug: article.slug,
+                type: 'article' as const,
+                date: article.createdAt,
+              })) || []
+            }
+            news={
+              news.data?.map((newsItem: any) => ({
+                id: newsItem.id,
+                title: newsItem.title,
+                excerpt: newsItem.excerpt,
+                image: newsItem.image,
+                slug: newsItem.slug,
+                type: 'news' as const,
+                date: newsItem.createdAt,
+              })) || []
+            }
+          />
+        ) : null}
 
         {/* Testimonials */}
         <Testimonials />

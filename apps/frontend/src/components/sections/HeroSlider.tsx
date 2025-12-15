@@ -33,13 +33,6 @@ const slides = [
     cta: 'تماس با ما',
     link: '/contact',
   },
-  {
-    image: '/img/pexels-highervibration-10573462.jpg',
-    title: 'کیفیت در هر جزئیات',
-    description: 'توجه به جزئیات و ارائه بهترین خدمات',
-    cta: 'مشاهده خدمات',
-    link: '/about',
-  },
 ];
 
 export function HeroSlider() {

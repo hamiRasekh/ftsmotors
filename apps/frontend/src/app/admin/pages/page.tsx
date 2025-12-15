@@ -7,7 +7,7 @@ import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { FadeIn } from '@/components/animations/FadeIn';
 import dynamic from 'next/dynamic';
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false }) as any;
 import 'react-quill/dist/quill.snow.css';
 
 export default function AdminPagesPage() {
@@ -134,7 +134,7 @@ export default function AdminPagesPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">محتوا</label>
               <ReactQuill
                 value={formData.content}
-                onChange={(value) => setFormData({ ...formData, content: value })}
+                onChange={(value: string) => setFormData({ ...formData, content: value })}
                 theme="snow"
                 className="bg-white"
               />

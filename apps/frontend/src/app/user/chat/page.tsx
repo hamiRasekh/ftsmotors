@@ -25,11 +25,11 @@ export default function ChatPage() {
       newSocket.emit('chat:join');
     });
 
-    newSocket.on('chat:messages', (data) => {
+    newSocket.on('chat:messages', (data: any) => {
       setMessages(data.reverse());
     });
 
-    newSocket.on('chat:new-message', (data) => {
+    newSocket.on('chat:new-message', (data: any) => {
       setMessages((prev) => [...prev, data]);
     });
 
