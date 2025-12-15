@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade, Navigation, Pagination } from 'swiper/modules';
 import { motion } from 'framer-motion';
-import { AnimatedButton } from '../ui/AnimatedButton';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/navigation';
@@ -71,10 +70,10 @@ export function HeroSlider() {
                 src={slide.image}
                 alt={slide.title}
                 fill
-                className="object-cover"
+                className="object-cover grayscale"
                 priority={index === 0}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20" />
               
               {/* Content */}
               <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -89,7 +88,7 @@ export function HeroSlider() {
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8, delay: 0.4 }}
-                      className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl"
+                      className="text-5xl md:text-7xl font-bold text-white mb-6"
                     >
                       {slide.title}
                     </motion.h1>
@@ -97,7 +96,7 @@ export function HeroSlider() {
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8, delay: 0.6 }}
-                      className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto drop-shadow-lg"
+                      className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto"
                     >
                       {slide.description}
                     </motion.p>
@@ -106,9 +105,12 @@ export function HeroSlider() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.6, delay: 0.8 }}
                     >
-                      <AnimatedButton href={slide.link} variant="primary" size="lg">
+                      <Link
+                        href={slide.link}
+                        className="inline-block px-8 py-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold text-lg"
+                      >
                         {slide.cta}
-                      </AnimatedButton>
+                      </Link>
                     </motion.div>
                   </motion.div>
                 </div>
@@ -123,7 +125,7 @@ export function HeroSlider() {
         .swiper-button-next,
         .swiper-button-prev {
           color: white;
-          background: rgba(255, 255, 255, 0.2);
+          background: rgba(0, 0, 0, 0.5);
           backdrop-filter: blur(10px);
           width: 50px;
           height: 50px;
@@ -132,7 +134,7 @@ export function HeroSlider() {
         }
         .swiper-button-next:hover,
         .swiper-button-prev:hover {
-          background: rgba(255, 255, 255, 0.3);
+          background: rgba(0, 0, 0, 0.7);
           transform: scale(1.1);
         }
         .swiper-pagination-bullet {
@@ -146,9 +148,9 @@ export function HeroSlider() {
           opacity: 1;
           width: 30px;
           border-radius: 6px;
+          background: white;
         }
       `}</style>
     </div>
   );
 }
-

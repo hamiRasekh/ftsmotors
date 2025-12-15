@@ -2,6 +2,7 @@ import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('auth')
@@ -17,5 +18,12 @@ export class AuthController {
   async login(@Body() loginDto: LoginDto, @Request() req) {
     return this.authService.login(loginDto);
   }
-}
 
+  @Post('register')
+  @ApiOperation({ summary: 'User registration' })
+  @ApiResponse({ status: 201, description: 'Registration successful' })
+  @ApiResponse({ status: 409, description: 'User already exists' })
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
+  }
+}

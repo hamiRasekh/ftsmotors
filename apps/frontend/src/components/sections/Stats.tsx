@@ -52,7 +52,7 @@ function Counter({ value, suffix = '' }: { value: number; suffix?: string }) {
 
 export function Stats() {
   return (
-    <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+    <section className="py-20 bg-black text-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -62,7 +62,7 @@ export function Stats() {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">آمار و ارقام</h2>
-          <p className="text-xl text-blue-100">دستاوردهای ما در یک نگاه</p>
+          <p className="text-xl text-gray-400">دستاوردهای ما در یک نگاه</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -73,13 +73,13 @@ export function Stats() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.05 }}
               className="text-center"
             >
               <div className="text-5xl md:text-6xl font-bold mb-2">
                 <Counter value={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="text-xl text-blue-100">{stat.label}</div>
+              <div className="text-xl text-gray-300">{stat.label}</div>
             </motion.div>
           ))}
         </div>
@@ -87,4 +87,3 @@ export function Stats() {
     </section>
   );
 }
-

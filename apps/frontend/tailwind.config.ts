@@ -23,38 +23,52 @@ const config: Config = {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: '#2563eb', // blue-600
+          DEFAULT: '#000000', // Black for grayscale
           foreground: '#ffffff',
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          DEFAULT: '#F5F5F5', // Light gray
+          foreground: '#1A1A1A',
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: '#666666', // Gray
+          foreground: '#ffffff',
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: '#F9F9F9', // Very light gray
+          foreground: '#666666',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          DEFAULT: '#000000', // Black
+          foreground: '#ffffff',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          DEFAULT: '#ffffff',
+          foreground: '#1A1A1A',
         },
         card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          DEFAULT: '#ffffff',
+          foreground: '#1A1A1A',
+        },
+        // Grayscale palette
+        gray: {
+          50: '#F9F9F9',
+          100: '#F5F5F5',
+          200: '#F0F0F0',
+          300: '#E5E5E5',
+          400: '#CCCCCC',
+          500: '#999999',
+          600: '#666666',
+          700: '#4D4D4D',
+          800: '#333333',
+          900: '#1A1A1A',
+          950: '#000000',
         },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        lg: '8px',
+        md: '6px',
+        sm: '4px',
       },
       keyframes: {
         'accordion-down': {
@@ -76,4 +90,3 @@ const config: Config = {
 };
 
 export default config;
-

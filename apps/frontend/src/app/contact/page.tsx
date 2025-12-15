@@ -19,17 +19,19 @@ export default function ContactPage() {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     try {
       await api.contact.send(formData);
       setSuccess(true);
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       setTimeout(() => setSuccess(false), 5000);
-    } catch (error) {
-      console.error('Error sending message:', error);
+    } catch (err: any) {
+      setError(err.message || 'خطا در ارسال پیام. لطفاً دوباره تلاش کنید.');
     } finally {
       setLoading(false);
     }
@@ -40,38 +42,42 @@ export default function ContactPage() {
       icon: '📍',
       title: 'آدرس',
       content: 'تهران، خیابان ولیعصر، پلاک 123',
+      link: '#',
     },
     {
       icon: '📞',
       title: 'تلفن',
       content: '021-12345678',
+      link: 'tel:02112345678',
     },
     {
       icon: '✉️',
       title: 'ایمیل',
       content: 'info@ftsmotors.com',
+      link: 'mailto:info@ftsmotors.com',
     },
     {
       icon: '🕐',
       title: 'ساعات کاری',
       content: 'شنبه تا پنجشنبه: 9 صبح تا 6 عصر',
+      link: '#',
     },
   ];
 
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-white pt-20">
+      <main className="min-h-screen bg-white pt-16">
         {/* Hero Section */}
-        <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
+        <section className="py-20 bg-gray-50 border-b border-gray-200">
           <div className="container mx-auto px-4">
             <FadeIn>
-              <div className="text-center mb-12">
-                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+              <div className="text-center mb-12 max-w-3xl mx-auto">
+                <h1 className="text-5xl md:text-6xl font-bold text-black mb-6">
                   تماس با ما
                 </h1>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  ما آماده پاسخگویی به سوالات و درخواست‌های شما هستیم
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  ما آماده پاسخگویی به سوالات و درخواست‌های شما هستیم. از طریق فرم زیر یا اطلاعات تماس با ما در ارتباط باشید.
                 </p>
               </div>
             </FadeIn>
@@ -85,46 +91,61 @@ export default function ContactPage() {
               {/* Contact Info */}
               <SlideIn direction="right">
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-8">اطلاعات تماس</h2>
+                  <h2 className="text-3xl font-bold text-black mb-8">اطلاعات تماس</h2>
                   <div className="space-y-6">
                     {contactInfo.map((info, index) => (
-                      <motion.div
+                      <motion.a
                         key={index}
+                        href={info.link}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
-                        whileHover={{ x: 10 }}
-                        className="flex items-start gap-4 p-6 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors"
+                        whileHover={{ x: 5 }}
+                        className="flex items-start gap-4 p-6 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors block"
                       >
                         <div className="text-3xl">{info.icon}</div>
                         <div>
-                          <h3 className="font-bold text-gray-900 mb-1">{info.title}</h3>
+                          <h3 className="font-bold text-black mb-1">{info.title}</h3>
                           <p className="text-gray-600">{info.content}</p>
                         </div>
-                      </motion.div>
+                      </motion.a>
                     ))}
+                  </div>
+                  
+                  {/* Map Placeholder */}
+                  <div className="mt-8 bg-gray-100 rounded-lg h-64 flex items-center justify-center border border-gray-200">
+                    <p className="text-gray-500">نقشه</p>
                   </div>
                 </div>
               </SlideIn>
 
               {/* Contact Form */}
               <SlideIn direction="left">
-                <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-8">ارسال پیام</h2>
+                <div className="bg-white border border-gray-200 rounded-lg p-8">
+                  <h2 className="text-3xl font-bold text-black mb-8">ارسال پیام</h2>
                   {success && (
                     <motion.div
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800"
+                      className="mb-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-black"
                     >
-                      پیام شما با موفقیت ارسال شد!
+                      ✓ پیام شما با موفقیت ارسال شد! ما در اسرع وقت با شما تماس خواهیم گرفت.
+                    </motion.div>
+                  )}
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mb-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-black"
+                    >
+                      ✗ {error}
                     </motion.div>
                   )}
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                        نام و نام خانوادگی
+                      <label htmlFor="name" className="block text-sm font-medium text-black mb-2">
+                        نام و نام خانوادگی <span className="text-gray-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -132,12 +153,13 @@ export default function ContactPage() {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        placeholder="نام و نام خانوادگی خود را وارد کنید"
                       />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                        ایمیل
+                      <label htmlFor="email" className="block text-sm font-medium text-black mb-2">
+                        ایمیل <span className="text-gray-500">*</span>
                       </label>
                       <input
                         type="email"
@@ -145,11 +167,12 @@ export default function ContactPage() {
                         required
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        placeholder="example@email.com"
                       />
                     </div>
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="phone" className="block text-sm font-medium text-black mb-2">
                         تلفن
                       </label>
                       <input
@@ -157,12 +180,13 @@ export default function ContactPage() {
                         id="phone"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        placeholder="09123456789"
                       />
                     </div>
                     <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                        موضوع
+                      <label htmlFor="subject" className="block text-sm font-medium text-black mb-2">
+                        موضوع <span className="text-gray-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -170,12 +194,13 @@ export default function ContactPage() {
                         required
                         value={formData.subject}
                         onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        placeholder="موضوع پیام خود را وارد کنید"
                       />
                     </div>
                     <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                        پیام
+                      <label htmlFor="message" className="block text-sm font-medium text-black mb-2">
+                        پیام <span className="text-gray-500">*</span>
                       </label>
                       <textarea
                         id="message"
@@ -183,23 +208,19 @@ export default function ContactPage() {
                         rows={5}
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all resize-none"
+                        placeholder="پیام خود را بنویسید..."
                       />
                     </div>
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                    <AnimatedButton
+                      type="submit"
+                      variant="primary"
+                      size="lg"
+                      className="w-full"
+                      onClick={() => {}}
                     >
-                      <AnimatedButton
-                        type="submit"
-                        variant="primary"
-                        size="lg"
-                        className="w-full"
-                        onClick={() => {}}
-                      >
-                        {loading ? 'در حال ارسال...' : 'ارسال پیام'}
-                      </AnimatedButton>
-                    </motion.div>
+                      {loading ? 'در حال ارسال...' : 'ارسال پیام'}
+                    </AnimatedButton>
                   </form>
                 </div>
               </SlideIn>

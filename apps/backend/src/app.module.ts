@@ -10,6 +10,10 @@ import { CarsModule } from './cars/cars.module';
 import { ArticlesModule } from './articles/articles.module';
 import { NewsModule } from './news/news.module';
 import { ContactModule } from './contact/contact.module';
+import { TicketsModule } from './tickets/tickets.module';
+import { ChatModule } from './chat/chat.module';
+import { FeedbacksModule } from './feedbacks/feedbacks.module';
+import { PagesModule } from './pages/pages.module';
 
 @Module({
   imports: [
@@ -34,6 +38,10 @@ import { ContactModule } from './contact/contact.module';
     ArticlesModule,
     NewsModule,
     ContactModule,
+    TicketsModule,
+    ChatModule,
+    FeedbacksModule,
+    PagesModule,
   ],
 })
 export class AppModule {}

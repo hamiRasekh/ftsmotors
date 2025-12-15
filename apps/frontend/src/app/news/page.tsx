@@ -34,13 +34,13 @@ export default async function NewsPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-white pt-20">
+      <main className="min-h-screen bg-white pt-16">
         {/* Hero Section */}
-        <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
+        <section className="py-20 bg-gray-50 border-b border-gray-200">
           <div className="container mx-auto px-4">
             <FadeIn>
               <div className="text-center mb-12">
-                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                <h1 className="text-5xl md:text-6xl font-bold text-black mb-6">
                   اخبار
                 </h1>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -55,23 +55,23 @@ export default async function NewsPage() {
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             {newsData.data && newsData.data.length > 0 ? (
-              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {newsData.data.map((newsItem: any, index: number) => (
                   <StaggerItem key={newsItem.id}>
                     <Link href={`/news/${newsItem.slug}`} className="block group">
-                      <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-full">
+                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:bg-gray-50 transition-all duration-300 h-full">
                         {newsItem.image && (
                           <div className="aspect-video relative overflow-hidden">
                             <Image
                               src={newsItem.image}
                               alt={newsItem.title}
                               fill
-                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                              className="object-cover group-hover:scale-105 transition-transform duration-500 grayscale"
                             />
                           </div>
                         )}
                         <div className="p-6">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                          <h3 className="text-xl font-bold text-black mb-2 group-hover:text-gray-700 transition-colors line-clamp-2">
                             {newsItem.title}
                           </h3>
                           {newsItem.excerpt && (
@@ -79,7 +79,7 @@ export default async function NewsPage() {
                               {newsItem.excerpt}
                             </p>
                           )}
-                          <span className="text-blue-600 font-semibold text-sm inline-flex items-center gap-2">
+                          <span className="text-black font-semibold text-sm inline-flex items-center gap-2">
                             ادامه مطلب
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

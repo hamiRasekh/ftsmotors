@@ -2,6 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { FadeIn } from '@/components/animations/FadeIn';
+import { StaggerContainer } from '@/components/animations/StaggerContainer';
+import { StaggerItem } from '@/components/animations/StaggerItem';
+import { CarCard } from '@/components/ui/CarCard';
 import { api } from '@/lib/api';
 
 export async function generateMetadata({
@@ -39,9 +43,16 @@ export default async function CategoryPage({ params }: { params: { category: str
     return (
       <>
         <Header />
-        <main className="min-h-screen">
+        <main className="min-h-screen bg-white pt-16">
           <div className="container mx-auto px-4 py-16">
-            <h1 className="text-4xl font-bold mb-8">دسته‌بندی یافت نشد</h1>
+            <FadeIn>
+              <div className="text-center">
+                <h1 className="text-4xl font-bold text-black mb-4">دسته‌بندی یافت نشد</h1>
+                <Link href="/cars" className="text-black hover:text-gray-700 underline">
+                  بازگشت به لیست خودروها
+                </Link>
+              </div>
+            </FadeIn>
           </div>
         </main>
         <Footer />
@@ -52,50 +63,64 @@ export default async function CategoryPage({ params }: { params: { category: str
   return (
     <>
       <Header />
-      <main className="min-h-screen">
-        <div className="container mx-auto px-4 py-16">
-          <h1 className="text-4xl font-bold mb-4">{category.name}</h1>
-          {category.description && (
-            <p className="text-lg text-muted-foreground mb-8">{category.description}</p>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cars.data?.map((car: any) => (
-              <Link
-                key={car.id}
-                href={`/cars/${category.slug}/${car.slug}`}
-                className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-              >
-                {car.images && car.images.length > 0 && (
-                  <div className="aspect-video bg-muted">
-                    <img
-                      src={car.images[0]}
-                      alt={car.brand + ' ' + car.model}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold mb-2">
-                    {car.brand} {car.model}
-                  </h3>
-                  {car.description && (
-                    <p className="text-sm line-clamp-2">{car.description}</p>
-                  )}
-                </div>
-              </Link>
-            ))}
+      <main className="min-h-screen bg-white pt-16">
+        {/* Hero Section */}
+        <section className="py-20 bg-gray-50 border-b border-gray-200">
+          <div className="container mx-auto px-4">
+            <FadeIn>
+              <nav className="mb-6 text-sm text-gray-600">
+                <Link href="/" className="hover:text-black transition-colors">خانه</Link>
+                {' / '}
+                <Link href="/cars" className="hover:text-black transition-colors">خودروها</Link>
+                {' / '}
+                <span className="text-black">{category.name}</span>
+              </nav>
+              <h1 className="text-4xl md:text-5xl font-bold text-black mb-4">{category.name}</h1>
+              {category.description && (
+                <p className="text-xl text-gray-600 max-w-3xl leading-relaxed">{category.description}</p>
+              )}
+            </FadeIn>
           </div>
+        </section>
 
-          {cars.data?.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">خودرویی در این دسته‌بندی یافت نشد.</p>
-            </div>
-          )}
-        </div>
+        {/* Cars Grid */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            {cars.data && cars.data.length > 0 ? (
+              <>
+                <FadeIn>
+                  <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-3xl font-bold text-black">خودروهای این دسته‌بندی</h2>
+                    <span className="text-gray-600">
+                      {cars.total} خودرو
+                    </span>
+                  </div>
+                </FadeIn>
+                <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {cars.data.map((car: any, index: number) => (
+                    <StaggerItem key={car.id}>
+                      <CarCard car={car} index={index} />
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+              </>
+            ) : (
+              <FadeIn>
+                <div className="text-center py-20">
+                  <p className="text-xl text-gray-600 mb-4">خودرویی در این دسته‌بندی یافت نشد.</p>
+                  <Link
+                    href="/cars"
+                    className="inline-block px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                  >
+                    مشاهده همه خودروها
+                  </Link>
+                </div>
+              </FadeIn>
+            )}
+          </div>
+        </section>
       </main>
       <Footer />
     </>
   );
 }
-

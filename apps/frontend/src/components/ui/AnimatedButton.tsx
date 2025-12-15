@@ -11,6 +11,7 @@ interface AnimatedButtonProps {
   variant?: 'primary' | 'secondary' | 'outline';
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export function AnimatedButton({
@@ -20,13 +21,14 @@ export function AnimatedButton({
   variant = 'primary',
   className = '',
   size = 'md',
+  type = 'button',
 }: AnimatedButtonProps) {
   const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-300 relative overflow-hidden';
   
   const variants = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl',
-    secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
-    outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white',
+    primary: 'bg-black text-white hover:bg-gray-800',
+    secondary: 'bg-gray-100 text-black hover:bg-gray-200',
+    outline: 'border-2 border-black text-black hover:bg-black hover:text-white',
   };
 
   const sizes = {
@@ -37,17 +39,13 @@ export function AnimatedButton({
 
   const buttonContent = (
     <motion.button
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      type={type}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
     >
       <span className="relative z-10">{children}</span>
-      <motion.span
-        className="absolute inset-0 bg-white opacity-0"
-        whileHover={{ opacity: 0.1 }}
-        transition={{ duration: 0.3 }}
-      />
     </motion.button>
   );
 
@@ -61,4 +59,3 @@ export function AnimatedButton({
 
   return buttonContent;
 }
-

@@ -39,7 +39,7 @@ const features = [
 
 export function Features() {
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -48,7 +48,7 @@ export function Features() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
             چرا FTS Motors؟
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -56,15 +56,15 @@ export function Features() {
           </p>
         </motion.div>
 
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
             <StaggerItemComponent key={index}>
               <motion.div
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100"
+                whileHover={{ y: -5 }}
+                className="bg-white border border-gray-200 rounded-lg p-6 hover:bg-gray-50 transition-all duration-300"
               >
-                <div className="text-5xl mb-4">{feature.icon}</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{feature.title}</h3>
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-bold text-black mb-2">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
               </motion.div>
             </StaggerItemComponent>
@@ -74,4 +74,3 @@ export function Features() {
     </section>
   );
 }
-

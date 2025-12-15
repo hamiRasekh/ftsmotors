@@ -38,7 +38,7 @@ export function Testimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
             نظرات مشتریان
           </h2>
           <p className="text-xl text-gray-600">آنچه مشتریان ما می‌گویند</p>
@@ -74,14 +74,14 @@ export function Testimonials() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-                className="bg-gray-50 rounded-xl p-8 h-full shadow-lg hover:shadow-2xl transition-all duration-300"
+                whileHover={{ y: -5 }}
+                className="bg-white border border-gray-200 rounded-lg p-8 h-full hover:bg-gray-50 transition-all duration-300"
               >
                 <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <svg
                       key={i}
-                      className="w-5 h-5 text-yellow-400"
+                      className="w-5 h-5 text-gray-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -91,7 +91,7 @@ export function Testimonials() {
                 </div>
                 <p className="text-gray-700 mb-6 leading-relaxed">{testimonial.content}</p>
                 <div>
-                  <div className="font-bold text-gray-900">{testimonial.name}</div>
+                  <div className="font-bold text-black">{testimonial.name}</div>
                   <div className="text-sm text-gray-600">{testimonial.role}</div>
                 </div>
               </motion.div>
@@ -102,4 +102,3 @@ export function Testimonials() {
     </section>
   );
 }
-

@@ -22,11 +22,10 @@ export function AnimatedCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.6, delay, ease: 'easeOut' }}
-      whileHover={hover ? { y: -10, scale: 1.02 } : {}}
-      className={`bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ${className}`}
+      whileHover={hover ? { y: -5 } : {}}
+      className={`bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-300 ${className}`}
     >
       {children}
     </motion.div>
   );
 }
-

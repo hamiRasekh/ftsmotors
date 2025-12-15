@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AnimatedButton } from './ui/AnimatedButton';
 import { Sidebar } from './layout/Sidebar';
 
 export function Header() {
@@ -34,101 +33,70 @@ export function Header() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/40 backdrop-blur-md shadow-lg' : 'bg-white/30 backdrop-blur-sm'
+      className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 transition-all duration-300 ${
+        scrolled ? 'shadow-sm' : ''
       }`}
     >
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-3">
         <nav className="flex items-center justify-between">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Link href="/" className="flex items-center gap-3">
-              <Image
-                src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-                alt="FTS Motors Logo"
-                width={50}
-                height={50}
-                className="object-contain"
-              />
-              <span className="text-2xl font-bold text-white drop-shadow-lg">
-                FTS Motors
-              </span>
-            </Link>
-          </motion.div>
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/photo_2025-12-08_17-46-46-removebg-preview.png"
+              alt="FTS Motors Logo"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
+            <span className="text-xl font-bold text-black">FTS Motors</span>
+          </Link>
 
           {/* Desktop Menu */}
           <ul className="hidden md:flex gap-6 items-center">
-            {navItems.map((item, index) => (
-              <motion.li
-                key={item.href}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-              >
+            {navItems.map((item) => (
+              <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="relative text-white font-medium transition-colors group drop-shadow-lg"
+                  className="text-gray-700 hover:text-black font-medium transition-colors"
                 >
-                  <span className="relative z-10">{item.label}</span>
-                  <motion.span
-                    className="absolute bottom-0 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300"
-                    whileHover={{ width: '100%' }}
-                  />
+                  {item.label}
                 </Link>
-              </motion.li>
+              </li>
             ))}
-            <motion.li
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.6 }}
-            >
-              <motion.button
+            <li>
+              <button
                 onClick={() => setSidebarOpen(true)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 text-white hover:text-blue-200 transition-colors drop-shadow-lg"
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 aria-label="منوی کناری"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
-              </motion.button>
-            </motion.li>
-            <motion.li
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.7 }}
-            >
-              <AnimatedButton href="/contact" variant="primary" size="md">
+              </button>
+            </li>
+            <li>
+              <Link
+                href="/contact"
+                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
+              >
                 دریافت مشاوره
-              </AnimatedButton>
-            </motion.li>
+              </Link>
+            </li>
           </ul>
 
           {/* Mobile Menu Button */}
-          <motion.button
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-white drop-shadow-lg"
+            className="md:hidden p-2 text-gray-700"
             aria-label="منو"
-            whileTap={{ scale: 0.9 }}
           >
-            <motion.svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
-              transition={{ duration: 0.3 }}
-            >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {mobileMenuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               )}
-            </motion.svg>
-          </motion.button>
+            </svg>
+          </button>
         </nav>
 
         {/* Mobile Menu */}
@@ -139,34 +107,29 @@ export function Header() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden mt-4 pb-4 border-t border-white/30 overflow-hidden"
+              className="md:hidden mt-4 pb-4 border-t border-gray-200 overflow-hidden"
             >
               <ul className="flex flex-col gap-4 pt-4">
-                {navItems.map((item, index) => (
-                  <motion.li
-                    key={item.href}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                  >
+                {navItems.map((item) => (
+                  <li key={item.href}>
                     <Link
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="text-white hover:text-blue-200 transition-colors font-medium block py-2 drop-shadow-lg"
+                      className="text-gray-700 hover:text-black transition-colors font-medium block py-2"
                     >
                       {item.label}
                     </Link>
-                  </motion.li>
+                  </li>
                 ))}
-                <motion.li
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: navItems.length * 0.1 }}
-                >
-                  <AnimatedButton href="/contact" variant="primary" size="md" className="w-full">
+                <li>
+                  <Link
+                    href="/contact"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium inline-block text-center w-full"
+                  >
                     دریافت مشاوره
-                  </AnimatedButton>
-                </motion.li>
+                  </Link>
+                </li>
               </ul>
             </motion.div>
           )}

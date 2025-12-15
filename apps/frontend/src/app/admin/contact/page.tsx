@@ -61,49 +61,51 @@ export default function AdminContactPage() {
   };
 
   if (loading) {
-    return <div>در حال بارگذاری...</div>;
+    return <div className="text-gray-600">در حال بارگذاری...</div>;
   }
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">پیام‌های تماس</h1>
+      <h1 className="text-3xl font-bold text-black mb-8">پیام‌های تماس</h1>
 
       <div className="space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`border rounded-lg p-6 ${!message.read ? 'bg-blue-50' : ''}`}
+            className={`border border-gray-200 rounded-lg p-6 ${
+              !message.read ? 'bg-gray-50' : 'bg-white'
+            }`}
           >
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="text-xl font-semibold">{message.subject}</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="text-xl font-semibold text-black">{message.subject}</h3>
+                <p className="text-sm text-gray-600">
                   از: {message.name} ({message.email})
                   {message.phone && ` - ${message.phone}`}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   {new Date(message.createdAt).toLocaleDateString('fa-IR')}
                 </p>
               </div>
               {!message.read && (
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
+                <span className="px-2 py-1 bg-black text-white rounded text-sm">
                   جدید
                 </span>
               )}
             </div>
-            <p className="mb-4">{message.message}</p>
+            <p className="mb-4 text-gray-700">{message.message}</p>
             <div className="flex gap-2">
               {!message.read && (
                 <button
                   onClick={() => handleMarkAsRead(message.id)}
-                  className="px-3 py-1 bg-secondary rounded hover:bg-secondary/90"
+                  className="px-3 py-1 bg-gray-200 text-black rounded hover:bg-gray-300 transition-colors"
                 >
                   علامت‌گذاری به عنوان خوانده شده
                 </button>
               )}
               <button
                 onClick={() => handleDelete(message.id)}
-                className="px-3 py-1 bg-destructive text-destructive-foreground rounded hover:bg-destructive/90"
+                className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
               >
                 حذف
               </button>
@@ -113,11 +115,10 @@ export default function AdminContactPage() {
 
         {messages.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">پیامی یافت نشد.</p>
+            <p className="text-gray-600">پیامی یافت نشد.</p>
           </div>
         )}
       </div>
     </div>
   );
 }
-

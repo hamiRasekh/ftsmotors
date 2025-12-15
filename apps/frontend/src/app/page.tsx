@@ -9,7 +9,6 @@ import { Features } from '@/components/sections/Features';
 import { Stats } from '@/components/sections/Stats';
 import { Testimonials } from '@/components/sections/Testimonials';
 import { CarCard } from '@/components/ui/CarCard';
-import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { FadeIn } from '@/components/animations/FadeIn';
 import { SlideIn } from '@/components/animations/SlideIn';
 import { StaggerContainer } from '@/components/animations/StaggerContainer';
@@ -49,14 +48,14 @@ export default async function HomePage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white pt-16">
         {/* Hero Slider */}
         <section className="relative">
           <HeroSlider />
         </section>
 
         {/* Brand Logos Slider */}
-        <section className="relative bg-white py-12 md:py-16 overflow-hidden">
+        <section className="relative bg-white py-12 md:py-16 overflow-hidden border-b border-gray-200">
           <div className="container mx-auto px-4">
             <div className="w-full overflow-hidden">
               <LogoLoop
@@ -92,7 +91,7 @@ export default async function HomePage() {
             <div className="container mx-auto px-4">
               <FadeIn>
                 <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                  <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
                     خودروهای برتر
                   </h2>
                   <p className="text-xl text-gray-600">
@@ -101,7 +100,7 @@ export default async function HomePage() {
                 </div>
               </FadeIn>
 
-              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 {cars.data.map((car: any, index: number) => (
                   <StaggerItem key={car.id}>
                     <CarCard car={car} index={index} />
@@ -111,9 +110,12 @@ export default async function HomePage() {
 
               <FadeIn delay={0.3}>
                 <div className="text-center">
-                  <AnimatedButton href="/cars" variant="primary" size="lg">
+                  <Link
+                    href="/cars"
+                    className="inline-block px-8 py-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold text-lg"
+                  >
                     مشاهده همه خودروها
-                  </AnimatedButton>
+                  </Link>
                 </div>
               </FadeIn>
             </div>
@@ -122,11 +124,11 @@ export default async function HomePage() {
 
         {/* Articles Section */}
         {articles.data && articles.data.length > 0 && (
-          <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+          <section className="py-20 bg-gray-50">
             <div className="container mx-auto px-4">
               <SlideIn direction="up">
                 <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                  <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
                     آخرین مقالات
                   </h2>
                   <p className="text-xl text-gray-600">
@@ -135,33 +137,36 @@ export default async function HomePage() {
                 </div>
               </SlideIn>
 
-              <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 {articles.data.map((article: any, index: number) => (
                   <StaggerItem key={article.id}>
-                    <Link
-                      href={`/blog/${article.slug}`}
-                      className="block group"
-                    >
-                      <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+                    <Link href={`/blog/${article.slug}`} className="block group">
+                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:bg-gray-50 transition-all duration-300 h-full">
                         {article.image && (
                           <div className="aspect-video relative overflow-hidden">
                             <Image
                               src={article.image}
                               alt={article.title}
                               fill
-                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                              className="object-cover group-hover:scale-105 transition-transform duration-500 grayscale"
                             />
                           </div>
                         )}
                         <div className="p-6">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                          <h3 className="text-xl font-bold text-black mb-2 group-hover:text-gray-700 transition-colors line-clamp-2">
                             {article.title}
                           </h3>
                           {article.excerpt && (
-                            <p className="text-gray-600 line-clamp-2 text-sm">
+                            <p className="text-gray-600 line-clamp-3 text-sm mb-4">
                               {article.excerpt}
                             </p>
                           )}
+                          <span className="text-black font-semibold text-sm inline-flex items-center gap-2">
+                            ادامه مطلب
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </span>
                         </div>
                       </div>
                     </Link>
@@ -171,9 +176,12 @@ export default async function HomePage() {
 
               <FadeIn delay={0.3}>
                 <div className="text-center">
-                  <AnimatedButton href="/blog" variant="outline" size="lg">
+                  <Link
+                    href="/blog"
+                    className="inline-block px-8 py-4 border-2 border-black text-black rounded-lg hover:bg-black hover:text-white transition-colors font-semibold text-lg"
+                  >
                     مشاهده همه مقالات
-                  </AnimatedButton>
+                  </Link>
                 </div>
               </FadeIn>
             </div>
@@ -186,7 +194,7 @@ export default async function HomePage() {
             <div className="container mx-auto px-4">
               <SlideIn direction="up">
                 <div className="text-center mb-16">
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                  <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
                     آخرین اخبار
                   </h2>
                   <p className="text-xl text-gray-600">
@@ -195,33 +203,36 @@ export default async function HomePage() {
                 </div>
               </SlideIn>
 
-              <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 {news.data.map((newsItem: any, index: number) => (
                   <StaggerItem key={newsItem.id}>
-                    <Link
-                      href={`/news/${newsItem.slug}`}
-                      className="block group"
-                    >
-                      <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+                    <Link href={`/news/${newsItem.slug}`} className="block group">
+                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:bg-gray-50 transition-all duration-300 h-full">
                         {newsItem.image && (
                           <div className="aspect-video relative overflow-hidden">
                             <Image
                               src={newsItem.image}
                               alt={newsItem.title}
                               fill
-                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                              className="object-cover group-hover:scale-105 transition-transform duration-500 grayscale"
                             />
                           </div>
                         )}
                         <div className="p-6">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                          <h3 className="text-xl font-bold text-black mb-2 group-hover:text-gray-700 transition-colors line-clamp-2">
                             {newsItem.title}
                           </h3>
                           {newsItem.excerpt && (
-                            <p className="text-gray-600 line-clamp-2 text-sm">
+                            <p className="text-gray-600 line-clamp-3 text-sm mb-4">
                               {newsItem.excerpt}
                             </p>
                           )}
+                          <span className="text-black font-semibold text-sm inline-flex items-center gap-2">
+                            ادامه مطلب
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </span>
                         </div>
                       </div>
                     </Link>
@@ -231,9 +242,12 @@ export default async function HomePage() {
 
               <FadeIn delay={0.3}>
                 <div className="text-center">
-                  <AnimatedButton href="/news" variant="primary" size="lg">
+                  <Link
+                    href="/news"
+                    className="inline-block px-8 py-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold text-lg"
+                  >
                     مشاهده همه اخبار
-                  </AnimatedButton>
+                  </Link>
                 </div>
               </FadeIn>
             </div>
@@ -244,22 +258,28 @@ export default async function HomePage() {
         <Testimonials />
 
         {/* CTA Section */}
-        <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+        <section className="py-20 bg-black text-white">
           <div className="container mx-auto px-4 text-center">
             <FadeIn>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 آماده برای شروع؟
               </h2>
-              <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
                 با ما تماس بگیرید و از مشاوره رایگان ما بهره‌مند شوید
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <AnimatedButton href="/contact" variant="secondary" size="lg">
+                <Link
+                  href="/contact"
+                  className="inline-block px-8 py-4 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors font-semibold text-lg"
+                >
                   تماس با ما
-                </AnimatedButton>
-                <AnimatedButton href="/cars" variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600">
+                </Link>
+                <Link
+                  href="/cars"
+                  className="inline-block px-8 py-4 border-2 border-white text-white rounded-lg hover:bg-white hover:text-black transition-colors font-semibold text-lg"
+                >
                   مشاهده خودروها
-                </AnimatedButton>
+                </Link>
               </div>
             </FadeIn>
           </div>

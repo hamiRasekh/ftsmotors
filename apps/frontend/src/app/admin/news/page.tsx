@@ -98,7 +98,7 @@ export default function AdminNewsPage() {
                 <td className="px-4 py-3">{item.title}</td>
                 <td className="px-4 py-3">
                   {item.published ? (
-                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">
+                    <span className="px-2 py-1 bg-black text-white rounded text-sm">
                       منتشر شده
                     </span>
                   ) : (
