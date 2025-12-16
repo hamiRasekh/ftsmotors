@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { HeroSlider } from '@/components/sections/HeroSlider';
@@ -7,11 +8,34 @@ import LogoLoop from '@/components/sections/LogoLoop';
 import { Features } from '@/components/sections/Features';
 import { Stats } from '@/components/sections/Stats';
 import { Testimonials } from '@/components/sections/Testimonials';
-import { CarPriceSection } from '@/components/sections/CarPriceSection';
-import { ImportedCarsSection } from '@/components/sections/ImportedCarsSection';
 import { MasonryGallery } from '@/components/sections/MasonryGallery';
 import { FadeIn } from '@/components/animations/FadeIn';
 import { api } from '@/lib/api';
+
+// Dynamic import for 3D components to avoid SSR issues
+const CarPriceSection = dynamic(
+  () => import('@/components/sections/CarPriceSection').then(mod => ({ default: mod.CarPriceSection })).catch(() => ({ default: () => null })),
+  {
+    ssr: false,
+    loading: () => (
+      <section className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-gray-400">در حال بارگذاری...</div>
+      </section>
+    ),
+  }
+);
+
+const ImportedCarsSection = dynamic(
+  () => import('@/components/sections/ImportedCarsSection').then(mod => ({ default: mod.ImportedCarsSection })).catch(() => ({ default: () => null })),
+  {
+    ssr: false,
+    loading: () => (
+      <section className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-gray-400">در حال بارگذاری...</div>
+      </section>
+    ),
+  }
+);
 
 export const metadata: Metadata = {
   title: 'خانه',

@@ -73,10 +73,10 @@ export function ImportedCarsSection({ className = '' }: ImportedCarsSectionProps
               modelPath="/glb/kia_sportage.glb"
               rotation={rotation1}
               autoRotate={false}
-              scale={1}
-              position={[0, -1, 0]}
+              scale={1.2}
+              position={[0, -0.5, 0]}
               className="w-full h-full"
-              cameraPosition={[0, 2, 8]}
+              cameraPosition={[0, 1.5, 6]}
             />
             <motion.div
               style={{ opacity: carNameOpacity }}
@@ -96,10 +96,10 @@ export function ImportedCarsSection({ className = '' }: ImportedCarsSectionProps
               modelPath="/glb/kia_optima_k5.glb"
               rotation={rotation2}
               autoRotate={false}
-              scale={1}
-              position={[0, -1, 0]}
+              scale={1.2}
+              position={[0, -0.5, 0]}
               className="w-full h-full"
-              cameraPosition={[0, 2, 8]}
+              cameraPosition={[0, 1.5, 6]}
             />
             <motion.div
               style={{ opacity: carNameOpacity }}

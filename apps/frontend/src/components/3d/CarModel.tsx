@@ -1,9 +1,9 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
-import { Group } from 'three';
+import { Group, Box3, Vector3 } from 'three';
 
 interface CarModelProps {
   modelPath: string;
@@ -26,6 +26,23 @@ export function CarModel({
   const groupRef = useRef<Group>(null);
   const rotationRef = useRef(rotation);
 
+  // Center and scale the model
+  const centeredScene = useMemo(() => {
+    const clonedScene = scene.clone();
+    const box = new Box3().setFromObject(clonedScene);
+    const center = box.getCenter(new Vector3());
+    const size = box.getSize(new Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scaleFactor = 2.5 / maxDim; // Scale to fit in a 2.5 unit box
+
+    clonedScene.position.x = -center.x;
+    clonedScene.position.y = -center.y;
+    clonedScene.position.z = -center.z;
+    clonedScene.scale.multiplyScalar(scaleFactor);
+
+    return clonedScene;
+  }, [scene]);
+
   // Update rotation ref when prop changes
   useEffect(() => {
     rotationRef.current = rotation;
@@ -45,7 +62,7 @@ export function CarModel({
     // @ts-ignore
     <group ref={groupRef} scale={scale} position={position}>
       {/* @ts-ignore */}
-      <primitive object={scene} />
+      <primitive object={centeredScene} />
     </group>
   );
 }

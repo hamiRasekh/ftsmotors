@@ -123,10 +123,10 @@ export function CarPriceSection({
                 modelPath={modelPath}
                 rotation={rotation}
                 autoRotate={false}
-                scale={1}
-                position={[0, -1, 0]}
+                scale={1.2}
+                position={[0, -0.5, 0]}
                 className="w-full h-full"
-                cameraPosition={[0, 2, 8]}
+                cameraPosition={[0, 1.5, 6]}
               />
             )}
           </motion.div>
