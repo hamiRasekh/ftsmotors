@@ -13,6 +13,18 @@ import { FadeIn } from '@/components/animations/FadeIn';
 import { api } from '@/lib/api';
 
 // Dynamic import for 3D components to avoid SSR issues
+const Car3DSlider = dynamic(
+  () => import('@/components/sections/Car3DSlider').then(mod => ({ default: mod.Car3DSlider })).catch(() => ({ default: () => null })),
+  {
+    ssr: false,
+    loading: () => (
+      <section className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-gray-400">در حال بارگذاری...</div>
+      </section>
+    ),
+  }
+);
+
 const CarPriceSection = dynamic(
   () => import('@/components/sections/CarPriceSection').then(mod => ({ default: mod.CarPriceSection })).catch(() => ({ default: () => null })),
   {
@@ -73,6 +85,9 @@ export default async function HomePage() {
         <section className="relative">
           <HeroSlider />
         </section>
+
+        {/* 3D Car Slider with Scroll Animation */}
+        <Car3DSlider />
 
         {/* Brand Logos Slider */}
         <section className="relative bg-white py-12 md:py-16 overflow-hidden border-b border-gray-200">

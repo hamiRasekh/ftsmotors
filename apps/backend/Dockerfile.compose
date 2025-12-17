@@ -1,0 +1,44 @@
+FROM node:18-alpine
+
+# Install OpenSSL and other dependencies for Prisma and PostgreSQL client
+RUN apk add --no-cache openssl openssl-dev libc6-compat python3 make g++ postgresql-client netcat-openbsd
+
+# Set Prisma binary target
+ENV PRISMA_CLI_BINARY_TARGETS=linux-musl-openssl-1.1.x
+
+WORKDIR /app
+
+# Copy root package files
+COPY package.json package-lock.json* ./
+COPY turbo.json ./
+
+# Copy shared package
+COPY packages/shared ./packages/shared
+
+# Copy backend app
+COPY apps/backend ./apps/backend
+
+# Install root dependencies
+RUN npm install --legacy-peer-deps
+
+# Install shared package dependencies
+WORKDIR /app/packages/shared
+RUN npm install --legacy-peer-deps
+
+# Install backend dependencies
+WORKDIR /app/apps/backend
+RUN npm install --legacy-peer-deps
+
+# Copy entrypoint script
+COPY apps/backend/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Expose port
+EXPOSE 4000
+
+# Set working directory
+WORKDIR /app/apps/backend
+
+# Use entrypoint script
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
