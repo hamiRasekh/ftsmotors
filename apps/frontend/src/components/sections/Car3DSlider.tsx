@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent, useReducedMotion } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Car3DViewer } from '@/components/3d/Car3DViewer';
 
 interface CarSlide {
@@ -73,46 +73,306 @@ export function Car3DSlider() {
   const shouldReduceMotion = useReducedMotion();
   const totalSlides = carSlides.length;
 
-  // Use Framer Motion's scroll tracking for this section only
-  // 'start start' = when section top reaches viewport top (sticky starts)
-  // 'end start' = when section bottom reaches viewport top (sticky ends)
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start start', 'end start'],
-  });
+  // Internal state refs to prevent infinite loops and jitter
+  const progressRef = useRef(0);
+  const isLockedRef = useRef(false);
+  const lockedScrollYRef = useRef(0);
+  const rafIdRef = useRef<number | null>(null);
+  const lastTouchYRef = useRef(0);
 
-  // Derive rotation from scroll progress using useTransform
-  // rotationRadians = progress * (totalSlides - 1) * (Math.PI / 2)
-  const rotationMotionValue = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, (totalSlides - 1) * (Math.PI / 2)]
-  );
-
-  // Subscribe to rotation MotionValue and update state
-  useEffect(() => {
-    const unsubscribe = rotationMotionValue.on('change', (latest) => {
-      setRotationValue(latest);
-    });
-    return unsubscribe;
-  }, [rotationMotionValue]);
-
-  // Derive currentSlide from scrollYProgress with stable mapping
-  // Map progress (0..1) to slide index (0..totalSlides-1)
-  // Use Math.round for stable mapping to prevent flickering
-  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
-    const progress = clamp(latest, 0, 1);
+  // Update slide and rotation from internal progress
+  const updateFromProgress = useCallback((progress: number) => {
+    progressRef.current = progress;
     
-    // Stable mapping: each slide gets equal portion of progress
-    // For 4 slides: [0-0.25) -> 0, [0.25-0.5) -> 1, [0.5-0.75) -> 2, [0.75-1] -> 3
-    // Math.round ensures stable transitions at boundaries
+    // Compute slide index: stable mapping using Math.round
     const slideIndex = clamp(Math.round(progress * (totalSlides - 1)), 0, totalSlides - 1);
     
-    // Only update state when index actually changes to prevent unnecessary re-renders
-    if (slideIndex !== currentSlide) {
-      setCurrentSlide(slideIndex);
+    // Compute rotation: continuous rotation based on progress
+    const rotation = progress * (totalSlides - 1) * (Math.PI / 2);
+    
+    // Update state only when values change to prevent unnecessary re-renders
+    setCurrentSlide((prev) => {
+      if (prev !== slideIndex) {
+        return slideIndex;
+      }
+      return prev;
+    });
+    
+    setRotationValue(rotation);
+  }, [totalSlides]);
+
+  // Lock body scroll
+  const lockBodyScroll = useCallback(() => {
+    if (isLockedRef.current) return;
+    
+    const scrollY = window.scrollY;
+    lockedScrollYRef.current = scrollY;
+    isLockedRef.current = true;
+    
+    const body = document.body;
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.left = '0';
+    body.style.right = '0';
+    body.style.width = '100%';
+    body.style.overflow = 'hidden';
+    
+    // Prevent rubber band on mobile
+    body.style.overscrollBehavior = 'none';
+  }, []);
+
+  // Unlock body scroll
+  const unlockBodyScroll = useCallback(() => {
+    if (!isLockedRef.current) return;
+    
+    isLockedRef.current = false;
+    const scrollY = lockedScrollYRef.current;
+    
+    const body = document.body;
+    body.style.position = '';
+    body.style.top = '';
+    body.style.left = '';
+    body.style.right = '';
+    body.style.width = '';
+    body.style.overflow = '';
+    body.style.overscrollBehavior = '';
+    
+    // Restore scroll position - use requestAnimationFrame to ensure it happens after style changes
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: scrollY,
+        behavior: 'auto'
+      });
+    });
+  }, []);
+
+  // Check if section is in pinned/active state
+  const checkPinnedState = useCallback(() => {
+    if (!sectionRef.current) return false;
+    
+    const rect = sectionRef.current.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    
+    // Section is pinned when: top <= 0 and bottom >= viewport height
+    return rect.top <= 0 && rect.bottom >= viewportHeight;
+  }, []);
+
+  // Handle scroll input (wheel, touch, keyboard)
+  const handleScrollInput = useCallback((delta: number) => {
+    if (!sectionRef.current || !isLockedRef.current) return;
+    
+    const currentProgress = progressRef.current;
+    const sectionHeight = sectionRef.current.offsetHeight;
+    const viewportHeight = window.innerHeight;
+    const maxScroll = sectionHeight - viewportHeight;
+    
+    // Calculate sensitivity - increased for faster slide changes
+    // Higher sensitivity = less scroll needed to change slides
+    // Direct calculation based on viewport for responsive behavior
+    const sensitivity = shouldReduceMotion ? 0.5 : 0.35;
+    // Convert delta directly to progress change (more responsive)
+    const progressDelta = (delta / viewportHeight) * sensitivity;
+    
+    let newProgress = clamp(currentProgress + progressDelta, 0, 1);
+    
+    // Unlock conditions
+    if (currentProgress === 0 && delta < 0) {
+      // At start, scrolling up -> unlock and scroll to section top
+      const sectionTop = sectionRef.current.offsetTop;
+      
+      // Update locked scroll position before unlocking
+      lockedScrollYRef.current = sectionTop;
+      unlockBodyScroll();
+      
+      // Scroll to section top to continue normal scrolling upward
+      requestAnimationFrame(() => {
+        window.scrollTo({
+          top: sectionTop,
+          behavior: 'auto'
+        });
+      });
+      return;
     }
-  });
+    
+    if (currentProgress === 1 && delta > 0) {
+      // At end, scrolling down -> unlock and scroll just past section
+      const sectionTop = sectionRef.current.offsetTop;
+      const sectionHeight = sectionRef.current.offsetHeight;
+      const targetScroll = sectionTop + sectionHeight;
+      
+      // Update locked scroll position before unlocking
+      lockedScrollYRef.current = targetScroll;
+      unlockBodyScroll();
+      
+      // Scroll to just past the section to continue normal scrolling
+      requestAnimationFrame(() => {
+        window.scrollTo({
+          top: targetScroll,
+          behavior: 'auto'
+        });
+      });
+      return;
+    }
+    
+    // Update progress and derived values
+    updateFromProgress(newProgress);
+  }, [shouldReduceMotion, unlockBodyScroll, updateFromProgress]);
+
+  // Wheel handler with RAF throttling
+  const handleWheel = useCallback((e: WheelEvent) => {
+    if (!isLockedRef.current) return;
+    
+    e.preventDefault();
+    
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+    }
+    
+    rafIdRef.current = requestAnimationFrame(() => {
+      handleScrollInput(e.deltaY);
+      rafIdRef.current = null;
+    });
+  }, [handleScrollInput]);
+
+  // Touch handler
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (!isLockedRef.current || e.touches.length !== 1) return;
+    
+    e.preventDefault();
+    
+    const touch = e.touches[0];
+    const currentY = touch.clientY;
+    
+    if (lastTouchYRef.current === 0) {
+      lastTouchYRef.current = currentY;
+      return;
+    }
+    
+    const delta = lastTouchYRef.current - currentY; // Inverted: touch up = scroll down
+    lastTouchYRef.current = currentY;
+    
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+    }
+    
+    rafIdRef.current = requestAnimationFrame(() => {
+      handleScrollInput(delta);
+      rafIdRef.current = null;
+    });
+  }, [handleScrollInput]);
+
+  const handleTouchEnd = useCallback(() => {
+    lastTouchYRef.current = 0;
+  }, []);
+
+  // Keyboard handler
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (!isLockedRef.current) return;
+    
+    let delta = 0;
+    switch (e.key) {
+      case 'ArrowDown':
+      case 'PageDown':
+        delta = 100;
+        break;
+      case 'ArrowUp':
+      case 'PageUp':
+        delta = -100;
+        break;
+      case ' ':
+        delta = e.shiftKey ? -100 : 100;
+        break;
+      default:
+        return;
+    }
+    
+    e.preventDefault();
+    handleScrollInput(delta);
+  }, [handleScrollInput]);
+
+  // Main effect: detect pinned state and manage scroll locking
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    let isActive = false;
+
+    const checkAndUpdate = () => {
+      const pinned = checkPinnedState();
+      
+      if (pinned && !isActive) {
+        // Entering pinned state - lock scroll
+        isActive = true;
+        lockBodyScroll();
+        
+        // Calculate progress based on current scroll position within section
+        const rect = sectionRef.current!.getBoundingClientRect();
+        const sectionHeight = sectionRef.current!.offsetHeight;
+        const viewportHeight = window.innerHeight;
+        const maxScroll = sectionHeight - viewportHeight;
+        
+        // Calculate how much we've scrolled through the section
+        const sectionTop = sectionRef.current!.offsetTop;
+        const currentScrollY = window.scrollY;
+        const scrolledInSection = currentScrollY - sectionTop;
+        const initialProgress = maxScroll > 0 ? clamp(scrolledInSection / maxScroll, 0, 1) : progressRef.current;
+        
+        // Always update progress when entering pinned state to sync with scroll position
+        // This ensures we continue from where we left off
+        updateFromProgress(initialProgress);
+      } else if (!pinned && isActive) {
+        // Exiting pinned state - unlock scroll but preserve progress
+        isActive = false;
+        unlockBodyScroll();
+        // Progress is preserved in progressRef, so it will continue from where it was when re-entering
+      }
+    };
+
+    // Use IntersectionObserver for efficient detection
+    const observer = new IntersectionObserver(
+      () => {
+        checkAndUpdate();
+      },
+      {
+        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+        rootMargin: '0px',
+      }
+    );
+
+    // Also check on scroll for immediate response
+    const handleScroll = () => {
+      checkAndUpdate();
+    };
+
+    observer.observe(sectionRef.current);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    checkAndUpdate();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+      if (isLockedRef.current) {
+        unlockBodyScroll();
+      }
+    };
+  }, [checkPinnedState, lockBodyScroll, unlockBodyScroll, updateFromProgress]);
+
+  // Attach/detach input handlers - always attach, check locked state inside handlers
+  useEffect(() => {
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('keydown', handleKeyDown, { passive: false });
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('keydown', handleKeyDown);
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+    };
+  }, [handleWheel, handleTouchMove, handleTouchEnd, handleKeyDown]);
 
   return (
     <section 
@@ -120,6 +380,7 @@ export function Car3DSlider() {
       className="relative w-full overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100"
       style={{ 
         height: `${carSlides.length * 100}vh`,
+        marginBottom: 0,
       }}
     >
       {/* Sticky container for 3D model and content - stays fixed while scrolling */}
