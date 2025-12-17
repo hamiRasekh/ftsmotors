@@ -49,6 +49,7 @@ services:
       dockerfile: apps/frontend/Dockerfile.compose
     container_name: ftsmotors-frontend
     environment:
+      API_URL: http://backend:4000
       NEXT_PUBLIC_API_URL: http://localhost:4000
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
     ports:

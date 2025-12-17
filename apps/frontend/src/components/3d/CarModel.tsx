@@ -22,13 +22,26 @@ export function CarModel({
   scale = 1,
   position = [0, 0, 0],
 }: CarModelProps) {
-  const { scene } = useGLTF(modelPath);
+  const gltf = useGLTF(modelPath);
   const groupRef = useRef<Group>(null);
   const rotationRef = useRef(rotation);
+  
+  if (!gltf || !gltf.scene) {
+    console.error('Model failed to load:', modelPath);
+    return (
+      <mesh scale={scale} position={position}>
+        <boxGeometry args={[2, 1, 4]} />
+        <meshStandardMaterial color="#888888" />
+      </mesh>
+    );
+  }
+  
+  const modelScene = gltf.scene;
 
   // Center and scale the model
   const centeredScene = useMemo(() => {
-    const clonedScene = scene.clone();
+    if (!modelScene) return null;
+    const clonedScene = modelScene.clone();
     const box = new Box3().setFromObject(clonedScene);
     const center = box.getCenter(new Vector3());
     const size = box.getSize(new Vector3());
@@ -41,7 +54,16 @@ export function CarModel({
     clonedScene.scale.multiplyScalar(scaleFactor);
 
     return clonedScene;
-  }, [scene]);
+  }, [modelScene]);
+  
+  if (!centeredScene) {
+    return (
+      <mesh scale={scale} position={position}>
+        <boxGeometry args={[2, 1, 4]} />
+        <meshStandardMaterial color="#888888" />
+      </mesh>
+    );
+  }
 
   // Update rotation ref when prop changes
   useEffect(() => {

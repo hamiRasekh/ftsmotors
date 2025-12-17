@@ -4,11 +4,10 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectFade, Navigation, Pagination } from 'swiper/modules';
+import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import { motion } from 'framer-motion';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
-import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 const slides = [
@@ -41,13 +40,12 @@ export function HeroSlider() {
   return (
     <div className="relative h-screen w-full overflow-hidden">
       <Swiper
-        modules={[Autoplay, EffectFade, Navigation, Pagination]}
+        modules={[Autoplay, EffectFade, Pagination]}
         effect="fade"
         autoplay={{
           delay: 5000,
           disableOnInteraction: false,
         }}
-        navigation={true}
         pagination={{
           clickable: true,
           dynamicBullets: true,
@@ -113,23 +111,8 @@ export function HeroSlider() {
         ))}
       </Swiper>
 
-      {/* Custom Navigation Styles */}
+      {/* Custom Pagination Styles */}
       <style jsx global>{`
-        .swiper-button-next,
-        .swiper-button-prev {
-          color: white;
-          background: rgba(0, 0, 0, 0.5);
-          backdrop-filter: blur(10px);
-          width: 50px;
-          height: 50px;
-          border-radius: 50%;
-          transition: all 0.3s;
-        }
-        .swiper-button-next:hover,
-        .swiper-button-prev:hover {
-          background: rgba(0, 0, 0, 0.7);
-          transform: scale(1.1);
-        }
         .swiper-pagination-bullet {
           background: white;
           opacity: 0.5;

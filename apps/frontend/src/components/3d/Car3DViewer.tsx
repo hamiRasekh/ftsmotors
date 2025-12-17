@@ -43,11 +43,22 @@ export function Car3DViewer({
     setIsClient(true);
     // Load components dynamically
     Promise.all([
-      import('@react-three/fiber').catch(() => null),
-      import('@react-three/drei').catch(() => null),
-      import('./CarModel').catch(() => null),
+      import('@react-three/fiber').catch((e) => {
+        console.error('Failed to load @react-three/fiber:', e);
+        return null;
+      }),
+      import('@react-three/drei').catch((e) => {
+        console.error('Failed to load @react-three/drei:', e);
+        return null;
+      }),
+      import('./CarModel').catch((e) => {
+        console.error('Failed to load CarModel:', e);
+        return null;
+      }),
     ]).then(([fiber, drei, carModel]) => {
-      if (fiber) Canvas = fiber.Canvas;
+      if (fiber) {
+        Canvas = fiber.Canvas;
+      }
       if (drei) {
         OrbitControls = drei.OrbitControls;
         Environment = drei.Environment;
@@ -57,17 +68,19 @@ export function Car3DViewer({
           try {
             drei.useGLTF.preload(modelPath);
           } catch (e) {
-            // Ignore preload errors
+            console.warn('Failed to preload model:', e);
           }
         }
       }
-      if (carModel) CarModel = carModel.CarModel;
+      if (carModel) {
+        CarModel = carModel.CarModel;
+      }
       setComponentsLoaded(true);
     }).catch((error) => {
       console.error('Error loading 3D components:', error);
       setComponentsLoaded(true); // Still set to true to show fallback
     });
-  }, []);
+  }, [modelPath]);
 
   if (!isClient || !componentsLoaded) {
     return (

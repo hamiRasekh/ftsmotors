@@ -2,20 +2,40 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sidebar } from './layout/Sidebar';
 
-export function Header() {
+interface HeaderProps {
+  isHomePage?: boolean;
+}
+
+export function Header({ isHomePage = false }: HeaderProps = {}) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 50);
+      
+      // Hide header when scrolling down, show when scrolling up
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        // Scrolling down
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY.current) {
+        // Scrolling up
+        setIsVisible(true);
+      }
+      
+      lastScrollY.current = currentScrollY;
     };
-    window.addEventListener('scroll', handleScroll);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -30,15 +50,23 @@ export function Header() {
 
   return (
     <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 transition-all duration-300 ${
-        scrolled ? 'shadow-md' : ''
-      }`}
+      initial={{ y: 0 }}
+      animate={{ y: isVisible ? 0 : -100 }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isHomePage
+          ? isHovered || scrolled
+            ? 'bg-white/20 backdrop-blur-md border-b border-white/10'
+            : 'bg-transparent backdrop-blur-sm border-b border-transparent'
+          : isHovered || !scrolled
+          ? 'bg-white/80 backdrop-blur-md border-b border-gray-200/50'
+          : 'bg-white/60 backdrop-blur-sm border-b border-gray-200/30'
+      } ${scrolled || (isHomePage && isHovered) ? 'shadow-lg' : 'shadow-none'}`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav className="flex items-center justify-between h-16 md:h-20">
+        <nav className="flex items-center justify-between h-12 md:h-14">
           {/* Logo - Left Side */}
           <Link href="/" className="flex items-center flex-shrink-0">
             <Image
@@ -46,7 +74,9 @@ export function Header() {
               alt="FTS Motors Logo"
               width={40}
               height={40}
-              className="object-contain w-8 h-8 sm:w-10 sm:h-10"
+              className={`object-contain w-8 h-8 sm:w-10 sm:h-10 transition-all ${
+                isHomePage && !scrolled ? 'brightness-0 invert' : ''
+              }`}
             />
           </Link>
 
@@ -56,7 +86,11 @@ export function Header() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="px-3 xl:px-4 py-2 text-sm xl:text-base text-gray-700 hover:text-black font-medium transition-colors rounded-lg hover:bg-gray-50"
+                  className={`px-3 xl:px-4 py-2 text-sm xl:text-base font-medium transition-colors rounded-lg ${
+                    isHomePage && !scrolled
+                      ? 'text-white hover:text-white hover:bg-white/20'
+                      : 'text-gray-700 hover:text-black hover:bg-gray-50'
+                  }`}
                 >
                   {item.label}
                 </Link>
@@ -66,18 +100,13 @@ export function Header() {
 
           {/* Desktop Right Side Actions */}
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              aria-label="منوی کناری"
-            >
-              <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
             <Link
               href="/contact"
-              className="px-4 xl:px-5 py-2 xl:py-2.5 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium text-sm xl:text-base"
+              className={`px-4 xl:px-5 py-2 xl:py-2.5 rounded-lg hover:bg-gray-800 transition-colors font-medium text-sm xl:text-base ${
+                isHomePage && !scrolled
+                  ? 'bg-white/20 text-white backdrop-blur-sm border border-white/30 hover:bg-white/30'
+                  : 'bg-black text-white hover:bg-gray-800'
+              }`}
             >
               دریافت مشاوره
             </Link>
@@ -86,7 +115,11 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            className={`lg:hidden p-2 rounded-lg transition-colors ${
+              isHomePage && !scrolled
+                ? 'text-white hover:bg-white/20'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
             aria-label="منو"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

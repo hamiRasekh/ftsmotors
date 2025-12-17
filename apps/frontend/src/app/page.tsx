@@ -25,30 +25,6 @@ const Car3DSlider = dynamic(
   }
 );
 
-const CarPriceSection = dynamic(
-  () => import('@/components/sections/CarPriceSection').then(mod => ({ default: mod.CarPriceSection })).catch(() => ({ default: () => null })),
-  {
-    ssr: false,
-    loading: () => (
-      <section className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-gray-400">در حال بارگذاری...</div>
-      </section>
-    ),
-  }
-);
-
-const ImportedCarsSection = dynamic(
-  () => import('@/components/sections/ImportedCarsSection').then(mod => ({ default: mod.ImportedCarsSection })).catch(() => ({ default: () => null })),
-  {
-    ssr: false,
-    loading: () => (
-      <section className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-gray-400">در حال بارگذاری...</div>
-      </section>
-    ),
-  }
-);
-
 export const metadata: Metadata = {
   title: 'خانه',
   description: 'FTS Motors - نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده',
@@ -61,15 +37,25 @@ export const metadata: Metadata = {
 
 async function getHomeData() {
   try {
-    const [articles, news] = await Promise.all([
+    // Use Promise.allSettled to handle errors gracefully
+    const [articles, news] = await Promise.allSettled([
       api.articles.getAll({ published: true, limit: 10 }),
       api.news.getAll({ published: true, limit: 10 }),
     ]);
-    return { articles, news };
-  } catch (error) {
+    
     return {
-      articles: { data: [] },
-      news: { data: [] },
+      articles: articles.status === 'fulfilled' 
+        ? articles.value 
+        : { data: [], total: 0, page: 1, limit: 10, totalPages: 0 },
+      news: news.status === 'fulfilled' 
+        ? news.value 
+        : { data: [], total: 0, page: 1, limit: 10, totalPages: 0 },
+    };
+  } catch (error) {
+    // Silently handle errors - page will work with empty data
+    return {
+      articles: { data: [], total: 0, page: 1, limit: 10, totalPages: 0 },
+      news: { data: [], total: 0, page: 1, limit: 10, totalPages: 0 },
     };
   }
 }
@@ -79,8 +65,8 @@ export default async function HomePage() {
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-white pt-16">
+      <Header isHomePage={true} />
+      <main className="min-h-screen bg-white">
         {/* Hero Slider */}
         <section className="relative">
           <HeroSlider />
@@ -120,57 +106,10 @@ export default async function HomePage() {
         {/* Stats Section */}
         <Stats />
 
-        {/* Car Price Sections - 3D Models with Scroll Animations */}
-        
-        {/* Section 1: تا 25 هزار دلار - Toyota Corolla */}
-        <CarPriceSection
-          modelPath="/glb/toyota_corolla_2020.glb"
-          title="خودروهای تا 25 هزار دلار"
-          priceRange="تا 25,000 دلار"
-          description="خودروهای اقتصادی و مقرون به صرفه با کیفیت بالا و مصرف سوخت بهینه. مناسب برای استفاده روزمره و سفرهای شهری."
-          features={[
-            'مصرف سوخت بهینه',
-            'قیمت مناسب',
-            'قابلیت اطمینان بالا',
-            'خدمات پس از فروش کامل',
-          ]}
-          reverse={false}
-        />
+        {/* Testimonials */}
+        <Testimonials />
 
-        {/* Section 2: 30 هزار دلار - BMW X2 */}
-        <CarPriceSection
-          modelPath="/glb/2019_bmw_x2_xdrive20d_m_sport_x.glb"
-          title="خودروهای 30 هزار دلار"
-          priceRange="حدود 30,000 دلار"
-          description="خودروهای لوکس و مدرن با طراحی جذاب و امکانات پیشرفته. ترکیبی از راحتی، عملکرد و سبک."
-          features={[
-            'طراحی مدرن و جذاب',
-            'امکانات پیشرفته',
-            'عملکرد عالی',
-            'کیفیت ساخت بالا',
-          ]}
-          reverse={true}
-        />
-
-        {/* Section 3: 35 هزار دلار - BMW 325 */}
-        <CarPriceSection
-          modelPath="/glb/2021_bmw_3_series_325li.glb"
-          title="خودروهای 35 هزار دلار"
-          priceRange="حدود 35,000 دلار"
-          description="خودروهای پریمیوم با بهترین تکنولوژی‌ها و امکانات لوکس. انتخابی ایده‌آل برای کسانی که به کیفیت و راحتی اهمیت می‌دهند."
-          features={[
-            'تکنولوژی پیشرفته',
-            'راحتی و لوکس',
-            'عملکرد حرفه‌ای',
-            'امنیت بالا',
-          ]}
-          reverse={false}
-        />
-
-        {/* Section 4: خودروهای وارداتی - Kia Sportage + Kia K5 */}
-        <ImportedCarsSection />
-
-        {/* Masonry Gallery - News and Articles */}
+        {/* Latest Articles and News */}
         {(articles.data && articles.data.length > 0) || (news.data && news.data.length > 0) ? (
           <MasonryGallery
             articles={
@@ -197,9 +136,6 @@ export default async function HomePage() {
             }
           />
         ) : null}
-
-        {/* Testimonials */}
-        <Testimonials />
 
         {/* CTA Section */}
         <section className="py-20 bg-black text-white">

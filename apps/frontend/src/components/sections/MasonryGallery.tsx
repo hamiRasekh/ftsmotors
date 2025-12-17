@@ -29,8 +29,12 @@ const getRandomHeight = (index: number) => {
 };
 
 export function MasonryGallery({ articles, news, className = '' }: MasonryGalleryProps) {
-  // Combine articles and news, shuffle for random layout
-  const allItems = [...articles, ...news].sort(() => Math.random() - 0.5);
+  // Combine and sort by date (newest first)
+  const allItems = [...articles, ...news].sort((a, b) => {
+    const dateA = new Date(a.date || 0).getTime();
+    const dateB = new Date(b.date || 0).getTime();
+    return dateB - dateA; // Newest first
+  });
 
   return (
     <section className={`py-20 bg-white ${className}`}>

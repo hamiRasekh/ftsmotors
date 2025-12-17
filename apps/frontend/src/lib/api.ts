@@ -47,7 +47,30 @@ export const api = {
         searchParams.append('published', params.published.toString());
       if (params?.page) searchParams.append('page', params.page.toString());
       if (params?.limit) searchParams.append('limit', params.limit.toString());
-      return fetch(`${API_URL}/api/articles?${searchParams}`).then((r) => r.json());
+      
+      // Add timeout for fetch
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
+      return fetch(`${API_URL}/api/articles?${searchParams}`, {
+        signal: controller.signal,
+      })
+        .then((r) => {
+          clearTimeout(timeoutId);
+          if (!r.ok) {
+            throw new Error(`HTTP error! status: ${r.status}`);
+          }
+          return r.json();
+        })
+        .catch((error) => {
+          clearTimeout(timeoutId);
+          if (error.name === 'AbortError') {
+            console.warn('Request timeout for articles');
+          } else {
+            console.error('Error fetching articles:', error.message || error);
+          }
+          return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+        });
     },
     getBySlug: (slug: string) =>
       fetch(`${API_URL}/api/articles/slug/${slug}`).then((r) => r.json()),
@@ -59,7 +82,30 @@ export const api = {
         searchParams.append('published', params.published.toString());
       if (params?.page) searchParams.append('page', params.page.toString());
       if (params?.limit) searchParams.append('limit', params.limit.toString());
-      return fetch(`${API_URL}/api/news?${searchParams}`).then((r) => r.json());
+      
+      // Add timeout for fetch
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
+      return fetch(`${API_URL}/api/news?${searchParams}`, {
+        signal: controller.signal,
+      })
+        .then((r) => {
+          clearTimeout(timeoutId);
+          if (!r.ok) {
+            throw new Error(`HTTP error! status: ${r.status}`);
+          }
+          return r.json();
+        })
+        .catch((error) => {
+          clearTimeout(timeoutId);
+          if (error.name === 'AbortError') {
+            console.warn('Request timeout for news');
+          } else {
+            console.error('Error fetching news:', error.message || error);
+          }
+          return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+        });
     },
     getBySlug: (slug: string) =>
       fetch(`${API_URL}/api/news/slug/${slug}`).then((r) => r.json()),
