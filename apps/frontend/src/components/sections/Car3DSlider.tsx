@@ -151,8 +151,12 @@ export function Car3DSlider() {
 
       const currentProgress = progressRef.current;
       const viewportHeight = window.innerHeight;
-      const sensitivity = shouldReduceMotion ? 0.0008 : 0.0005;
-      const progressDelta = delta * sensitivity;
+      
+      // Increased sensitivity for smoother transitions
+      // Normalize delta by viewport height for consistent behavior
+      // Higher sensitivity = less scroll needed to change slides
+      const sensitivity = shouldReduceMotion ? 0.005 : 0.0035;
+      const progressDelta = (delta / viewportHeight) * sensitivity;
 
       // Check boundaries BEFORE calculating new progress
       const atStart = currentProgress <= EPS;
@@ -184,23 +188,28 @@ export function Car3DSlider() {
   // RAF throttling for scroll input
   const scheduleScrollInput = useCallback(
     (delta: number): boolean => {
+      // Accumulate delta
       pendingDeltaRef.current += delta;
 
+      // If already scheduled, just prevent default
       if (rafIdRef.current !== null) {
-        return true; // Already scheduled, prevent default for now
+        return true;
       }
 
-      let shouldPreventDefault = true;
-
+      // Schedule update
       rafIdRef.current = requestAnimationFrame(() => {
         const totalDelta = pendingDeltaRef.current;
         pendingDeltaRef.current = 0;
         rafIdRef.current = null;
 
-        shouldPreventDefault = handleScrollInput(totalDelta);
+        // Process accumulated delta
+        if (totalDelta !== 0 && isLockedRef.current) {
+          handleScrollInput(totalDelta);
+        }
       });
 
-      return shouldPreventDefault;
+      // Always prevent default when locked (boundary checks happen in handleScrollInput)
+      return isLockedRef.current;
     },
     [handleScrollInput]
   );
@@ -221,8 +230,11 @@ export function Car3DSlider() {
           if (isPinned && !isLockedRef.current) {
             // Section is pinned, lock scroll
             lockBodyScroll();
-            // Initialize progress to 0 when first entering
-            updateFromProgress(0);
+            // Only initialize progress to 0 if we're starting fresh
+            // Don't reset if user was already scrolling through slides
+            if (progressRef.current === 0) {
+              updateFromProgress(0);
+            }
           } else if (!isPinned && isLockedRef.current) {
             // Section is no longer pinned, unlock scroll
             // Only unlock if we're not at a boundary (let boundary handlers manage unlock)

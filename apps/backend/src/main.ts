@@ -15,18 +15,57 @@ async function bootstrap() {
     prefix: '/uploads',
   });
 
-  // Security
-  app.use(helmet());
+  // Security - Configure helmet to work with CORS
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginEmbedderPolicy: false, // Allow embedding for development
+  }));
   app.use(compression());
 
-  // CORS
+  // CORS Configuration
+  const isDevelopment = process.env.NODE_ENV !== 'production';
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  
+  // Get CORS origins from environment variable (comma-separated)
+  // Or use default origins
+  let corsOrigins: string[] | boolean | ((origin: string, callback: (err: Error | null, allow?: boolean) => void) => void);
+  
+  if (process.env.CORS_ORIGINS && process.env.CORS_ORIGINS.trim() !== '') {
+    // Parse comma-separated origins from environment variable
+    corsOrigins = process.env.CORS_ORIGINS.split(',').map(origin => origin.trim()).filter(origin => origin.length > 0);
+  } else {
+    // In development, allow all origins for easier local network access
+    // This allows access from other devices on the same network (e.g., IP addresses like 192.168.x.x)
+    if (isDevelopment) {
+      corsOrigins = true; // Allow all origins in development
+    } else {
+      // Default origins for production
+      corsOrigins = [
+        frontendUrl,
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'http://frontend:3000',
+      ];
+    }
+  }
+  
   app.enableCors({
-    origin: [frontendUrl, 'http://localhost:3000', 'http://frontend:3000'],
+    origin: corsOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    maxAge: 86400, // 24 hours
   });
+  
+  // Log CORS configuration
+  if (corsOrigins === true) {
+    console.log('CORS enabled for ALL origins (development mode)');
+  } else if (Array.isArray(corsOrigins)) {
+    console.log(`CORS enabled for origins: ${corsOrigins.join(', ')}`);
+  } else {
+    console.log('CORS enabled with custom origin function');
+  }
 
   // Global validation pipe
   app.useGlobalPipes(
