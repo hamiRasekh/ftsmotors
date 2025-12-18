@@ -170,14 +170,28 @@ export default async function ArticlePage({ params }: { params: { slug: string }
               __html: JSON.stringify({
                 '@context': 'https://schema.org',
                 '@type': 'Article',
-                headline: article.title,
-                description: article.excerpt || article.content.substring(0, 160),
-                image: article.image || '',
+                headline: article.seoTitle || article.title,
+                description: article.seoDescription || article.excerpt || article.content.substring(0, 160),
+                image: article.image ? [article.image] : [],
                 datePublished: article.publishedAt || article.createdAt,
+                dateModified: article.updatedAt || article.publishedAt || article.createdAt,
                 author: {
                   '@type': 'Person',
                   name: article.author?.name || article.author?.email || 'FTS Motors',
                 },
+                publisher: {
+                  '@type': 'Organization',
+                  name: 'FTS Motors',
+                  logo: {
+                    '@type': 'ImageObject',
+                    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/photo_2025-12-08_17-46-46-removebg-preview.png`,
+                  },
+                },
+                mainEntityOfPage: {
+                  '@type': 'WebPage',
+                  '@id': `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/blog/${article.slug}`,
+                },
+                keywords: article.seoKeywords || '',
               }),
             }}
           />

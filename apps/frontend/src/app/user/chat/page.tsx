@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { API_URL } from '@/lib/utils';
+import { SOCKET_URL } from '@/lib/utils';
 import { api } from '@/lib/api';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { FadeIn } from '@/components/animations/FadeIn';
@@ -17,7 +17,9 @@ export default function ChatPage() {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    const newSocket = io(API_URL.replace('/api', ''), {
+    // Socket.IO needs full URL without /api prefix
+    const socketUrl = SOCKET_URL.replace('/api', '').replace(/\/$/, '');
+    const newSocket = io(socketUrl, {
       auth: { token },
     });
 

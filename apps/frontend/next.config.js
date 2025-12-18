@@ -15,9 +15,38 @@ const nextConfig = {
       },
     ],
     formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60,
+  },
+  // Enable compression
+  compress: true,
+  // Power optimizations
+  poweredByHeader: false,
+  // Generate static pages
+  generateBuildId: async () => {
+    return 'build-' + Date.now();
   },
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000',
+  },
+  // Proxy API requests to backend
+  async rewrites() {
+    // Determine backend URL:
+    // 1. Use API_URL if set (for Docker server-side)
+    // 2. Use NEXT_PUBLIC_API_URL if set (for client-side or development)
+    // 3. Default to localhost:4000 for development
+    const backendUrl = 
+      process.env.API_URL || 
+      process.env.NEXT_PUBLIC_API_URL || 
+      'http://localhost:4000';
+    
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
+      },
+    ];
   },
   // Performance optimizations
   compiler: {

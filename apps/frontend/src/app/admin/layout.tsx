@@ -57,6 +57,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/admin/articles', label: 'مقالات', icon: '📝' },
     { href: '/admin/news', label: 'اخبار', icon: '📰' },
     { href: '/admin/pages', label: 'صفحات', icon: '📄' },
+    { href: '/admin/media', label: 'کتابخانه رسانه', icon: '🖼️' },
+    { href: '/admin/settings', label: 'تنظیمات', icon: '⚙️' },
     { href: '/admin/tickets', label: 'تیکت‌ها', icon: '🎫' },
     { href: '/admin/chat', label: 'چت', icon: '💬' },
     { href: '/admin/feedbacks', label: 'نظرات', icon: '💡' },
