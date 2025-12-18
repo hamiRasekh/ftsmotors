@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { API_URL } from '@/lib/utils';
+import { MediaLibrary } from '@/components/admin/MediaLibrary';
 
 export default function NewCarPage() {
   const router = useRouter();
   const [categories, setCategories] = useState<any[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [formData, setFormData] = useState({
     brand: '',
     model: '',
@@ -25,6 +27,7 @@ export default function NewCarPage() {
   const [featureValue, setFeatureValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showMediaLibrary, setShowMediaLibrary] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -32,11 +35,20 @@ export default function NewCarPage() {
 
   const fetchCategories = async () => {
     try {
+      setCategoriesLoading(true);
       const response = await fetch(`${API_URL}/api/categories`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
-      setCategories(data);
+      console.log('Categories fetched:', data);
+      setCategories(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching categories:', error);
+      setError('خطا در بارگذاری دسته‌بندی‌ها');
+      setCategories([]);
+    } finally {
+      setCategoriesLoading(false);
     }
   };
 
@@ -49,10 +61,9 @@ export default function NewCarPage() {
       .trim();
   };
 
-  const handleAddImage = () => {
-    if (imageUrl && !formData.images.includes(imageUrl)) {
-      setFormData({ ...formData, images: [...formData.images, imageUrl] });
-      setImageUrl('');
+  const handleAddImage = (url: string) => {
+    if (url && !formData.images.includes(url)) {
+      setFormData({ ...formData, images: [...formData.images, url] });
     }
   };
 
@@ -197,20 +208,39 @@ export default function NewCarPage() {
               <label htmlFor="categoryId" className="block mb-2 font-semibold">
                 دسته‌بندی <span className="text-destructive">*</span>
               </label>
-              <select
-                id="categoryId"
-                required
-                value={formData.categoryId}
-                onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              >
-                <option value="">انتخاب دسته‌بندی</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
+              {categoriesLoading ? (
+                <div className="w-full px-4 py-3 border rounded-lg bg-gray-50 flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                  <span className="text-sm text-gray-500">در حال بارگذاری دسته‌بندی‌ها...</span>
+                </div>
+              ) : categories.length === 0 ? (
+                <div className="w-full px-4 py-3 border border-yellow-300 rounded-lg bg-yellow-50">
+                  <p className="text-sm text-yellow-800">
+                    هیچ دسته‌بندی‌ای یافت نشد. لطفاً ابتدا یک دسته‌بندی ایجاد کنید.
+                  </p>
+                  <Link
+                    href="/admin/categories/new"
+                    className="text-sm text-yellow-900 underline mt-1 inline-block"
+                  >
+                    ایجاد دسته‌بندی جدید
+                  </Link>
+                </div>
+              ) : (
+                <select
+                  id="categoryId"
+                  required
+                  value={formData.categoryId}
+                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  <option value="">انتخاب دسته‌بندی</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
           </div>
 
@@ -231,36 +261,36 @@ export default function NewCarPage() {
 
           <div>
             <label className="block mb-2 font-semibold">تصاویر</label>
-            <div className="flex gap-2 mb-4">
-              <input
-                type="url"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                className="flex-1 px-4 py-2 border rounded-lg"
-                placeholder="URL تصویر"
-              />
-              <button
-                type="button"
-                onClick={handleAddImage}
-                className="px-4 py-2 bg-secondary rounded-lg hover:bg-secondary/90"
-              >
-                افزودن
-              </button>
-            </div>
-            <div className="grid grid-cols-4 gap-2">
-              {formData.images.map((img, index) => (
-                <div key={index} className="relative group">
-                  <img src={img} alt={`Image ${index + 1}`} className="w-full h-24 object-cover rounded border" />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute top-1 left-1 bg-destructive text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
+            <button
+              type="button"
+              onClick={() => setShowMediaLibrary(true)}
+              className="w-full border-2 border-dashed rounded-lg p-4 text-center hover:border-primary/50 transition-colors mb-4"
+            >
+              <svg className="mx-auto h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p className="mt-2 text-sm text-gray-600">برای انتخاب یا آپلود تصویر کلیک کنید</p>
+            </button>
+            {formData.images.length > 0 && (
+              <div className="grid grid-cols-4 gap-2">
+                {formData.images.map((img, index) => (
+                  <div key={index} className="relative group">
+                    <img 
+                      src={img.startsWith('http') ? img : `${API_URL}${img}`} 
+                      alt={`Image ${index + 1}`} 
+                      className="w-full h-24 object-cover rounded border" 
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-1 left-1 bg-destructive text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
@@ -366,6 +396,38 @@ export default function NewCarPage() {
           </div>
         </form>
       </div>
+
+      {/* Media Library Modal */}
+      {showMediaLibrary && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-2xl font-bold">کتابخانه رسانه - انتخاب تصاویر</h3>
+              <button
+                onClick={() => setShowMediaLibrary(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <MediaLibrary
+              type="image"
+              multiple={true}
+              onSelect={(url) => {
+                handleAddImage(url);
+              }}
+            />
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={() => setShowMediaLibrary(false)}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+              >
+                بستن
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { API_URL } from '@/lib/utils';
+import { MediaLibrary } from '@/components/admin/MediaLibrary';
 
 export default function EditCategoryPage() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function EditCategoryPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [showMediaLibrary, setShowMediaLibrary] = useState(false);
 
   useEffect(() => {
     fetchCategory();
@@ -152,27 +154,40 @@ export default function EditCategoryPage() {
           </div>
 
           <div>
-            <label htmlFor="image" className="block mb-2 font-semibold">
-              تصویر (URL)
-            </label>
-            <input
-              type="url"
-              id="image"
-              value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-            />
-            {formData.image && (
-              <div className="mt-4">
+            <label className="block mb-2 font-semibold">تصویر</label>
+            {formData.image ? (
+              <div className="relative">
                 <img
-                  src={formData.image}
+                  src={formData.image.startsWith('http') ? formData.image : `${API_URL}${formData.image}`}
                   alt="Preview"
-                  className="max-w-xs rounded-lg border"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
+                  className="w-full h-64 object-cover rounded-lg border"
                 />
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, image: '' })}
+                  className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
+                >
+                  حذف
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowMediaLibrary(true)}
+                  className="absolute bottom-2 right-2 bg-primary text-white p-2 rounded-lg hover:bg-primary/90"
+                >
+                  تغییر تصویر
+                </button>
               </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowMediaLibrary(true)}
+                className="w-full border-2 border-dashed rounded-lg p-8 text-center hover:border-primary/50 transition-colors"
+              >
+                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p className="mt-2 text-sm text-gray-600">برای انتخاب تصویر کلیک کنید</p>
+              </button>
             )}
           </div>
 
@@ -194,6 +209,30 @@ export default function EditCategoryPage() {
           </div>
         </form>
       </div>
+
+      {/* Media Library Modal */}
+      {showMediaLibrary && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-2xl font-bold">کتابخانه رسانه</h3>
+              <button
+                onClick={() => setShowMediaLibrary(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <MediaLibrary
+              type="image"
+              onSelect={(url) => {
+                setFormData({ ...formData, image: url });
+                setShowMediaLibrary(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

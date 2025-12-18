@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Get,
   UseInterceptors,
   UploadedFile,
   UseGuards,
@@ -10,7 +11,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, statSync } from 'fs';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -22,6 +23,66 @@ import { Role } from '@prisma/client';
 @Roles(Role.ADMIN)
 @ApiBearerAuth()
 export class UploadController {
+  @Get('images')
+  @ApiOperation({ summary: 'Get list of uploaded images (Admin only)' })
+  async getImages() {
+    try {
+      const imagesPath = join(process.cwd(), 'uploads', 'images');
+      if (!existsSync(imagesPath)) {
+        return [];
+      }
+
+      const files = readdirSync(imagesPath)
+        .filter((file) => {
+          const ext = extname(file).toLowerCase();
+          return ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
+        })
+        .map((file) => {
+          const filePath = join(imagesPath, file);
+          const stats = statSync(filePath);
+          return {
+            url: `/uploads/images/${file}`,
+            filename: file,
+            size: stats.size,
+            createdAt: stats.birthtime,
+          };
+        })
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+      return files;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  @Get('files')
+  @ApiOperation({ summary: 'Get list of uploaded files (Admin only)' })
+  async getFiles() {
+    try {
+      const filesPath = join(process.cwd(), 'uploads', 'files');
+      if (!existsSync(filesPath)) {
+        return [];
+      }
+
+      const files = readdirSync(filesPath)
+        .map((file) => {
+          const filePath = join(filesPath, file);
+          const stats = statSync(filePath);
+          return {
+            url: `/uploads/files/${file}`,
+            filename: file,
+            size: stats.size,
+            createdAt: stats.birthtime,
+          };
+        })
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+      return files;
+    } catch (error) {
+      return [];
+    }
+  }
+
   @Post('image')
   @ApiOperation({ summary: 'Upload image file (Admin only)' })
   @ApiConsumes('multipart/form-data')
@@ -128,4 +189,3 @@ export class UploadController {
     };
   }
 }
-
