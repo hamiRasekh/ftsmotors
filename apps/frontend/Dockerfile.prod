@@ -15,25 +15,16 @@ COPY packages/shared ./packages/shared
 # Copy frontend app package files
 COPY apps/frontend/package*.json ./apps/frontend/
 
-# Install root dependencies
-RUN npm ci --legacy-peer-deps --only=production=false
-
-# Install shared package dependencies
-WORKDIR /app/packages/shared
-RUN npm ci --legacy-peer-deps --only=production=false
-
-# Install frontend dependencies
-WORKDIR /app/apps/frontend
+# Install all dependencies at root (npm workspaces hoists everything)
 RUN npm ci --legacy-peer-deps --only=production=false
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 
-# Copy dependencies
+# Copy dependencies from root (npm workspaces hoists all deps to root)
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages/shared ./packages/shared
-COPY --from=deps /app/apps/frontend/node_modules ./apps/frontend/node_modules
 
 # Copy application code
 COPY . .
