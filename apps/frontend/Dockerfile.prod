@@ -1,0 +1,75 @@
+FROM node:18-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+# Copy root package files
+COPY package.json package-lock.json* ./
+COPY turbo.json ./
+
+# Copy shared package
+COPY packages/shared ./packages/shared
+
+# Copy frontend app package files
+COPY apps/frontend/package*.json ./apps/frontend/
+
+# Install root dependencies
+RUN npm ci --legacy-peer-deps --only=production=false
+
+# Install shared package dependencies
+WORKDIR /app/packages/shared
+RUN npm ci --legacy-peer-deps --only=production=false
+
+# Install frontend dependencies
+WORKDIR /app/apps/frontend
+RUN npm ci --legacy-peer-deps --only=production=false
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+
+# Copy dependencies
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages/shared ./packages/shared
+COPY --from=deps /app/apps/frontend/node_modules ./apps/frontend/node_modules
+
+# Copy application code
+COPY . .
+
+# Set working directory to frontend
+WORKDIR /app/apps/frontend
+
+# Build the application
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+RUN npm run build
+
+# Production image
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy built application from standalone output
+# Next.js standalone output includes everything needed
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/static ./apps/frontend/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/public ./apps/frontend/public
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Next.js standalone server.js is in the root of standalone output
+WORKDIR /app/apps/frontend
+CMD ["node", "server.js"]

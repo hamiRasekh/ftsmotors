@@ -1,0 +1,71 @@
+FROM node:18-alpine AS base
+
+# Install OpenSSL and other dependencies for Prisma and PostgreSQL client
+RUN apk add --no-cache openssl openssl-dev libc6-compat python3 make g++ postgresql-client netcat-openbsd
+
+# Set Prisma binary target
+ENV PRISMA_CLI_BINARY_TARGETS=linux-musl-openssl-1.1.x
+
+WORKDIR /app
+
+# Copy root package files
+COPY package.json package-lock.json* ./
+COPY turbo.json ./
+
+# Copy shared package
+COPY packages/shared ./packages/shared
+
+# Copy backend app
+COPY apps/backend ./apps/backend
+
+# Install root dependencies
+RUN npm ci --legacy-peer-deps --only=production=false
+
+# Install shared package dependencies
+WORKDIR /app/packages/shared
+RUN npm ci --legacy-peer-deps --only=production=false
+
+# Install backend dependencies
+WORKDIR /app/apps/backend
+RUN npm ci --legacy-peer-deps --only=production=false
+
+# Generate Prisma Client
+RUN npx prisma generate
+
+# Build the application
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine AS runner
+
+# Install OpenSSL and PostgreSQL client for runtime
+RUN apk add --no-cache openssl libc6-compat postgresql-client
+
+ENV NODE_ENV=production
+ENV PRISMA_CLI_BINARY_TARGETS=linux-musl-openssl-1.1.x
+
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nestjs
+
+# Copy necessary files from builder
+COPY --from=base --chown=nestjs:nodejs /app/apps/backend/dist ./dist
+COPY --from=base --chown=nestjs:nodejs /app/apps/backend/node_modules ./node_modules
+COPY --from=base --chown=nestjs:nodejs /app/apps/backend/package*.json ./
+COPY --from=base --chown=nestjs:nodejs /app/apps/backend/prisma ./prisma
+COPY --from=base --chown=nestjs:nodejs /app/packages/shared ./packages/shared
+
+# Copy entrypoint script
+COPY --chown=nestjs:nodejs apps/backend/docker-entrypoint.prod.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+USER nestjs
+
+EXPOSE 4000
+
+ENV PORT=4000
+
+# Use entrypoint script
+ENTRYPOINT ["/docker-entrypoint.sh"]
