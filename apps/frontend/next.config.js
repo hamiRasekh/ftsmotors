@@ -52,9 +52,9 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  experimental: {
-    optimizeCss: true,
-  },
+  // experimental: {
+  //   optimizeCss: true, // Disabled - requires 'critters' package
+  // },
   // Code splitting
   webpack: (config, { isServer }) => {
     if (!isServer) {
