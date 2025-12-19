@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 
@@ -15,6 +15,21 @@ interface RichTextEditorProps {
 
 export function RichTextEditor({ value, onChange, placeholder, className }: RichTextEditorProps) {
   const quillRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Get quill instance after component mounts
+  useEffect(() => {
+    if (containerRef.current) {
+      const quillEditor = containerRef.current.querySelector('.ql-editor');
+      if (quillEditor) {
+        const quillContainer = quillEditor.closest('.ql-container');
+        if (quillContainer) {
+          // Access quill instance from the container
+          quillRef.current = (quillContainer as any).__quill || (quillEditor as any).__quill;
+        }
+      }
+    }
+  }, [value]);
 
   const modules = useMemo(
     () => ({
@@ -57,10 +72,25 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
 
                 if (response.ok) {
                   const data = await response.json();
-                  const quill = quillRef.current?.getEditor();
-                  const range = quill?.getSelection();
-                  const index = range ? range.index : 0;
-                  quill?.insertEmbed(index, 'image', data.url);
+                  // Get quill instance from ref
+                  const quill = quillRef.current;
+                  if (quill) {
+                    const range = quill.getSelection();
+                    const index = range ? range.index : 0;
+                    quill.insertEmbed(index, 'image', data.url);
+                  } else {
+                    // Fallback: try to get from DOM
+                    const quillEditor = containerRef.current?.querySelector('.ql-editor');
+                    if (quillEditor) {
+                      const quillContainer = quillEditor.closest('.ql-container');
+                      const quillInstance = (quillContainer as any)?.__quill || (quillEditor as any)?.__quill;
+                      if (quillInstance) {
+                        const range = quillInstance.getSelection();
+                        const index = range ? range.index : 0;
+                        quillInstance.insertEmbed(index, 'image', data.url);
+                      }
+                    }
+                  }
                 }
               } catch (error) {
                 console.error('Error uploading image:', error);
@@ -99,9 +129,8 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
   ];
 
   return (
-    <div className={className}>
+    <div ref={containerRef} className={className}>
       <ReactQuill
-        ref={quillRef}
         theme="snow"
         value={value}
         onChange={onChange}
