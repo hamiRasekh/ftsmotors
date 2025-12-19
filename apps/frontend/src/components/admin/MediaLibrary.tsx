@@ -200,7 +200,7 @@ export function MediaLibrary({
           ) : allFiles.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <p>هیچ فایلی در کتابخانه وجود ندارد</p>
-              <p className="text-sm mt-2">به تب "آپلود جدید" بروید و فایل آپلود کنید</p>
+              <p className="text-sm mt-2">به تب &quot;آپلود جدید&quot; بروید و فایل آپلود کنید</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-[500px] overflow-y-auto">

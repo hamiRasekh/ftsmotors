@@ -26,17 +26,7 @@ export function CarModel({
   const groupRef = useRef<Group>(null);
   const rotationRef = useRef(rotation);
   
-  if (!gltf || !gltf.scene) {
-    console.error('Model failed to load:', modelPath);
-    return (
-      <mesh scale={scale} position={position}>
-        <boxGeometry args={[2, 1, 4]} />
-        <meshStandardMaterial color="#888888" />
-      </mesh>
-    );
-  }
-  
-  const modelScene = gltf.scene;
+  const modelScene = gltf?.scene;
 
   // Center and scale the model
   const centeredScene = useMemo(() => {
@@ -55,15 +45,6 @@ export function CarModel({
 
     return clonedScene;
   }, [modelScene]);
-  
-  if (!centeredScene) {
-    return (
-      <mesh scale={scale} position={position}>
-        <boxGeometry args={[2, 1, 4]} />
-        <meshStandardMaterial color="#888888" />
-      </mesh>
-    );
-  }
 
   // Update rotation ref when prop changes
   useEffect(() => {
@@ -79,6 +60,26 @@ export function CarModel({
       }
     }
   });
+
+  // Early returns after all hooks
+  if (!gltf || !gltf.scene) {
+    console.error('Model failed to load:', modelPath);
+    return (
+      <mesh scale={scale} position={position}>
+        <boxGeometry args={[2, 1, 4]} />
+        <meshStandardMaterial color="#888888" />
+      </mesh>
+    );
+  }
+  
+  if (!centeredScene) {
+    return (
+      <mesh scale={scale} position={position}>
+        <boxGeometry args={[2, 1, 4]} />
+        <meshStandardMaterial color="#888888" />
+      </mesh>
+    );
+  }
 
   return (
     // @ts-ignore
