@@ -4,7 +4,7 @@ FROM node:18-alpine AS base
 RUN apk add --no-cache openssl openssl-dev libc6-compat python3 make g++ postgresql-client netcat-openbsd
 
 # Set Prisma binary target
-ENV PRISMA_CLI_BINARY_TARGETS=native,linux-musl-openssl-3.0.x
+ENV PRISMA_CLI_BINARY_TARGETS=linux-musl-openssl-3.0.x
 
 WORKDIR /app
 
@@ -42,7 +42,7 @@ FROM node:18-alpine AS runner
 RUN apk add --no-cache openssl libc6-compat postgresql-client
 
 ENV NODE_ENV=production
-ENV PRISMA_CLI_BINARY_TARGETS=native,linux-musl-openssl-3.0.x
+ENV PRISMA_CLI_BINARY_TARGETS=linux-musl-openssl-3.0.x
 
 WORKDIR /app
 

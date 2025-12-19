@@ -3,9 +3,11 @@
 
 generator client {
   provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["linux-musl-openssl-3.0.x"]
 }
 
+// Note: Using Prisma 5.9.1 - `url` in datasource is correct for Prisma 5
+// The Prisma 7 format (prisma.config.ts) is not needed here
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
