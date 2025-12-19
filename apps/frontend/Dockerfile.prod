@@ -22,7 +22,7 @@ RUN npm ci --legacy-peer-deps --only=production=false
 FROM base AS builder
 WORKDIR /app
 
-# Copy dependencies from root (npm workspaces hoists all deps to root)
+# Copy dependencies from root (npm workspaces hoists all dependencies here)
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages/shared ./packages/shared
 
