@@ -1,4 +1,5 @@
-import type { Metadata } from 'next';
+'use client';
+
 import Image from 'next/image';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -8,19 +9,7 @@ import { StaggerContainer } from '@/components/animations/StaggerContainer';
 import { StaggerItem } from '@/components/animations/StaggerItem';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-
-export const metadata: Metadata = {
-  title: 'درباره ما',
-  description:
-    'FTS Motors - نمایندگی رسمی خودرو با بیش از 20 سال تجربه در زمینه خرید و فروش خودروهای جدید و کارکرده',
-  keywords: ['درباره ما', 'FTS Motors', 'نمایندگی خودرو', 'تاریخچه'],
-  openGraph: {
-    title: 'درباره ما | FTS Motors',
-    description:
-      'FTS Motors - نمایندگی رسمی خودرو با بیش از 20 سال تجربه در زمینه خرید و فروش خودروهای جدید و کارکرده',
-    type: 'website',
-  },
-};
+import { useEffect } from 'react';
 
 const values = [
   {
