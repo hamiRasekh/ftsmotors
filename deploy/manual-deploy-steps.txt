@@ -1,0 +1,109 @@
+==========================================
+راهنمای گام به گام استقرار دستی
+==========================================
+
+مرحله 1: اتصال به سرور
+------------------------
+ssh -p 20 root@193.105.234.30
+Password: p@ss0509
+
+
+مرحله 2: راه‌اندازی اولیه
+--------------------------
+# به‌روزرسانی سیستم
+apt-get update && apt-get upgrade -y
+
+# نصب Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+
+# نصب Docker Compose
+curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+# اضافه کردن کاربر به گروه docker
+usermod -aG docker root
+
+# تنظیم فایروال
+ufw allow 20/tcp
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw enable
+
+# خروج و ورود مجدد (برای اعمال تغییرات)
+exit
+
+
+مرحله 3: آپلود پروژه
+----------------------
+# روی سرور
+mkdir -p /opt/ftsmotors
+cd /opt/ftsmotors
+
+# از سیستم محلی (Windows PowerShell):
+# scp -P 20 -r d:\websites\ftsmotors\* root@193.105.234.30:/opt/ftsmotors/
+
+# یا از Git:
+# git clone your-repo-url .
+
+
+مرحله 4: تنظیم Environment
+---------------------------
+cd /opt/ftsmotors
+cp env.production.example .env.production
+nano .env.production
+
+# تغییر این مقادیر:
+POSTGRES_PASSWORD=یک_رمز_قوی_برای_دیتابیس
+JWT_SECRET=$(openssl rand -base64 32)
+DOMAIN=ftsmotors.ir
+EMAIL=your-email@example.com
+
+
+مرحله 5: استقرار
+-----------------
+cd /opt/ftsmotors
+chmod +x deploy/*.sh
+./deploy/deploy.sh
+
+
+مرحله 6: بررسی
+----------------
+# بررسی وضعیت
+docker-compose -f docker-compose.prod.yml ps
+
+# بررسی لاگ‌ها
+docker-compose -f docker-compose.prod.yml logs -f
+
+# بررسی سلامت
+./deploy/check-health.sh
+
+# تست سایت
+curl https://ftsmotors.ir
+curl https://api.ftsmotors.ir/health
+
+
+==========================================
+دستورات مفید
+==========================================
+
+# مشاهده لاگ‌های یک سرویس خاص
+docker-compose -f docker-compose.prod.yml logs -f backend
+docker-compose -f docker-compose.prod.yml logs -f frontend
+
+# راه‌اندازی مجدد
+docker-compose -f docker-compose.prod.yml restart
+
+# توقف
+docker-compose -f docker-compose.prod.yml down
+
+# به‌روزرسانی
+git pull
+docker-compose -f docker-compose.prod.yml build
+docker-compose -f docker-compose.prod.yml up -d
+
+# بکاپ دیتابیس
+docker-compose -f docker-compose.prod.yml exec postgres pg_dump -U ftsmotors ftsmotors > backup.sql
+
+# بازگردانی بکاپ
+docker-compose -f docker-compose.prod.yml exec -T postgres psql -U ftsmotors ftsmotors < backup.sql
