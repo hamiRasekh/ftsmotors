@@ -26,7 +26,13 @@ services:
     container_name: ftsmotors-backend-prod
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-ftsmotors}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-ftsmotors}?schema=public
+      # Don't set DATABASE_URL here - it will be constructed in entrypoint script
+      # This allows proper URL encoding of password with special characters
+      POSTGRES_USER: ${POSTGRES_USER:-ftsmotors}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-ftsmotors}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       PORT: 4000
