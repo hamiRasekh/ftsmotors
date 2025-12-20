@@ -74,6 +74,7 @@ services:
 networks:
   ftsmotors-network:
     name: ftsmotors-network
+    external: false
     driver: bridge
 
 volumes:
