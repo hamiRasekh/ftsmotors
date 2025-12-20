@@ -25,20 +25,32 @@ RUN npm ci --legacy-peer-deps --only=production=false
 WORKDIR /app/apps/backend
 RUN npx prisma generate
 
-# Build the application - show output and check for errors
+# Debug: Check if source files exist
+RUN echo "📂 Checking source files..." && \
+    ls -la src/ | head -10 && \
+    test -f src/main.ts || (echo "❌ src/main.ts not found!" && exit 1)
+
+# Build the application - show full output
 RUN echo "🔨 Building NestJS application..." && \
-    npm run build || (echo "❌ Build failed!" && exit 1)
+    npm run build 2>&1 | tee /tmp/build.log && \
+    echo "✅ Build command completed"
 
 # Debug: Show what was built
 RUN echo "📁 Checking build output..." && \
-    pwd && \
+    echo "Current directory: $(pwd)" && \
+    echo "Contents of current directory:" && \
     ls -la && \
-    ls -la dist/ 2>/dev/null || echo "⚠️  dist directory not found" && \
-    find . -name "main.js" -type f 2>/dev/null || echo "⚠️  main.js not found anywhere"
+    echo "---" && \
+    echo "Checking for dist directory:" && \
+    (test -d dist && echo "✅ dist directory exists" || echo "❌ dist directory NOT found") && \
+    (test -d dist && ls -la dist/ || echo "Cannot list dist (doesn't exist)") && \
+    echo "---" && \
+    echo "Searching for main.js:" && \
+    find . -name "main.js" -type f 2>/dev/null | head -5 || echo "⚠️  main.js not found anywhere"
 
 # Verify build output exists
 RUN test -d dist || (echo "❌ Build failed - dist directory not found" && exit 1)
-RUN test -f dist/main.js || (echo "❌ Build failed - dist/main.js not found. Contents of dist:" && ls -la dist/ && exit 1)
+RUN test -f dist/main.js || (echo "❌ Build failed - dist/main.js not found. Full dist contents:" && ls -laR dist/ && exit 1)
 
 # Production stage
 FROM node:18-alpine AS runner
