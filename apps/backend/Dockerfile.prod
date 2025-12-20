@@ -25,12 +25,20 @@ RUN npm ci --legacy-peer-deps --only=production=false
 WORKDIR /app/apps/backend
 RUN npx prisma generate
 
-# Build the application
-RUN npm run build
+# Build the application - show output and check for errors
+RUN echo "🔨 Building NestJS application..." && \
+    npm run build || (echo "❌ Build failed!" && exit 1)
+
+# Debug: Show what was built
+RUN echo "📁 Checking build output..." && \
+    pwd && \
+    ls -la && \
+    ls -la dist/ 2>/dev/null || echo "⚠️  dist directory not found" && \
+    find . -name "main.js" -type f 2>/dev/null || echo "⚠️  main.js not found anywhere"
 
 # Verify build output exists
-RUN ls -la dist/ || (echo "❌ Build failed - dist directory not found" && exit 1)
-RUN test -f dist/main.js || (echo "❌ Build failed - dist/main.js not found" && exit 1)
+RUN test -d dist || (echo "❌ Build failed - dist directory not found" && exit 1)
+RUN test -f dist/main.js || (echo "❌ Build failed - dist/main.js not found. Contents of dist:" && ls -la dist/ && exit 1)
 
 # Production stage
 FROM node:18-alpine AS runner
