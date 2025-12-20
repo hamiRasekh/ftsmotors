@@ -49,6 +49,19 @@ npx prisma migrate deploy || {
   exit 1
 }
 
+# Verify dist/main.js exists before starting
+if [ ! -f "dist/main.js" ]; then
+  echo "❌ ERROR: dist/main.js not found!"
+  echo "Current directory: $(pwd)"
+  echo "Contents of /app:"
+  ls -la /app || true
+  echo "Contents of dist (if exists):"
+  ls -la dist/ || echo "dist directory does not exist"
+  exit 1
+fi
+
+echo "✅ Found dist/main.js, starting application..."
+
 # Start the application
 echo "🎉 Starting NestJS application..."
 exec node dist/main.js

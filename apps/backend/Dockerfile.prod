@@ -28,6 +28,10 @@ RUN npx prisma generate
 # Build the application
 RUN npm run build
 
+# Verify build output exists
+RUN ls -la dist/ || (echo "❌ Build failed - dist directory not found" && exit 1)
+RUN test -f dist/main.js || (echo "❌ Build failed - dist/main.js not found" && exit 1)
+
 # Production stage
 FROM node:18-alpine AS runner
 
@@ -55,6 +59,9 @@ COPY --from=base --chown=nestjs:nodejs /app/node_modules ./node_modules
 # Copy entrypoint script
 COPY --chown=nestjs:nodejs apps/backend/docker-entrypoint.prod.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
+
+# Verify dist/main.js exists after copy (as root before switching user)
+RUN test -f dist/main.js || (echo "❌ dist/main.js not found after copy" && ls -la dist/ && exit 1)
 
 USER nestjs
 
