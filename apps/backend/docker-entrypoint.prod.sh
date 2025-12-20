@@ -46,6 +46,6 @@ npx prisma migrate deploy || {
   exit 1
 }
 
-# Start the application
+# Start the application - main.js is in dist/src/main.js
 echo "🎉 Starting application..."
-exec node dist/main.js
+exec node dist/src/main.js
