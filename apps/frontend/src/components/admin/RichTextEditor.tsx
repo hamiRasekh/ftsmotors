@@ -86,7 +86,7 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
                       const quillInstance = (quillContainer as any)?.__quill || (quillEditor as any)?.__quill;
                       if (quillInstance) {
                         const range = quillInstance.getSelection();
-                        const index = range ? range.index : 0;
+                  const index = range ? range.index : 0;
                         quillInstance.insertEmbed(index, 'image', data.url);
                       }
                     }

@@ -39,9 +39,11 @@ async function bootstrap() {
     if (isDevelopment) {
       corsOrigins = true; // Allow all origins in development
     } else {
-      // Default origins for production
+      // Default origins for production - include all frontend domains
       corsOrigins = [
         frontendUrl,
+        'https://ftsmotors.ir',
+        'https://www.ftsmotors.ir',
         'http://localhost:3000',
         'http://127.0.0.1:3000',
         'http://frontend:3000',
@@ -96,4 +98,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-
