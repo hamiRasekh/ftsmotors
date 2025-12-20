@@ -1,7 +1,7 @@
 # PowerShell script to connect to production server
 # Usage: .\connect-to-server.ps1
 
-$serverIP = "91.107.249.88"
+$serverIP = "193.105.234.30"
 $serverPort = "22"
 $serverUser = "root"
 

@@ -1,7 +1,7 @@
 # راهنمای اتصال به سرور Production
 
 ## اطلاعات سرور:
-- **IP:** 91.107.249.88
+- **IP:** 193.105.234.30
 - **Port:** 22
 - **User:** root
 - **Password:** (باید از شما دریافت شود)
@@ -20,7 +20,7 @@ New-Item -ItemType Directory -Force -Path $HOME\.ssh
 # کپی محتوای ssh-config.txt به فایل config
 $configContent = @"
 Host production-server
-    HostName 91.107.249.88
+    HostName 193.105.234.30
     User root
     Port 22
     ServerAliveInterval 60
@@ -41,7 +41,7 @@ ssh production-server
 ```bash
 cat >> ~/.ssh/config << 'EOF'
 Host production-server
-    HostName 91.107.249.88
+    HostName 193.105.234.30
     User root
     Port 22
     ServerAliveInterval 60
@@ -63,12 +63,12 @@ ssh production-server
 
 ### Windows (PowerShell):
 ```powershell
-ssh -p 22 root@91.107.249.88
+ssh -p 22 root@193.105.234.30
 ```
 
 ### Linux/Mac:
 ```bash
-ssh -p 22 root@91.107.249.88
+ssh -p 22 root@193.105.234.30
 ```
 
 ## روش 3: استفاده از اسکریپت
@@ -95,13 +95,13 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 
 2. کپی کلید عمومی به سرور:
 ```bash
-ssh-copy-id -p 22 root@91.107.249.88
+ssh-copy-id -p 22 root@193.105.234.30
 ```
 
 3. اضافه کردن به config:
 ```
 Host production-server
-    HostName 91.107.249.88
+    HostName 193.105.234.30
     User root
     Port 22
     IdentityFile ~/.ssh/id_rsa

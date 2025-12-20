@@ -1,0 +1,10 @@
+Host production-server2
+    HostName 193.105.234.30
+    User root
+    Port 22
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    # برای Cursor Remote SSH
+    ForwardAgent yes
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null

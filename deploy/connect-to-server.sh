@@ -3,7 +3,7 @@
 # Bash script to connect to production server
 # Usage: ./connect-to-server.sh
 
-SERVER_IP="91.107.249.88"
+SERVER_IP="193.105.234.30"
 SERVER_PORT="22"
 SERVER_USER="root"
 
