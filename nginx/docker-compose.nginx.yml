@@ -25,4 +25,5 @@ services:
 
 networks:
   ftsmotors-network:
+    name: ftsmotors-network
     external: true
