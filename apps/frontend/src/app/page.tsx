@@ -138,13 +138,13 @@ export default async function HomePage() {
         ) : null}
 
         {/* CTA Section */}
-        <section className="py-20 bg-black text-white">
+        <section className="py-20 bg-primary text-white">
           <div className="container mx-auto px-4 text-center">
             <FadeIn>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 آماده برای شروع؟
               </h2>
-              <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              <p className="text-xl text-secondary/90 mb-8 max-w-2xl mx-auto">
                 با ما تماس بگیرید و از مشاوره رایگان ما بهره‌مند شوید
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

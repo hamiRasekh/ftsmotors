@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 async function getCars() {
   try {
-    const data = await api.cars.getAll({ limit: 20 });
+    const data = await api.cars.getAll({ published: true, limit: 20 });
     return data;
   } catch (error) {
     return { data: [], total: 0, page: 1, limit: 20, totalPages: 0 };

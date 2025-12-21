@@ -46,6 +46,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
     { href: '/news', label: 'اخبار' },
     { href: '/about', label: 'درباره ما' },
     { href: '/contact', label: 'تماس با ما' },
+    { href: '/feedback', label: 'انتقادات و پیشنهادات' },
   ];
 
   return (
@@ -132,53 +133,121 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
           </button>
         </nav>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
+      </div>
+
+      {/* Mobile Sidebar Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            {/* Overlay */}
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="lg:hidden border-t border-gray-200 overflow-hidden"
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden"
+            />
+            
+            {/* Sidebar */}
+            <motion.aside
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ 
+                type: 'spring', 
+                damping: 30, 
+                stiffness: 300,
+                mass: 0.8
+              }}
+              className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl z-[70] lg:hidden overflow-y-auto"
             >
-              <ul className="flex flex-col gap-1 py-4">
-                {navItems.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block px-4 py-2.5 text-gray-700 hover:text-primary hover:bg-muted transition-colors font-medium rounded-lg mx-2"
+              {/* Sidebar Header */}
+              <div className="sticky top-0 bg-primary text-white p-4 flex items-center justify-between border-b border-primary/20">
+                <div className="flex items-center gap-3">
+                  <Image
+                    src="/photo_2025-12-08_17-46-46-removebg-preview.png"
+                    alt="FTS Motors Logo"
+                    width={32}
+                    height={32}
+                    className="object-contain brightness-0 invert"
+                  />
+                  <span className="font-bold text-lg">FTS Motors</span>
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                  aria-label="بستن منو"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Navigation Items */}
+              <nav className="p-4">
+                <ul className="space-y-2">
+                  {navItems.map((item, index) => (
+                    <motion.li
+                      key={item.href}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05, duration: 0.3 }}
                     >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-                <li className="px-2 pt-2">
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block px-4 py-3 text-gray-700 hover:text-primary hover:bg-muted rounded-lg transition-all duration-200 font-medium group"
+                      >
+                        <span className="flex items-center gap-3">
+                          <span className="w-1 h-6 bg-transparent group-hover:bg-primary rounded-full transition-all duration-200"></span>
+                          {item.label}
+                        </span>
+                      </Link>
+                    </motion.li>
+                  ))}
+                </ul>
+
+                {/* CTA Button */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: navItems.length * 0.05, duration: 0.3 }}
+                  className="mt-6 pt-6 border-t border-gray-200"
+                >
                   <Link
                     href="/contact"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-accent transition-colors font-medium text-center"
+                    className="block w-full px-4 py-3 bg-primary text-white rounded-lg hover:bg-accent transition-colors font-semibold text-center shadow-lg"
                   >
                     دریافت مشاوره
                   </Link>
-                </li>
-                <li className="px-2">
+                </motion.div>
+
+                {/* Sidebar Toggle */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: (navItems.length + 1) * 0.05, duration: 0.3 }}
+                  className="mt-4"
+                >
                   <button
                     onClick={() => {
                       setSidebarOpen(true);
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium text-right"
+                    className="w-full px-4 py-3 text-gray-700 hover:bg-muted rounded-lg transition-colors font-medium text-right border border-gray-200"
                   >
                     منوی کناری
                   </button>
-                </li>
-              </ul>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+                </motion.div>
+              </nav>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
     </motion.header>
   );

@@ -28,15 +28,18 @@ export class CarsController {
   @Get()
   @ApiOperation({ summary: 'Get all cars with pagination' })
   @ApiQuery({ name: 'categoryId', required: false })
+  @ApiQuery({ name: 'published', required: false, type: Boolean })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   findAll(
     @Query('categoryId') categoryId?: string,
+    @Query('published') published?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
     return this.carsService.findAll(
       categoryId,
+      published === 'true' ? true : published === 'false' ? false : undefined,
       page ? parseInt(page) : 1,
       limit ? parseInt(limit) : 10,
     );

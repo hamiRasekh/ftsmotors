@@ -25,6 +25,30 @@ export const api = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       }).then((r) => r.json()),
+    sendOTP: (phone: string) =>
+      fetch(`${getAPIURL()}/api/auth/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      }).then(async (r) => {
+        if (!r.ok) {
+          const error = await r.json();
+          throw new Error(error.message || 'خطا در ارسال کد تایید');
+        }
+        return r.json();
+      }),
+    verifyOTP: (phone: string, code: string) =>
+      fetch(`${getAPIURL()}/api/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, code }),
+      }).then(async (r) => {
+        if (!r.ok) {
+          const error = await r.json();
+          throw new Error(error.message || 'کد تایید نامعتبر است');
+        }
+        return r.json();
+      }),
   },
   categories: {
     getAll: () => fetch(`${getAPIURL()}/api/categories`).then((r) => r.json()),
@@ -218,6 +242,24 @@ export const api = {
       fetch(`${getAPIURL()}/api/pages/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+  },
+  profile: {
+    get: () =>
+      fetch(`${getAPIURL()}/api/users/profile`, {
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+    update: (data: { name?: string; email?: string; avatar?: string }) =>
+      fetch(`${getAPIURL()}/api/users/profile`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      }).then((r) => r.json()),
+    changePassword: (data: { oldPassword: string; newPassword: string }) =>
+      fetch(`${getAPIURL()}/api/users/change-password`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
       }).then((r) => r.json()),
   },
 };

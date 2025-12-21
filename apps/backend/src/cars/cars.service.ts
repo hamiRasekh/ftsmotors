@@ -7,9 +7,17 @@ import { UpdateCarDto } from './dto/update-car.dto';
 export class CarsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(categoryId?: string, page = 1, limit = 10) {
+  async findAll(categoryId?: string, published?: boolean, page = 1, limit = 10) {
     const skip = (page - 1) * limit;
-    const where = categoryId ? { categoryId } : {};
+    const where: any = {};
+    
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
+    
+    if (published !== undefined) {
+      where.published = published;
+    }
 
     const [data, total] = await Promise.all([
       this.prisma.car.findMany({

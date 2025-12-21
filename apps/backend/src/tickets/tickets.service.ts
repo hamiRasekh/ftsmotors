@@ -39,7 +39,7 @@ export class TicketsService {
       where.status = status;
     }
 
-    return this.prisma.ticket.findMany({
+    const tickets = await this.prisma.ticket.findMany({
       where,
       include: {
         user: {
@@ -51,11 +51,17 @@ export class TicketsService {
         },
         messages: {
           orderBy: { createdAt: 'asc' },
-          take: 1,
+        },
+        _count: {
+          select: {
+            messages: true,
+          },
         },
       },
       orderBy: { createdAt: 'desc' },
     });
+
+    return tickets;
   }
 
   async findOne(id: string, userId?: string) {
@@ -115,13 +121,22 @@ export class TicketsService {
 
   async addMessage(ticketId: string, content: string, isAdmin: boolean) {
     await this.findOne(ticketId);
-    return this.prisma.ticketMessage.create({
+    
+    const message = await this.prisma.ticketMessage.create({
       data: {
         ticketId,
         content,
         isAdmin,
       },
     });
+
+    // Update ticket's updatedAt timestamp
+    await this.prisma.ticket.update({
+      where: { id: ticketId },
+      data: { updatedAt: new Date() },
+    });
+
+    return message;
   }
 }
 

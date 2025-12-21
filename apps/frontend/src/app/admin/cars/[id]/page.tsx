@@ -22,6 +22,7 @@ export default function EditCarPage() {
     seoTitle: '',
     seoDescription: '',
     seoKeywords: '',
+    published: false,
   });
   const [imageUrl, setImageUrl] = useState('');
   const [featureKey, setFeatureKey] = useState('');
@@ -72,6 +73,7 @@ export default function EditCarPage() {
           seoTitle: data.seoTitle || '',
           seoDescription: data.seoDescription || '',
           seoKeywords: data.seoKeywords || '',
+          published: data.published || false,
         });
       }
     } catch (error) {
@@ -385,6 +387,19 @@ export default function EditCarPage() {
                 className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
+          </div>
+
+          <div className="flex items-center gap-2 pt-4">
+            <input
+              type="checkbox"
+              id="published"
+              checked={formData.published}
+              onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+              className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            <label htmlFor="published" className="font-semibold cursor-pointer">
+              منتشر شده
+            </label>
           </div>
 
           <div className="flex gap-4 pt-4">

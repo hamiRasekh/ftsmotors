@@ -21,7 +21,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const { data: cars } = useQuery({
     queryKey: ['cars', 'sidebar'],
-    queryFn: () => api.cars.getAll({ limit: 10 }),
+    queryFn: () => api.cars.getAll({ published: true, limit: 10 }),
   });
 
   return (

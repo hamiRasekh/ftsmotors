@@ -6,58 +6,72 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // For server-side: use backend service name in Docker, otherwise localhost
-// For client-side: use NEXT_PUBLIC_API_URL if set, otherwise construct from window.location
+// For client-side: ALWAYS use full URL to https://api.ftsmotors.ir (no proxy)
 export function getAPIUrl(): string {
+  // Server-side: use backend service name in Docker
   if (typeof window === 'undefined') {
     return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:4000';
   }
   
-  // If NEXT_PUBLIC_API_URL is set, use it
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
-  }
-  
-  // Otherwise, construct from current location
+  // Client-side: ALWAYS use full URL, never relative path
+  // This ensures requests go directly to https://api.ftsmotors.ir, not through Next.js proxy
   const hostname = window.location.hostname;
+  
+  // Development: use localhost
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'http://localhost:4000';
   }
   
-  // For production, construct api subdomain
-  const protocol = window.location.protocol;
+  // Production: always use https://api.ftsmotors.ir
+  // Don't use NEXT_PUBLIC_API_URL in client-side to avoid proxy issues
+  const protocol = window.location.protocol === 'https:' ? 'https:' : 'https:';
   const domain = hostname.replace(/^www\./, '');
+  
+  // For ftsmotors.ir domain, always use api.ftsmotors.ir
+  if (domain === 'ftsmotors.ir' || domain.endsWith('.ftsmotors.ir')) {
+    return 'https://api.ftsmotors.ir';
+  }
+  
+  // For other domains, construct api subdomain
   return `${protocol}//api.${domain}`;
 }
 
 // For backward compatibility - but prefer using getAPIUrl() function
 // This will work in template strings: `${API_URL}`
+// IMPORTANT: In client-side code, always use getAPIUrl() function instead of API_URL constant
+// API_URL is evaluated at import time, which may not work correctly in client-side
 export const API_URL = getAPIUrl();
 
 // Get the base URL for Socket.IO (cannot use rewrites, needs full URL)
 // Always use full URL, not relative path
 export function getSocketUrl(): string {
+  // Server-side: use backend service name in Docker
   if (typeof window === 'undefined') {
     return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:4000';
   }
   
-  // If NEXT_PUBLIC_API_URL is set, use it (remove /api if present)
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    const url = process.env.NEXT_PUBLIC_API_URL;
-    return url.replace('/api', '').replace(/\/$/, '');
-  }
-  
-  // Otherwise, construct from current location
+  // Client-side: ALWAYS use full URL to https://api.ftsmotors.ir
   const hostname = window.location.hostname;
+  
+  // Development: use localhost
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'http://localhost:4000';
   }
   
-  // For production, construct api subdomain
-  const protocol = window.location.protocol;
+  // Production: always use https://api.ftsmotors.ir
+  const protocol = window.location.protocol === 'https:' ? 'https:' : 'https:';
   const domain = hostname.replace(/^www\./, '');
+  
+  // For ftsmotors.ir domain, always use api.ftsmotors.ir
+  if (domain === 'ftsmotors.ir' || domain.endsWith('.ftsmotors.ir')) {
+    return 'https://api.ftsmotors.ir';
+  }
+  
+  // For other domains, construct api subdomain
   return `${protocol}//api.${domain}`;
 }
 
 // For backward compatibility - but prefer using getSocketUrl() function
+// IMPORTANT: In client-side code, always use getSocketUrl() function instead of SOCKET_URL constant
 export const SOCKET_URL = getSocketUrl();
 

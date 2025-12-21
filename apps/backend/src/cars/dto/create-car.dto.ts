@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsArray, IsOptional, IsObject } from 'class-validator';
+import { IsString, IsArray, IsOptional, IsObject, IsBoolean } from 'class-validator';
 
 export class CreateCarDto {
   @ApiProperty()
@@ -46,5 +46,10 @@ export class CreateCarDto {
   @IsOptional()
   @IsString()
   seoKeywords?: string;
+
+  @ApiProperty({ required: false, default: false })
+  @IsOptional()
+  @IsBoolean()
+  published?: boolean;
 }
 

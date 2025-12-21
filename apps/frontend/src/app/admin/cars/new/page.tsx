@@ -21,6 +21,7 @@ export default function NewCarPage() {
     seoTitle: '',
     seoDescription: '',
     seoKeywords: '',
+    published: false,
   });
   const [imageUrl, setImageUrl] = useState('');
   const [featureKey, setFeatureKey] = useState('');
@@ -376,6 +377,19 @@ export default function NewCarPage() {
                 placeholder="کلمه1, کلمه2, کلمه3"
               />
             </div>
+          </div>
+
+          <div className="flex items-center gap-2 pt-4">
+            <input
+              type="checkbox"
+              id="published"
+              checked={formData.published}
+              onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+              className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            <label htmlFor="published" className="font-semibold cursor-pointer">
+              منتشر شده
+            </label>
           </div>
 
           <div className="flex gap-4 pt-4">

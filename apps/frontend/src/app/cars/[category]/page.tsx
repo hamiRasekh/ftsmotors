@@ -29,7 +29,7 @@ export async function generateMetadata({
 async function getCategoryData(slug: string) {
   try {
     const category = await api.categories.getBySlug(slug);
-    const cars = await api.cars.getAll({ categoryId: category.id, limit: 50 });
+    const cars = await api.cars.getAll({ categoryId: category.id, published: true, limit: 50 });
     return { category, cars };
   } catch (error) {
     return { category: null, cars: { data: [], total: 0 } };
