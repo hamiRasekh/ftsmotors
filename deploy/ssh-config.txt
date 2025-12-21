@@ -1,0 +1,9 @@
+Host production-server
+    HostName 193.105.234.30
+    User root
+    Port 22
+    # Uncomment the following line if you want to use SSH key instead of password
+    # IdentityFile ~/.ssh/id_rsa
+    # PreferredAuthentications password
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
