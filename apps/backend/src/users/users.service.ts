@@ -1,12 +1,15 @@
 import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findByPhone(phone: string, includePassword = false) {
+  async findByPhone(phone: string, includePassword?: false): Promise<Omit<User, 'password'> | null>;
+  async findByPhone(phone: string, includePassword: true): Promise<User | null>;
+  async findByPhone(phone: string, includePassword = false): Promise<Omit<User, 'password'> | User | null> {
     if (includePassword) {
       return this.prisma.user.findUnique({
         where: { phone },
