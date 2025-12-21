@@ -166,7 +166,7 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
                 datePublished: news.publishedAt || news.createdAt,
                 author: {
                   '@type': 'Person',
-                  name: news.author?.name || news.author?.email || 'FTS Motors',
+                  name: news.author?.name || news.author?.email || 'فیدار تجارت سوبا',
                 },
               }),
             }}

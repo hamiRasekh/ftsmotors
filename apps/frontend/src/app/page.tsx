@@ -27,9 +27,9 @@ const Car3DSlider = dynamic(
 
 export const metadata: Metadata = {
   title: 'خانه',
-  description: 'FTS Motors - نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده',
+  description: 'فیدار تجارت سوبا - نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده',
   openGraph: {
-    title: 'FTS Motors - نمایندگی رسمی خودرو',
+    title: 'فیدار تجارت سوبا - نمایندگی رسمی خودرو',
     description: 'خرید و فروش خودروهای جدید و کارکرده',
     type: 'website',
   },

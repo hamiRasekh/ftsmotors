@@ -177,11 +177,11 @@ export default async function ArticlePage({ params }: { params: { slug: string }
                 dateModified: article.updatedAt || article.publishedAt || article.createdAt,
                 author: {
                   '@type': 'Person',
-                  name: article.author?.name || article.author?.email || 'FTS Motors',
+                  name: article.author?.name || article.author?.email || 'فیدار تجارت سوبا',
                 },
                 publisher: {
                   '@type': 'Organization',
-                  name: 'FTS Motors',
+                  name: 'فیدار تجارت سوبا',
                   logo: {
                     '@type': 'ImageObject',
                     url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/photo_2025-12-08_17-46-46-removebg-preview.png`,

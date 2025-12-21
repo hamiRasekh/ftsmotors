@@ -5,24 +5,29 @@ import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: {
-    default: 'FTS Motors - نمایندگی خودرو',
-    template: '%s | FTS Motors',
+    default: 'فیدار تجارت سوبا - نمایندگی خودرو',
+    template: '%s | فیدار تجارت سوبا',
   },
   description: 'نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده',
   keywords: ['خودرو', 'نمایندگی خودرو', 'فروش خودرو', 'خرید خودرو'],
-  authors: [{ name: 'FTS Motors' }],
-  creator: 'FTS Motors',
+  authors: [{ name: 'فیدار تجارت سوبا' }],
+  creator: 'فیدار تجارت سوبا',
+  icons: {
+    icon: '/photo_2025-12-08_17-46-46-removebg-preview.png',
+    shortcut: '/photo_2025-12-08_17-46-46-removebg-preview.png',
+    apple: '/photo_2025-12-08_17-46-46-removebg-preview.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'fa_IR',
     url: 'https://ftsmotors.com',
-    siteName: 'FTS Motors',
-    title: 'FTS Motors - نمایندگی خودرو',
+    siteName: 'فیدار تجارت سوبا',
+    title: 'فیدار تجارت سوبا - نمایندگی خودرو',
     description: 'نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FTS Motors - نمایندگی خودرو',
+    title: 'فیدار تجارت سوبا - نمایندگی خودرو',
     description: 'نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده',
   },
   robots: {
@@ -47,6 +52,9 @@ export default function RootLayout({
     <html lang="fa" dir="rtl">
       <head>
         <link rel="canonical" href={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'} />
+        <link rel="icon" type="image/png" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
+        <link rel="shortcut icon" type="image/png" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
+        <link rel="apple-touch-icon" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
       </head>
       <body>
         <Providers>{children}</Providers>

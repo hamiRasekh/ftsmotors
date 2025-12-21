@@ -11,11 +11,11 @@ import { api } from '@/lib/api';
 
 export const metadata: Metadata = {
   title: 'خودروها',
-  description: 'لیست کامل خودروهای موجود در FTS Motors - خرید و فروش خودروهای جدید و کارکرده',
+  description: 'لیست کامل خودروهای موجود در فیدار تجارت سوبا - خرید و فروش خودروهای جدید و کارکرده',
   keywords: ['خودرو', 'خرید خودرو', 'فروش خودرو', 'لیست خودروها'],
   openGraph: {
-    title: 'خودروها | FTS Motors',
-    description: 'لیست کامل خودروهای موجود در FTS Motors',
+    title: 'خودروها | فیدار تجارت سوبا',
+    description: 'لیست کامل خودروهای موجود در فیدار تجارت سوبا',
     type: 'website',
   },
 };

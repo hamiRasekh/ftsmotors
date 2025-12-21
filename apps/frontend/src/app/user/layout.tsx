@@ -57,12 +57,12 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
           <Link href="/user/dashboard" className="flex items-center gap-3">
             <Image
               src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-              alt="FTS Motors"
+              alt="فیدار تجارت سوبا"
               width={32}
               height={32}
               className="object-contain"
             />
-            <span className="text-xl font-bold text-primary">FTS Motors</span>
+            <span className="text-xl font-bold text-primary">فیدار تجارت سوبا</span>
           </Link>
         </div>
 

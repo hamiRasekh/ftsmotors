@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import { createPortal } from 'react-dom';
 import { Sidebar } from './layout/Sidebar';
 
 interface HeaderProps {
@@ -18,7 +19,12 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,7 +80,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
           <Link href="/" className="flex items-center flex-shrink-0">
             <Image
               src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-              alt="FTS Motors Logo"
+              alt="فیدار تجارت سوبا"
               width={40}
               height={40}
               className={`object-contain w-8 h-8 sm:w-10 sm:h-10 transition-all ${
@@ -89,68 +95,77 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
               const isActive = pathname === item.href;
               
               return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={`relative px-3 xl:px-4 py-2 text-sm xl:text-base font-medium transition-all duration-300 group overflow-hidden ${
-                      isHomePage && !scrolled
-                        ? isActive ? 'text-white' : 'text-white/90'
-                        : isActive ? 'text-primary' : 'text-gray-700'
-                    }`}
+                <li key={item.href} className="relative">
+                  <motion.div
+                    className="relative"
+                    whileHover="hover"
+                    initial="initial"
                   >
-                    <span className="relative z-10">{item.label}</span>
-                    
-                    {/* Animated Underline - slides from right to left */}
-                    <motion.div
-                      className={`absolute bottom-0 right-0 h-0.5 ${
+                    <Link
+                      href={item.href}
+                      className={`relative px-3 xl:px-4 py-2 text-sm xl:text-base font-medium transition-all duration-300 block overflow-hidden ${
                         isHomePage && !scrolled
-                          ? 'bg-white'
-                          : 'bg-gradient-to-l from-primary via-accent to-primary'
+                          ? isActive ? 'text-white' : 'text-white/90'
+                          : isActive ? 'text-primary' : 'text-gray-700'
                       }`}
-                      initial={{ width: isActive ? '100%' : '0%' }}
-                      whileHover={{ width: '100%' }}
-                      transition={{
-                        duration: 0.4,
-                        ease: [0.4, 0, 0.2, 1],
-                      }}
-                    />
-                    
-                    {/* Animated Background Glow */}
-                    <motion.div
-                      className={`absolute inset-0 rounded-lg -z-0 ${
-                        isHomePage && !scrolled
-                          ? 'bg-white/5'
-                          : 'bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5'
-                      }`}
-                      initial={{ opacity: isActive ? 1 : 0, scale: 1 }}
-                      whileHover={{
-                        opacity: 1,
-                        scale: 1.05,
-                      }}
-                      transition={{
-                        duration: 0.3,
-                        ease: 'easeOut',
-                      }}
-                    />
-                    
-                    {/* Shine Effect - sweeps across on hover */}
-                    <motion.div
-                      className={`absolute inset-0 rounded-lg pointer-events-none ${
-                        isHomePage && !scrolled
-                          ? 'bg-gradient-to-r from-transparent via-white/30 to-transparent'
-                          : 'bg-gradient-to-r from-transparent via-primary/30 to-transparent'
-                      }`}
-                      initial={{ x: '-100%', opacity: 0 }}
-                      whileHover={{
-                        x: '200%',
-                        opacity: [0, 1, 0],
-                        transition: {
-                          duration: 0.8,
-                          ease: 'easeInOut',
-                        },
-                      }}
-                    />
-                  </Link>
+                    >
+                      <span className="relative z-10">{item.label}</span>
+                      
+                      {/* Animated Underline - slides from right to left */}
+                      <motion.div
+                        className={`absolute bottom-0 right-0 h-0.5 ${
+                          isHomePage && !scrolled
+                            ? 'bg-white'
+                            : 'bg-gradient-to-l from-primary via-accent to-primary'
+                        }`}
+                        variants={{
+                          initial: { width: isActive ? '100%' : '0%' },
+                          hover: { width: '100%' },
+                        }}
+                        transition={{
+                          duration: 0.4,
+                          ease: [0.4, 0, 0.2, 1],
+                        }}
+                      />
+                      
+                      {/* Animated Background Glow */}
+                      <motion.div
+                        className={`absolute inset-0 rounded-lg pointer-events-none ${
+                          isHomePage && !scrolled
+                            ? 'bg-white/5'
+                            : 'bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5'
+                        }`}
+                        variants={{
+                          initial: { opacity: isActive ? 1 : 0, scale: 1 },
+                          hover: { opacity: 1, scale: 1.05 },
+                        }}
+                        transition={{
+                          duration: 0.3,
+                          ease: 'easeOut',
+                        }}
+                      />
+                      
+                      {/* Shine Effect - sweeps across on hover */}
+                      <motion.div
+                        className={`absolute inset-0 rounded-lg pointer-events-none ${
+                          isHomePage && !scrolled
+                            ? 'bg-gradient-to-r from-transparent via-white/30 to-transparent'
+                            : 'bg-gradient-to-r from-transparent via-primary/30 to-transparent'
+                        }`}
+                        variants={{
+                          initial: { x: '-100%', opacity: 0 },
+                          hover: {
+                            x: '200%',
+                            opacity: [0, 1, 0],
+                            transition: {
+                              duration: 0.8,
+                              ease: 'easeInOut',
+                            },
+                          },
+                        }}
+                      />
+                    </Link>
+                  </motion.div>
                 </li>
               );
             })}
@@ -192,44 +207,62 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
 
       </div>
 
-      {/* Mobile Sidebar Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <>
-            {/* Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden"
-            />
-            
-            {/* Sidebar */}
-            <motion.aside
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ 
-                type: 'spring', 
-                damping: 30, 
-                stiffness: 300,
-                mass: 0.8
-              }}
-              className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl z-[70] lg:hidden overflow-y-auto"
-            >
+      {/* Mobile Sidebar Menu - Rendered via Portal */}
+      {mounted && typeof window !== 'undefined' ? createPortal(
+        <AnimatePresence mode="wait">
+          {mobileMenuOpen && (
+            <>
+              {/* Overlay */}
+              <motion.div
+                key="overlay"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => setMobileMenuOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm lg:hidden"
+                style={{ 
+                  zIndex: 9998,
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                }}
+              />
+              
+              {/* Sidebar */}
+              <motion.aside
+                key="sidebar"
+                initial={{ x: '-100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '-100%' }}
+                transition={{ 
+                  type: 'spring', 
+                  damping: 30, 
+                  stiffness: 300,
+                  mass: 0.8
+                }}
+                className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl lg:hidden overflow-y-auto"
+                style={{ 
+                  zIndex: 9999,
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  height: '100vh',
+                }}
+              >
               {/* Sidebar Header */}
-              <div className="sticky top-0 bg-primary text-white p-4 flex items-center justify-between border-b border-primary/20">
+              <div className="sticky top-0 bg-primary text-white p-4 flex items-center justify-between border-b border-primary/20 z-10">
                 <div className="flex items-center gap-3">
                   <Image
                     src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-                    alt="FTS Motors Logo"
+                    alt="فیدار تجارت سوبا"
                     width={32}
                     height={32}
                     className="object-contain brightness-0 invert"
                   />
-                  <span className="font-bold text-lg">FTS Motors</span>
+                  <span className="font-bold text-lg">فیدار تجارت سوبا</span>
                 </div>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
@@ -245,25 +278,66 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
               {/* Navigation Items */}
               <nav className="p-4">
                 <ul className="space-y-2">
-                  {navItems.map((item, index) => (
-                    <motion.li
-                      key={item.href}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05, duration: 0.3 }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block px-4 py-3 text-gray-700 hover:text-primary hover:bg-muted rounded-lg transition-all duration-200 font-medium group"
+                  {navItems.map((item, index) => {
+                    const isActive = pathname === item.href;
+                    
+                    return (
+                      <motion.li
+                        key={item.href}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05, duration: 0.3 }}
                       >
-                        <span className="flex items-center gap-3">
-                          <span className="w-1 h-6 bg-transparent group-hover:bg-primary rounded-full transition-all duration-200"></span>
-                          {item.label}
-                        </span>
-                      </Link>
-                    </motion.li>
-                  ))}
+                        <Link
+                          href={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`relative block px-4 py-3 rounded-lg transition-all duration-300 font-medium group overflow-hidden ${
+                            isActive
+                              ? 'bg-primary text-white shadow-md'
+                              : 'text-gray-700 hover:text-primary hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10'
+                          }`}
+                        >
+                          <span className="relative z-10 flex items-center gap-3">
+                            <motion.span
+                              className={`w-1 h-6 rounded-full ${
+                                isActive
+                                  ? 'bg-white'
+                                  : 'bg-transparent group-hover:bg-primary'
+                              }`}
+                              animate={{
+                                height: isActive ? '100%' : '1.5rem',
+                                opacity: isActive ? 1 : 0.5,
+                              }}
+                              whileHover={{
+                                height: '100%',
+                                opacity: 1,
+                              }}
+                              transition={{ duration: 0.3 }}
+                            />
+                            {item.label}
+                          </span>
+                          
+                          {/* Active indicator background */}
+                          {isActive && (
+                            <motion.div
+                              className="absolute inset-0 bg-gradient-to-r from-primary to-accent"
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ duration: 0.3 }}
+                            />
+                          )}
+                          
+                          {/* Hover effect */}
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 opacity-0 group-hover:opacity-100"
+                            initial={{ x: '-100%' }}
+                            whileHover={{ x: 0 }}
+                            transition={{ duration: 0.3 }}
+                          />
+                        </Link>
+                      </motion.li>
+                    );
+                  })}
                 </ul>
 
                 {/* CTA Button */}
@@ -281,29 +355,13 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
                     دریافت مشاوره
                   </Link>
                 </motion.div>
-
-                {/* Sidebar Toggle */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: (navItems.length + 1) * 0.05, duration: 0.3 }}
-                  className="mt-4"
-                >
-                  <button
-                    onClick={() => {
-                      setSidebarOpen(true);
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full px-4 py-3 text-gray-700 hover:bg-muted rounded-lg transition-colors font-medium text-right border border-gray-200"
-                  >
-                    منوی کناری
-                  </button>
-                </motion.div>
               </nav>
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+              </motion.aside>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      ) : null}
 
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
     </motion.header>

@@ -10,10 +10,10 @@ import { api } from '@/lib/api';
 
 export const metadata: Metadata = {
   title: 'اخبار',
-  description: 'آخرین اخبار خودرو و صنعت خودرو - FTS Motors',
+  description: 'آخرین اخبار خودرو و صنعت خودرو - فیدار تجارت سوبا',
   keywords: ['اخبار خودرو', 'اخبار صنعت خودرو', 'تازه‌ترین اخبار'],
   openGraph: {
-    title: 'اخبار | FTS Motors',
+    title: 'اخبار | فیدار تجارت سوبا',
     description: 'آخرین اخبار خودرو و صنعت خودرو',
     type: 'website',
   },

@@ -24,7 +24,7 @@ interface SiteSettings {
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<SiteSettings>({
-    siteName: 'FTS Motors',
+    siteName: 'فیدار تجارت سوبا',
     siteDescription: '',
     siteUrl: '',
     siteLogo: '',

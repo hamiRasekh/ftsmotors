@@ -69,7 +69,7 @@ export default function LoginPage() {
               <Link href="/" className="inline-block mb-4">
                 <Image
                   src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-                  alt="FTS Motors"
+                  alt="فیدار تجارت سوبا"
                   width={64}
                   height={64}
                   className="mx-auto"

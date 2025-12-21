@@ -12,12 +12,12 @@ export function Footer() {
               <Link href="/" className="flex items-center gap-3 mb-4">
                 <Image
                   src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-                  alt="FTS Motors Logo"
+                  alt="فیدار تجارت سوبا"
                   width={40}
                   height={40}
                   className="object-contain"
                 />
-                <span className="text-xl font-bold text-primary">FTS Motors</span>
+                <span className="text-xl font-bold text-primary">فیدار تجارت سوبا</span>
               </Link>
               <p className="text-gray-600 text-sm">
                 نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده با بهترین کیفیت و خدمات
@@ -84,7 +84,7 @@ export function Footer() {
         </div>
         <FadeIn delay={0.4}>
           <div className="mt-8 pt-8 border-t border-gray-200 text-center text-sm text-gray-600">
-            © {new Date().getFullYear()} FTS Motors. تمامی حقوق محفوظ است.
+            © {new Date().getFullYear()} فیدار تجارت سوبا. تمامی حقوق محفوظ است.
           </div>
         </FadeIn>
       </div>

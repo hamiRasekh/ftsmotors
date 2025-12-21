@@ -97,7 +97,7 @@ export default function AdminLoginPage() {
           </button>
         </form>
         <div className="mt-6 text-center text-sm text-gray-600">
-          <p>FTS Motors Admin Panel</p>
+          <p>فیدار تجارت سوبا - پنل مدیریت</p>
         </div>
       </div>
     </div>
