@@ -50,7 +50,7 @@ export class UsersService {
   }
 
   async create(phone: string, password: string, role = 'USER', name?: string, email?: string) {
-    const existingUser = await this.findByPhone(phone);
+    const existingUser = await this.findByPhone(phone, true); // Include password to check if exists
     if (existingUser) {
       throw new ConflictException('User with this phone number already exists');
     }
@@ -78,22 +78,10 @@ export class UsersService {
   }
 
   async createWithoutPassword(phone: string, name?: string, email?: string) {
-    const existingUser = await this.findByPhone(phone);
+    const existingUser = await this.findByPhone(phone, false); // Don't include password
     if (existingUser) {
-      // Return existing user with same select structure
-      return this.prisma.user.findUnique({
-        where: { phone },
-        select: {
-          id: true,
-          phone: true,
-          email: true,
-          name: true,
-          avatar: true,
-          role: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
+      // Return existing user (already has correct select structure)
+      return existingUser;
     }
 
     // Create user with a random password hash (user won't use password login)
