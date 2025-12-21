@@ -257,8 +257,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <span>خروج</span>
                       </button>
                     </div>
-                  </div>
-                )}
+                  </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </div>
