@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { SOCKET_URL } from '@/lib/utils';
+import { getSocketUrl } from '@/lib/utils';
 import { api } from '@/lib/api';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { FadeIn } from '@/components/animations/FadeIn';
@@ -18,7 +18,7 @@ export default function ChatPage() {
     if (!token) return;
 
     // Socket.IO needs full URL without /api prefix
-    const socketUrl = SOCKET_URL.replace('/api', '').replace(/\/$/, '');
+    const socketUrl = getSocketUrl().replace('/api', '').replace(/\/$/, '');
     const newSocket = io(socketUrl, {
       auth: { token },
     });

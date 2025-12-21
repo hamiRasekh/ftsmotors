@@ -6,21 +6,58 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // For server-side: use backend service name in Docker, otherwise localhost
-// For client-side: use NEXT_PUBLIC_API_URL if set, otherwise use /api which will be proxied by Next.js rewrites
-export const API_URL = 
-  typeof window === 'undefined'
-    ? (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:4000')
-    : (process.env.NEXT_PUBLIC_API_URL || 'https://api.ftsmotors.ir');
+// For client-side: use NEXT_PUBLIC_API_URL if set, otherwise construct from window.location
+export function getAPIUrl(): string {
+  if (typeof window === 'undefined') {
+    return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:4000';
+  }
+  
+  // If NEXT_PUBLIC_API_URL is set, use it
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  
+  // Otherwise, construct from current location
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:4000';
+  }
+  
+  // For production, construct api subdomain
+  const protocol = window.location.protocol;
+  const domain = hostname.replace(/^www\./, '');
+  return `${protocol}//api.${domain}`;
+}
+
+// For backward compatibility - but prefer using getAPIUrl() function
+// This will work in template strings: `${API_URL}`
+export const API_URL = getAPIUrl();
 
 // Get the base URL for Socket.IO (cannot use rewrites, needs full URL)
 // Always use full URL, not relative path
-// For client-side, use NEXT_PUBLIC_API_URL or construct from current origin
-export const SOCKET_URL = 
-  typeof window === 'undefined'
-    ? (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:4000')
-    : (process.env.NEXT_PUBLIC_API_URL && !process.env.NEXT_PUBLIC_API_URL.startsWith('/')
-        ? process.env.NEXT_PUBLIC_API_URL
-        : (typeof window !== 'undefined' 
-            ? `${window.location.protocol}//api.${window.location.hostname.replace(/^www\./, '')}`
-            : 'http://localhost:4000'));
+export function getSocketUrl(): string {
+  if (typeof window === 'undefined') {
+    return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:4000';
+  }
+  
+  // If NEXT_PUBLIC_API_URL is set, use it (remove /api if present)
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    return url.replace('/api', '').replace(/\/$/, '');
+  }
+  
+  // Otherwise, construct from current location
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:4000';
+  }
+  
+  // For production, construct api subdomain
+  const protocol = window.location.protocol;
+  const domain = hostname.replace(/^www\./, '');
+  return `${protocol}//api.${domain}`;
+}
+
+// For backward compatibility - but prefer using getSocketUrl() function
+export const SOCKET_URL = getSocketUrl();
 

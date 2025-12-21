@@ -1,4 +1,4 @@
-import { API_URL } from './utils';
+import { getAPIUrl } from './utils';
 
 const getAuthHeaders = () => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
@@ -8,25 +8,28 @@ const getAuthHeaders = () => {
   };
 };
 
+// Get API URL dynamically
+const getAPIURL = () => getAPIUrl();
+
 export const api = {
   auth: {
     login: (data: { phone: string; password: string }) =>
-      fetch(`${API_URL}/api/auth/login`, {
+      fetch(`${getAPIURL()}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       }).then((r) => r.json()),
     register: (data: { phone: string; password: string; name?: string; email?: string }) =>
-      fetch(`${API_URL}/api/auth/register`, {
+      fetch(`${getAPIURL()}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       }).then((r) => r.json()),
   },
   categories: {
-    getAll: () => fetch(`${API_URL}/api/categories`).then((r) => r.json()),
+    getAll: () => fetch(`${getAPIURL()}/api/categories`).then((r) => r.json()),
     getBySlug: (slug: string) =>
-      fetch(`${API_URL}/api/categories/slug/${slug}`).then((r) => r.json()),
+      fetch(`${getAPIURL()}/api/categories/slug/${slug}`).then((r) => r.json()),
   },
   cars: {
     getAll: (params?: { categoryId?: string; page?: number; limit?: number; published?: boolean }) => {
@@ -35,10 +38,10 @@ export const api = {
       if (params?.page) searchParams.append('page', params.page.toString());
       if (params?.limit) searchParams.append('limit', params.limit.toString());
       if (params?.published !== undefined) searchParams.append('published', params.published.toString());
-      return fetch(`${API_URL}/api/cars?${searchParams}`).then((r) => r.json());
+      return fetch(`${getAPIURL()}/api/cars?${searchParams}`).then((r) => r.json());
     },
     getBySlug: (slug: string) =>
-      fetch(`${API_URL}/api/cars/slug/${slug}`).then((r) => r.json()),
+      fetch(`${getAPIURL()}/api/cars/slug/${slug}`).then((r) => r.json()),
   },
   articles: {
     getAll: (params?: { published?: boolean; page?: number; limit?: number }) => {
@@ -52,7 +55,7 @@ export const api = {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
       
-      return fetch(`${API_URL}/api/articles?${searchParams}`, {
+      return fetch(`${getAPIURL()}/api/articles?${searchParams}`, {
         signal: controller.signal,
       })
         .then((r) => {
@@ -73,7 +76,7 @@ export const api = {
         });
     },
     getBySlug: (slug: string) =>
-      fetch(`${API_URL}/api/articles/slug/${slug}`).then((r) => r.json()),
+      fetch(`${getAPIURL()}/api/articles/slug/${slug}`).then((r) => r.json()),
   },
   news: {
     getAll: (params?: { published?: boolean; page?: number; limit?: number }) => {
@@ -87,7 +90,7 @@ export const api = {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
       
-      return fetch(`${API_URL}/api/news?${searchParams}`, {
+      return fetch(`${getAPIURL()}/api/news?${searchParams}`, {
         signal: controller.signal,
       })
         .then((r) => {
@@ -108,7 +111,7 @@ export const api = {
         });
     },
     getBySlug: (slug: string) =>
-      fetch(`${API_URL}/api/news/slug/${slug}`).then((r) => r.json()),
+      fetch(`${getAPIURL()}/api/news/slug/${slug}`).then((r) => r.json()),
   },
   contact: {
     send: (data: {
@@ -118,7 +121,7 @@ export const api = {
       subject: string;
       message: string;
     }) =>
-      fetch(`${API_URL}/api/contact`, {
+      fetch(`${getAPIURL()}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -128,28 +131,28 @@ export const api = {
     getAll: (status?: string) => {
       const searchParams = new URLSearchParams();
       if (status) searchParams.append('status', status);
-      return fetch(`${API_URL}/api/tickets?${searchParams}`, {
+      return fetch(`${getAPIURL()}/api/tickets?${searchParams}`, {
         headers: getAuthHeaders(),
       }).then((r) => r.json());
     },
     getOne: (id: string) =>
-      fetch(`${API_URL}/api/tickets/${id}`, {
+      fetch(`${getAPIURL()}/api/tickets/${id}`, {
         headers: getAuthHeaders(),
       }).then((r) => r.json()),
     create: (data: { title: string; description: string }) =>
-      fetch(`${API_URL}/api/tickets`, {
+      fetch(`${getAPIURL()}/api/tickets`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(data),
       }).then((r) => r.json()),
     addMessage: (id: string, data: { content: string }) =>
-      fetch(`${API_URL}/api/tickets/${id}/messages`, {
+      fetch(`${getAPIURL()}/api/tickets/${id}/messages`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(data),
       }).then((r) => r.json()),
     update: (id: string, data: { status?: string }) =>
-      fetch(`${API_URL}/api/tickets/${id}`, {
+      fetch(`${getAPIURL()}/api/tickets/${id}`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
         body: JSON.stringify(data),
@@ -159,12 +162,12 @@ export const api = {
     getMessages: (limit?: number) => {
       const searchParams = new URLSearchParams();
       if (limit) searchParams.append('limit', limit.toString());
-      return fetch(`${API_URL}/api/chat/messages?${searchParams}`, {
+      return fetch(`${getAPIURL()}/api/chat/messages?${searchParams}`, {
         headers: getAuthHeaders(),
       }).then((r) => r.json());
     },
     sendMessage: (data: { content: string }) =>
-      fetch(`${API_URL}/api/chat/messages`, {
+      fetch(`${getAPIURL()}/api/chat/messages`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(data),
@@ -174,12 +177,12 @@ export const api = {
     getAll: (type?: string) => {
       const searchParams = new URLSearchParams();
       if (type) searchParams.append('type', type);
-      return fetch(`${API_URL}/api/feedbacks?${searchParams}`, {
+      return fetch(`${getAPIURL()}/api/feedbacks?${searchParams}`, {
         headers: getAuthHeaders(),
       }).then((r) => r.json());
     },
     create: (data: { type: string; message: string; rating?: number }) =>
-      fetch(`${API_URL}/api/feedbacks`, {
+      fetch(`${getAPIURL()}/api/feedbacks`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(data),
@@ -189,30 +192,30 @@ export const api = {
     getAll: (published?: boolean) => {
       const searchParams = new URLSearchParams();
       if (published !== undefined) searchParams.append('published', published.toString());
-      return fetch(`${API_URL}/api/pages?${searchParams}`, {
+      return fetch(`${getAPIURL()}/api/pages?${searchParams}`, {
         headers: getAuthHeaders(),
       }).then((r) => r.json());
     },
-    getPublic: () => fetch(`${API_URL}/api/pages/public`).then((r) => r.json()),
-    getBySlug: (slug: string) => fetch(`${API_URL}/api/pages/public/${slug}`).then((r) => r.json()),
+    getPublic: () => fetch(`${getAPIURL()}/api/pages/public`).then((r) => r.json()),
+    getBySlug: (slug: string) => fetch(`${getAPIURL()}/api/pages/public/${slug}`).then((r) => r.json()),
     getOne: (id: string) =>
-      fetch(`${API_URL}/api/pages/${id}`, {
+      fetch(`${getAPIURL()}/api/pages/${id}`, {
         headers: getAuthHeaders(),
       }).then((r) => r.json()),
     create: (data: any) =>
-      fetch(`${API_URL}/api/pages`, {
+      fetch(`${getAPIURL()}/api/pages`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(data),
       }).then((r) => r.json()),
     update: (id: string, data: any) =>
-      fetch(`${API_URL}/api/pages/${id}`, {
+      fetch(`${getAPIURL()}/api/pages/${id}`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
         body: JSON.stringify(data),
       }).then((r) => r.json()),
     delete: (id: string) =>
-      fetch(`${API_URL}/api/pages/${id}`, {
+      fetch(`${getAPIURL()}/api/pages/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
       }).then((r) => r.json()),
