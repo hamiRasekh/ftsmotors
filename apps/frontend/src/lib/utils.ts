@@ -6,11 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // For server-side: use backend service name in Docker, otherwise localhost
-// For client-side: use relative path /api which will be proxied by Next.js rewrites
+// For client-side: use NEXT_PUBLIC_API_URL if set, otherwise use /api which will be proxied by Next.js rewrites
 export const API_URL = 
   typeof window === 'undefined'
     ? (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:4000')
-    : (process.env.NEXT_PUBLIC_API_URL || '/api');
+    : (process.env.NEXT_PUBLIC_API_URL || 'https://api.ftsmotors.ir');
 
 // Get the base URL for Socket.IO (cannot use rewrites, needs full URL)
 // Always use full URL, not relative path
@@ -21,6 +21,6 @@ export const SOCKET_URL =
     : (process.env.NEXT_PUBLIC_API_URL && !process.env.NEXT_PUBLIC_API_URL.startsWith('/')
         ? process.env.NEXT_PUBLIC_API_URL
         : (typeof window !== 'undefined' 
-            ? `${window.location.protocol}//${window.location.hostname}:4000`
+            ? `${window.location.protocol}//api.${window.location.hostname.replace(/^www\./, '')}`
             : 'http://localhost:4000'));
 

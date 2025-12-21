@@ -1,4 +1,6 @@
 @import url('/fonts/iranyekan.css');
+@import url('/fonts/vazir.css');
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -56,7 +58,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'IranYekan', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Vazirmatn', 'Vazir', 'IranYekan', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }
   
   /* Smooth scrolling */
