@@ -46,7 +46,7 @@ export function MasonryGallery({ articles, news, className = '' }: MasonryGaller
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
             آخرین اخبار و مقالات
           </h2>
           <p className="text-xl text-gray-600">
@@ -83,8 +83,8 @@ export function MasonryGallery({ articles, news, className = '' }: MasonryGaller
                           <span
                             className={`px-3 py-1 rounded-full text-sm font-semibold ${
                               item.type === 'article'
-                                ? 'bg-black text-white'
-                                : 'bg-gray-800 text-white'
+                                ? 'bg-primary text-white'
+                                : 'bg-accent text-white'
                             }`}
                           >
                             {item.type === 'article' ? 'مقاله' : 'خبر'}
@@ -94,7 +94,7 @@ export function MasonryGallery({ articles, news, className = '' }: MasonryGaller
                     )}
                     <div className="p-4 h-1/3 flex flex-col justify-between">
                       <div>
-                        <h3 className="text-lg md:text-xl font-bold text-black mb-2 group-hover:text-gray-700 transition-colors line-clamp-2">
+                        <h3 className="text-lg md:text-xl font-bold text-primary mb-2 group-hover:text-accent transition-colors line-clamp-2">
                           {item.title}
                         </h3>
                         {item.excerpt && (
@@ -109,7 +109,7 @@ export function MasonryGallery({ articles, news, className = '' }: MasonryGaller
                             {new Date(item.date).toLocaleDateString('fa-IR')}
                           </span>
                         )}
-                        <span className="text-black font-semibold text-sm inline-flex items-center gap-2">
+                        <span className="text-primary font-semibold text-sm inline-flex items-center gap-2">
                           ادامه مطلب
                           <svg
                             className="w-4 h-4"
@@ -144,13 +144,13 @@ export function MasonryGallery({ articles, news, className = '' }: MasonryGaller
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/blog"
-              className="inline-block px-8 py-4 border-2 border-black text-black rounded-lg hover:bg-black hover:text-white transition-colors font-semibold text-lg"
+              className="inline-block px-8 py-4 border-2 border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors font-semibold text-lg"
             >
               مشاهده همه مقالات
             </Link>
             <Link
               href="/news"
-              className="inline-block px-8 py-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold text-lg"
+              className="inline-block px-8 py-4 bg-primary text-white rounded-lg hover:bg-accent transition-colors font-semibold text-lg"
             >
               مشاهده همه اخبار
             </Link>

@@ -11,7 +11,7 @@ const statusColors: Record<string, string> = {
   OPEN: 'bg-gray-200 text-black',
   IN_PROGRESS: 'bg-gray-300 text-black',
   CLOSED: 'bg-gray-100 text-gray-600',
-  RESOLVED: 'bg-black text-white',
+  RESOLVED: 'bg-primary text-white',
 };
 
 const statusLabels: Record<string, string> = {
@@ -72,7 +72,7 @@ export default function TicketsPage() {
       <div className="flex justify-between items-center mb-8">
         <FadeIn>
           <div>
-            <h1 className="text-4xl font-bold text-black mb-2">تیکت‌های پشتیبانی</h1>
+            <h1 className="text-4xl font-bold text-primary mb-2">تیکت‌های پشتیبانی</h1>
             <p className="text-gray-600">برای دریافت پشتیبانی، تیکت جدید ایجاد کنید</p>
           </div>
         </FadeIn>
@@ -85,7 +85,7 @@ export default function TicketsPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-black"
+          className="mb-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-primary"
         >
           ✓ تیکت شما با موفقیت ایجاد شد. ما در اسرع وقت به آن پاسخ خواهیم داد.
         </motion.div>
@@ -97,15 +97,15 @@ export default function TicketsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white border border-gray-200 rounded-lg p-8 mb-8"
         >
-          <h2 className="text-2xl font-bold text-black mb-6">ایجاد تیکت جدید</h2>
+          <h2 className="text-2xl font-bold text-primary mb-6">ایجاد تیکت جدید</h2>
           {error && (
-            <div className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg text-black">
+            <div className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg text-primary">
               ✗ {error}
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-primary mb-2">
                 عنوان تیکت <span className="text-gray-500">*</span>
               </label>
               <input
@@ -113,12 +113,12 @@ export default function TicketsPage() {
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="عنوان مشکل یا سوال خود را وارد کنید"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-primary mb-2">
                 توضیحات <span className="text-gray-500">*</span>
               </label>
               <textarea
@@ -126,7 +126,7 @@ export default function TicketsPage() {
                 rows={6}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                 placeholder="توضیحات کامل مشکل یا سوال خود را بنویسید..."
               />
             </div>
@@ -156,7 +156,7 @@ export default function TicketsPage() {
               <Link href={`/user/tickets/${ticket.id}`}>
                 <div className="bg-white border border-gray-200 rounded-lg p-6 hover:bg-gray-50 transition-all">
                   <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-bold text-black">{ticket.title}</h3>
+                    <h3 className="text-xl font-bold text-primary">{ticket.title}</h3>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[ticket.status]}`}>
                       {statusLabels[ticket.status]}
                     </span>

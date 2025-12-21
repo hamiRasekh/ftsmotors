@@ -62,7 +62,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
               height={32}
               className="object-contain"
             />
-            <span className="text-xl font-bold text-black">FTS Motors</span>
+            <span className="text-xl font-bold text-primary">FTS Motors</span>
           </Link>
         </div>
 
@@ -89,7 +89,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
         {/* Header */}
         <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
           <div className="px-6 py-4 flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-black">سلام، {userName}!</h1>
+            <h1 className="text-2xl font-bold text-primary">سلام، {userName}!</h1>
             <div className="flex items-center gap-4">
               <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">

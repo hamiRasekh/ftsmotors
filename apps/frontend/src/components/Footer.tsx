@@ -17,7 +17,7 @@ export function Footer() {
                   height={40}
                   className="object-contain"
                 />
-                <span className="text-xl font-bold text-black">FTS Motors</span>
+                <span className="text-xl font-bold text-primary">FTS Motors</span>
               </Link>
               <p className="text-gray-600 text-sm">
                 نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده با بهترین کیفیت و خدمات
@@ -27,25 +27,25 @@ export function Footer() {
           
           <FadeIn delay={0.1}>
             <div>
-              <h4 className="font-semibold mb-4 text-lg text-black">دسترسی سریع</h4>
+              <h4 className="font-semibold mb-4 text-lg text-primary">دسترسی سریع</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="/" className="text-gray-600 hover:text-black transition-colors">
+                  <Link href="/" className="text-gray-600 hover:text-primary transition-colors">
                     خانه
                   </Link>
                 </li>
                 <li>
-                  <Link href="/cars" className="text-gray-600 hover:text-black transition-colors">
+                  <Link href="/cars" className="text-gray-600 hover:text-primary transition-colors">
                     خودروها
                   </Link>
                 </li>
                 <li>
-                  <Link href="/blog" className="text-gray-600 hover:text-black transition-colors">
+                  <Link href="/blog" className="text-gray-600 hover:text-primary transition-colors">
                     مقالات
                   </Link>
                 </li>
                 <li>
-                  <Link href="/news" className="text-gray-600 hover:text-black transition-colors">
+                  <Link href="/news" className="text-gray-600 hover:text-primary transition-colors">
                     اخبار
                   </Link>
                 </li>
@@ -55,15 +55,15 @@ export function Footer() {
           
           <FadeIn delay={0.2}>
             <div>
-              <h4 className="font-semibold mb-4 text-lg text-black">اطلاعات</h4>
+              <h4 className="font-semibold mb-4 text-lg text-primary">اطلاعات</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="/about" className="text-gray-600 hover:text-black transition-colors">
+                  <Link href="/about" className="text-gray-600 hover:text-primary transition-colors">
                     درباره ما
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="text-gray-600 hover:text-black transition-colors">
+                  <Link href="/contact" className="text-gray-600 hover:text-primary transition-colors">
                     تماس با ما
                   </Link>
                 </li>
@@ -73,7 +73,7 @@ export function Footer() {
           
           <FadeIn delay={0.3}>
             <div>
-              <h4 className="font-semibold mb-4 text-lg text-black">تماس با ما</h4>
+              <h4 className="font-semibold mb-4 text-lg text-primary">تماس با ما</h4>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li>آدرس: تهران، خیابان ولیعصر</li>
                 <li>تلفن: 021-12345678</li>

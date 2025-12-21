@@ -38,7 +38,7 @@ export function Testimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
             نظرات مشتریان
           </h2>
           <p className="text-xl text-gray-600">آنچه مشتریان ما می‌گویند</p>
@@ -91,7 +91,7 @@ export function Testimonials() {
                 </div>
                 <p className="text-gray-700 mb-6 leading-relaxed">{testimonial.content}</p>
                 <div>
-                  <div className="font-bold text-black">{testimonial.name}</div>
+                  <div className="font-bold text-primary">{testimonial.name}</div>
                   <div className="text-sm text-gray-600">{testimonial.role}</div>
                 </div>
               </motion.div>

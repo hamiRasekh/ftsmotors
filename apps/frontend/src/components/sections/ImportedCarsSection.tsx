@@ -82,7 +82,7 @@ export function ImportedCarsSection({ className = '' }: ImportedCarsSectionProps
               style={{ opacity: carNameOpacity }}
               className="absolute bottom-0 left-1/2 -translate-x-1/2 text-center"
             >
-              <h3 className="text-xl md:text-2xl font-bold text-black">Kia Sportage</h3>
+              <h3 className="text-xl md:text-2xl font-bold text-primary">Kia Sportage</h3>
             </motion.div>
           </motion.div>
 
@@ -105,7 +105,7 @@ export function ImportedCarsSection({ className = '' }: ImportedCarsSectionProps
               style={{ opacity: carNameOpacity }}
               className="absolute bottom-0 left-1/2 -translate-x-1/2 text-center"
             >
-              <h3 className="text-xl md:text-2xl font-bold text-black">Kia K5</h3>
+              <h3 className="text-xl md:text-2xl font-bold text-primary">Kia K5</h3>
             </motion.div>
           </motion.div>
         </div>
@@ -120,7 +120,7 @@ export function ImportedCarsSection({ className = '' }: ImportedCarsSectionProps
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-4"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4"
           >
             خودروهای وارداتی
           </motion.h2>
@@ -144,13 +144,13 @@ export function ImportedCarsSection({ className = '' }: ImportedCarsSectionProps
             className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12"
           >
             <div className="bg-white p-6 rounded-lg border border-gray-200">
-              <h3 className="text-2xl font-bold text-black mb-3">Kia Sportage</h3>
+              <h3 className="text-2xl font-bold text-primary mb-3">Kia Sportage</h3>
               <p className="text-gray-600">
                 شاسی‌بلند مدرن با طراحی جذاب و امکانات کامل. مناسب برای خانواده‌های بزرگ.
               </p>
             </div>
             <div className="bg-white p-6 rounded-lg border border-gray-200">
-              <h3 className="text-2xl font-bold text-black mb-3">Kia K5</h3>
+              <h3 className="text-2xl font-bold text-primary mb-3">Kia K5</h3>
               <p className="text-gray-600">
                 سدان لوکس با عملکرد عالی و طراحی مدرن. انتخابی ایده‌آل برای رانندگی روزمره.
               </p>

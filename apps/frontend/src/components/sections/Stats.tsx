@@ -52,7 +52,7 @@ function Counter({ value, suffix = '' }: { value: number; suffix?: string }) {
 
 export function Stats() {
   return (
-    <section className="py-20 bg-black text-white">
+    <section className="py-20 bg-primary text-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 50 }}

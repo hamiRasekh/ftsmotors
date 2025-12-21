@@ -73,7 +73,7 @@ export default function ContactPage() {
           <div className="container mx-auto px-4">
             <FadeIn>
               <div className="text-center mb-12 max-w-3xl mx-auto">
-                <h1 className="text-5xl md:text-6xl font-bold text-black mb-6">
+                <h1 className="text-5xl md:text-6xl font-bold text-primary mb-6">
                   تماس با ما
                 </h1>
                 <p className="text-xl text-gray-600 leading-relaxed">
@@ -91,7 +91,7 @@ export default function ContactPage() {
               {/* Contact Info */}
               <SlideIn direction="right">
                 <div>
-                  <h2 className="text-3xl font-bold text-black mb-8">اطلاعات تماس</h2>
+                  <h2 className="text-3xl font-bold text-primary mb-8">اطلاعات تماس</h2>
                   <div className="space-y-6">
                     {contactInfo.map((info, index) => (
                       <motion.a
@@ -106,7 +106,7 @@ export default function ContactPage() {
                       >
                         <div className="text-3xl">{info.icon}</div>
                         <div>
-                          <h3 className="font-bold text-black mb-1">{info.title}</h3>
+                          <h3 className="font-bold text-primary mb-1">{info.title}</h3>
                           <p className="text-gray-600">{info.content}</p>
                         </div>
                       </motion.a>
@@ -123,12 +123,12 @@ export default function ContactPage() {
               {/* Contact Form */}
               <SlideIn direction="left">
                 <div className="bg-white border border-gray-200 rounded-lg p-8">
-                  <h2 className="text-3xl font-bold text-black mb-8">ارسال پیام</h2>
+                  <h2 className="text-3xl font-bold text-primary mb-8">ارسال پیام</h2>
                   {success && (
                     <motion.div
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="mb-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-black"
+                      className="mb-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-primary"
                     >
                       ✓ پیام شما با موفقیت ارسال شد! ما در اسرع وقت با شما تماس خواهیم گرفت.
                     </motion.div>
@@ -137,14 +137,14 @@ export default function ContactPage() {
                     <motion.div
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="mb-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-black"
+                      className="mb-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-primary"
                     >
                       ✗ {error}
                     </motion.div>
                   )}
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-black mb-2">
+                      <label htmlFor="name" className="block text-sm font-medium text-primary mb-2">
                         نام و نام خانوادگی <span className="text-gray-500">*</span>
                       </label>
                       <input
@@ -153,12 +153,12 @@ export default function ContactPage() {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                         placeholder="نام و نام خانوادگی خود را وارد کنید"
                       />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-black mb-2">
+                      <label htmlFor="email" className="block text-sm font-medium text-primary mb-2">
                         ایمیل <span className="text-gray-500">*</span>
                       </label>
                       <input
@@ -167,12 +167,12 @@ export default function ContactPage() {
                         required
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                         placeholder="example@email.com"
                       />
                     </div>
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-black mb-2">
+                      <label htmlFor="phone" className="block text-sm font-medium text-primary mb-2">
                         تلفن
                       </label>
                       <input
@@ -180,12 +180,12 @@ export default function ContactPage() {
                         id="phone"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                         placeholder="09123456789"
                       />
                     </div>
                     <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-black mb-2">
+                      <label htmlFor="subject" className="block text-sm font-medium text-primary mb-2">
                         موضوع <span className="text-gray-500">*</span>
                       </label>
                       <input
@@ -194,12 +194,12 @@ export default function ContactPage() {
                         required
                         value={formData.subject}
                         onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                         placeholder="موضوع پیام خود را وارد کنید"
                       />
                     </div>
                     <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-black mb-2">
+                      <label htmlFor="message" className="block text-sm font-medium text-primary mb-2">
                         پیام <span className="text-gray-500">*</span>
                       </label>
                       <textarea
@@ -208,7 +208,7 @@ export default function ContactPage() {
                         rows={5}
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all resize-none"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
                         placeholder="پیام خود را بنویسید..."
                       />
                     </div>

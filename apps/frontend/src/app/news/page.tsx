@@ -40,7 +40,7 @@ export default async function NewsPage() {
           <div className="container mx-auto px-4">
             <FadeIn>
               <div className="text-center mb-12">
-                <h1 className="text-5xl md:text-6xl font-bold text-black mb-6">
+                <h1 className="text-5xl md:text-6xl font-bold text-primary mb-6">
                   اخبار
                 </h1>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -71,7 +71,7 @@ export default async function NewsPage() {
                           </div>
                         )}
                         <div className="p-6">
-                          <h3 className="text-xl font-bold text-black mb-2 group-hover:text-gray-700 transition-colors line-clamp-2">
+                          <h3 className="text-xl font-bold text-primary mb-2 group-hover:text-accent transition-colors line-clamp-2">
                             {newsItem.title}
                           </h3>
                           {newsItem.excerpt && (
@@ -79,7 +79,7 @@ export default async function NewsPage() {
                               {newsItem.excerpt}
                             </p>
                           )}
-                          <span className="text-black font-semibold text-sm inline-flex items-center gap-2">
+                          <span className="text-primary font-semibold text-sm inline-flex items-center gap-2">
                             ادامه مطلب
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

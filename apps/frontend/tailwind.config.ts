@@ -23,34 +23,41 @@ const config: Config = {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: '#000000', // Black for grayscale
+          DEFAULT: '#0E2F3E', // Dark blue
           foreground: '#ffffff',
         },
         secondary: {
-          DEFAULT: '#F5F5F5', // Light gray
-          foreground: '#1A1A1A',
+          DEFAULT: '#9A7C64', // Brown/bronze
+          foreground: '#ffffff',
         },
         destructive: {
           DEFAULT: '#666666', // Gray
           foreground: '#ffffff',
         },
         muted: {
-          DEFAULT: '#F9F9F9', // Very light gray
-          foreground: '#666666',
+          DEFAULT: '#D9C6B8', // Light beige
+          foreground: '#0E2F3E',
         },
         accent: {
-          DEFAULT: '#000000', // Black
+          DEFAULT: '#196886', // Medium blue
           foreground: '#ffffff',
         },
         popover: {
           DEFAULT: '#ffffff',
-          foreground: '#1A1A1A',
+          foreground: '#0E2F3E',
         },
         card: {
           DEFAULT: '#ffffff',
-          foreground: '#1A1A1A',
+          foreground: '#0E2F3E',
         },
-        // Grayscale palette
+        // Custom color palette
+        brand: {
+          dark: '#0E2F3E',
+          medium: '#196886',
+          brown: '#9A7C64',
+          beige: '#D9C6B8',
+        },
+        // Grayscale palette (kept for compatibility)
         gray: {
           50: '#F9F9F9',
           100: '#F5F5F5',

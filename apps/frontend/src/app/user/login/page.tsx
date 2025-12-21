@@ -75,7 +75,7 @@ export default function LoginPage() {
                   className="mx-auto"
                 />
               </Link>
-              <h1 className="text-3xl font-bold text-black mb-2">
+              <h1 className="text-3xl font-bold text-primary mb-2">
                 {isLogin ? 'ورود به حساب کاربری' : 'ثبت‌نام'}
               </h1>
               <p className="text-gray-600">
@@ -87,7 +87,7 @@ export default function LoginPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-4 p-3 bg-gray-100 border border-gray-300 rounded-lg text-black text-sm"
+                className="mb-4 p-3 bg-gray-100 border border-gray-300 rounded-lg text-primary text-sm"
               >
                 ✗ {error}
               </motion.div>
@@ -100,21 +100,21 @@ export default function LoginPage() {
                   animate={{ opacity: 1, height: 'auto' }}
                   transition={{ duration: 0.3 }}
                 >
-                  <label className="block text-sm font-medium text-black mb-2">
+                  <label className="block text-sm font-medium text-primary mb-2">
                     نام و نام خانوادگی
                   </label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                     placeholder="نام خود را وارد کنید"
                   />
                 </motion.div>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-black mb-2">
+                <label className="block text-sm font-medium text-primary mb-2">
                   شماره موبایل <span className="text-gray-500">*</span>
                 </label>
                 <input
@@ -123,7 +123,7 @@ export default function LoginPage() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="09123456789"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
 
@@ -133,21 +133,21 @@ export default function LoginPage() {
                   animate={{ opacity: 1, height: 'auto' }}
                   transition={{ duration: 0.3 }}
                 >
-                  <label className="block text-sm font-medium text-black mb-2">
+                  <label className="block text-sm font-medium text-primary mb-2">
                     ایمیل (اختیاری)
                   </label>
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                     placeholder="example@email.com"
                   />
                 </motion.div>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-black mb-2">
+                <label className="block text-sm font-medium text-primary mb-2">
                   رمز عبور <span className="text-gray-500">*</span>
                 </label>
                 <input
@@ -155,7 +155,7 @@ export default function LoginPage() {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                   placeholder="رمز عبور خود را وارد کنید"
                 />
               </div>
@@ -178,7 +178,7 @@ export default function LoginPage() {
                   setError('');
                   setFormData({ phone: '', password: '', name: '', email: '' });
                 }}
-                className="text-black hover:text-gray-700 underline text-sm"
+                className="text-primary hover:text-accent underline text-sm"
               >
                 {isLogin ? 'حساب کاربری ندارید؟ ثبت‌نام کنید' : 'قبلاً ثبت‌نام کرده‌اید؟ وارد شوید'}
               </button>

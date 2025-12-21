@@ -89,7 +89,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
                   className={`px-3 xl:px-4 py-2 text-sm xl:text-base font-medium transition-colors rounded-lg ${
                     isHomePage && !scrolled
                       ? 'text-white hover:text-white hover:bg-white/20'
-                      : 'text-gray-700 hover:text-black hover:bg-gray-50'
+                      : 'text-gray-700 hover:text-primary hover:bg-muted'
                   }`}
                 >
                   {item.label}
@@ -102,10 +102,10 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
             <Link
               href="/contact"
-              className={`px-4 xl:px-5 py-2 xl:py-2.5 rounded-lg hover:bg-gray-800 transition-colors font-medium text-sm xl:text-base ${
+              className={`px-4 xl:px-5 py-2 xl:py-2.5 rounded-lg transition-colors font-medium text-sm xl:text-base ${
                 isHomePage && !scrolled
                   ? 'bg-white/20 text-white backdrop-blur-sm border border-white/30 hover:bg-white/30'
-                  : 'bg-black text-white hover:bg-gray-800'
+                  : 'bg-primary text-white hover:bg-accent'
               }`}
             >
               دریافت مشاوره
@@ -148,7 +148,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
                     <Link
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block px-4 py-2.5 text-gray-700 hover:text-black hover:bg-gray-50 transition-colors font-medium rounded-lg mx-2"
+                      className="block px-4 py-2.5 text-gray-700 hover:text-primary hover:bg-muted transition-colors font-medium rounded-lg mx-2"
                     >
                       {item.label}
                     </Link>
@@ -158,7 +158,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
                   <Link
                     href="/contact"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2.5 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium text-center"
+                    className="block px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-accent transition-colors font-medium text-center"
                   >
                     دریافت مشاوره
                   </Link>

@@ -26,9 +26,9 @@ export function AnimatedButton({
   const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-300 relative overflow-hidden';
   
   const variants = {
-    primary: 'bg-black text-white hover:bg-gray-800',
-    secondary: 'bg-gray-100 text-black hover:bg-gray-200',
-    outline: 'border-2 border-black text-black hover:bg-black hover:text-white',
+    primary: 'bg-primary text-white hover:bg-accent',
+    secondary: 'bg-muted text-primary hover:bg-secondary hover:text-white',
+    outline: 'border-2 border-primary text-primary hover:bg-primary hover:text-white',
   };
 
   const sizes = {

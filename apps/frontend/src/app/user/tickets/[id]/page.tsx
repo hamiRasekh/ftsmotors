@@ -17,7 +17,7 @@ const statusColors: Record<string, string> = {
   OPEN: 'bg-gray-200 text-black',
   IN_PROGRESS: 'bg-gray-300 text-black',
   CLOSED: 'bg-gray-100 text-gray-600',
-  RESOLVED: 'bg-black text-white',
+  RESOLVED: 'bg-primary text-white',
 };
 
 export default function TicketDetailPage() {
@@ -65,10 +65,10 @@ export default function TicketDetailPage() {
     <div>
       <FadeIn>
         <div className="flex items-center gap-4 mb-8">
-          <button onClick={() => router.back()} className="text-black hover:text-gray-700">
+          <button onClick={() => router.back()} className="text-primary hover:text-accent">
             ← بازگشت
           </button>
-          <h1 className="text-4xl font-bold text-black">{ticket.title}</h1>
+          <h1 className="text-4xl font-bold text-primary">{ticket.title}</h1>
         </div>
       </FadeIn>
 
@@ -92,7 +92,7 @@ export default function TicketDetailPage() {
             <div className="text-sm text-gray-600 mb-2">
               {msg.isAdmin ? 'پشتیبانی' : 'شما'} - {new Date(msg.createdAt).toLocaleDateString('fa-IR')}
             </div>
-            <p className="text-black">{msg.content}</p>
+            <p className="text-primary">{msg.content}</p>
           </div>
         ))}
       </div>
@@ -103,7 +103,7 @@ export default function TicketDetailPage() {
           onChange={(e) => setMessage(e.target.value)}
           placeholder="پیام خود را بنویسید..."
           rows={4}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black mb-4"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary mb-4"
         />
         <AnimatedButton type="submit" variant="primary" size="md" onClick={() => {}}>
           ارسال پیام

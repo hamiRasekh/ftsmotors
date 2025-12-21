@@ -98,7 +98,7 @@ export function HeroSlider() {
                     >
                       <Link
                         href={slide.link}
-                        className="inline-block px-8 py-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold text-lg"
+                        className="inline-block px-8 py-4 bg-primary text-white rounded-lg hover:bg-accent transition-colors font-semibold text-lg"
                       >
                         {slide.cta}
                       </Link>

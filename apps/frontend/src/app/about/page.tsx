@@ -52,7 +52,7 @@ export default function AboutPage() {
           <div className="container mx-auto px-4">
             <FadeIn>
               <div className="text-center mb-12 max-w-3xl mx-auto">
-                <h1 className="text-5xl md:text-6xl font-bold text-black mb-6">
+                <h1 className="text-5xl md:text-6xl font-bold text-primary mb-6">
                   درباره ما
                 </h1>
                 <p className="text-xl text-gray-600 leading-relaxed">
@@ -69,7 +69,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <SlideIn direction="right">
                 <div>
-                  <h2 className="text-4xl font-bold text-black mb-6">تاریخچه شرکت</h2>
+                  <h2 className="text-4xl font-bold text-primary mb-6">تاریخچه شرکت</h2>
                   <div className="space-y-4 text-lg text-gray-600 leading-relaxed">
                     <p>
                       FTS Motors در سال 2000 با هدف ارائه بهترین خدمات در زمینه خرید و فروش خودرو
@@ -87,7 +87,7 @@ export default function AboutPage() {
                   <div className="mt-8">
                     <Link
                       href="/contact"
-                      className="inline-block px-8 py-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-semibold"
+                      className="inline-block px-8 py-4 bg-primary text-white rounded-lg hover:bg-accent transition-colors font-semibold"
                     >
                       تماس با ما
                     </Link>
@@ -112,7 +112,7 @@ export default function AboutPage() {
         <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
             <FadeIn>
-              <h2 className="text-4xl font-bold text-black mb-12 text-center">خط زمانی ما</h2>
+              <h2 className="text-4xl font-bold text-primary mb-12 text-center">خط زمانی ما</h2>
             </FadeIn>
             <div className="relative max-w-4xl mx-auto">
               <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gray-300 hidden lg:block"></div>
@@ -125,12 +125,12 @@ export default function AboutPage() {
                           whileHover={{ scale: 1.02 }}
                           className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
                         >
-                          <div className="text-2xl font-bold text-black mb-2">{item.year}</div>
-                          <h3 className="text-xl font-bold text-black mb-2">{item.title}</h3>
+                          <div className="text-2xl font-bold text-primary mb-2">{item.year}</div>
+                          <h3 className="text-xl font-bold text-primary mb-2">{item.title}</h3>
                           <p className="text-gray-600">{item.description}</p>
                         </motion.div>
                       </div>
-                      <div className="hidden lg:block relative z-10 w-4 h-4 bg-black rounded-full border-4 border-white"></div>
+                      <div className="hidden lg:block relative z-10 w-4 h-4 bg-primary rounded-full border-4 border-white"></div>
                       <div className="hidden lg:block w-1/2"></div>
                     </div>
                   </StaggerItem>
@@ -145,7 +145,7 @@ export default function AboutPage() {
           <div className="container mx-auto px-4">
             <FadeIn>
               <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
+                <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
                   چرا ما را انتخاب کنید؟
                 </h2>
                 <p className="text-xl text-gray-600">ارزش‌های ما</p>
@@ -160,7 +160,7 @@ export default function AboutPage() {
                     className="bg-white border border-gray-200 rounded-lg p-8 hover:bg-gray-50 transition-all duration-300 text-center h-full"
                   >
                     <div className="text-5xl mb-4">{value.icon}</div>
-                    <h3 className="text-xl font-bold text-black mb-2">{value.title}</h3>
+                    <h3 className="text-xl font-bold text-primary mb-2">{value.title}</h3>
                     <p className="text-gray-600">{value.description}</p>
                   </motion.div>
                 </StaggerItem>
@@ -170,7 +170,7 @@ export default function AboutPage() {
         </section>
 
         {/* Mission Section */}
-        <section className="py-20 bg-black text-white">
+        <section className="py-20 bg-primary text-white">
           <div className="container mx-auto px-4">
             <FadeIn>
               <div className="max-w-3xl mx-auto text-center">

@@ -180,7 +180,7 @@ export function Car3DSlider() {
                         <div className="space-y-4 sm:space-y-5 lg:space-y-8">
                           <div className="space-y-4 sm:space-y-5 lg:space-y-6">
                             <div>
-                              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-black mb-2 sm:mb-3 lg:mb-4 leading-tight">
+                              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary mb-2 sm:mb-3 lg:mb-4 leading-tight">
                                 {slide.title}
                               </h2>
                               <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 font-semibold mb-4 sm:mb-5 lg:mb-6">
@@ -196,7 +196,7 @@ export function Car3DSlider() {
                               {slide.features.map((feature, featureIndex) => (
                                 <li key={featureIndex} className="flex items-start gap-2 sm:gap-3">
                                   <svg
-                                    className="w-5 h-5 sm:w-6 sm:h-6 text-black mt-0.5 sm:mt-1 flex-shrink-0"
+                                    className="w-5 h-5 sm:w-6 sm:h-6 text-primary mt-0.5 sm:mt-1 flex-shrink-0"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -230,7 +230,7 @@ export function Car3DSlider() {
             <div
               key={dotIndex}
               className={`h-2 sm:h-3 rounded-full transition-all duration-200 ease-out ${
-                dotIndex === currentSlide ? 'bg-black w-6 sm:w-8' : 'bg-gray-400 w-2 sm:w-3'
+                dotIndex === currentSlide ? 'bg-primary w-6 sm:w-8' : 'bg-gray-400 w-2 sm:w-3'
               }`}
               aria-label={`اسلاید ${dotIndex + 1}`}
             />

@@ -47,14 +47,14 @@ export function CarCard({ car, index = 0 }: CarCardProps) {
           </div>
         )}
         <div className="p-6">
-          <h3 className="text-xl font-bold text-black mb-2 group-hover:text-gray-700 transition-colors">
+          <h3 className="text-xl font-bold text-primary mb-2 group-hover:text-accent transition-colors">
             {car.brand} {car.model}
           </h3>
           <p className="text-gray-600 mb-4 text-sm">{car.category.name}</p>
           {car.description && (
             <p className="text-gray-500 line-clamp-2 text-sm mb-4">{car.description}</p>
           )}
-          <span className="inline-flex items-center gap-2 text-black font-semibold text-sm">
+          <span className="inline-flex items-center gap-2 text-primary font-semibold text-sm">
             بیشتر بدانید
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

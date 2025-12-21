@@ -41,13 +41,13 @@ export default function ProfilePage() {
   return (
     <div>
       <FadeIn>
-        <h1 className="text-4xl font-bold text-black mb-8">پروفایل</h1>
+        <h1 className="text-4xl font-bold text-primary mb-8">پروفایل</h1>
       </FadeIn>
 
       <div className="bg-white border border-gray-200 rounded-lg p-8 max-w-2xl">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-black mb-2">شماره موبایل</label>
+            <label className="block text-sm font-medium text-primary mb-2">شماره موبایل</label>
             <input
               type="tel"
               value={user?.phone || ''}
@@ -57,22 +57,22 @@ export default function ProfilePage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-black mb-2">نام</label>
+            <label className="block text-sm font-medium text-primary mb-2">نام</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-black mb-2">ایمیل</label>
+            <label className="block text-sm font-medium text-primary mb-2">ایمیل</label>
             <input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 

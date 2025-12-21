@@ -61,7 +61,7 @@ export default function FeedbackPage() {
       <div className="flex justify-between items-center mb-8">
         <FadeIn>
           <div>
-            <h1 className="text-4xl font-bold text-black mb-2">انتقادات و پیشنهادات</h1>
+            <h1 className="text-4xl font-bold text-primary mb-2">انتقادات و پیشنهادات</h1>
             <p className="text-gray-600">نظرات و پیشنهادات خود را با ما به اشتراک بگذارید</p>
           </div>
         </FadeIn>
@@ -74,7 +74,7 @@ export default function FeedbackPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-black"
+          className="mb-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-primary"
         >
           ✓ نظر شما با موفقیت ارسال شد. از مشارکت شما سپاسگزاریم!
         </motion.div>
@@ -86,28 +86,28 @@ export default function FeedbackPage() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white border border-gray-200 rounded-lg p-8 mb-8"
         >
-          <h2 className="text-2xl font-bold text-black mb-6">ارسال نظر جدید</h2>
+          <h2 className="text-2xl font-bold text-primary mb-6">ارسال نظر جدید</h2>
           {error && (
-            <div className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg text-black">
+            <div className="mb-4 p-4 bg-gray-100 border border-gray-300 rounded-lg text-primary">
               ✗ {error}
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-primary mb-2">
                 نوع نظر <span className="text-gray-500">*</span>
               </label>
               <select
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="SUGGESTION">پیشنهاد</option>
                 <option value="COMPLAINT">انتقاد</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-primary mb-2">
                 پیام <span className="text-gray-500">*</span>
               </label>
               <textarea
@@ -120,7 +120,7 @@ export default function FeedbackPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-primary mb-2">
                 امتیاز (1-5) <span className="text-gray-500">*</span>
               </label>
               <div className="flex items-center gap-4">
@@ -132,7 +132,7 @@ export default function FeedbackPage() {
                   onChange={(e) => setFormData({ ...formData, rating: parseInt(e.target.value) })}
                   className="flex-1"
                 />
-                <div className="text-2xl font-bold text-black min-w-[3rem] text-center">
+                <div className="text-2xl font-bold text-primary min-w-[3rem] text-center">
                   {formData.rating}
                 </div>
                 <div className="text-2xl text-gray-400">
@@ -164,7 +164,7 @@ export default function FeedbackPage() {
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    feedback.type === 'SUGGESTION' ? 'bg-gray-200 text-black' : 'bg-gray-300 text-black'
+                    feedback.type === 'SUGGESTION' ? 'bg-muted text-primary' : 'bg-secondary text-white'
                   }`}>
                     {feedback.type === 'SUGGESTION' ? 'پیشنهاد' : 'انتقاد'}
                   </span>
@@ -186,7 +186,7 @@ export default function FeedbackPage() {
               <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{feedback.message}</p>
               {feedback.response && (
                 <div className="mt-4 pt-4 border-t border-gray-200">
-                  <p className="text-sm font-medium text-black mb-1">پاسخ مدیریت:</p>
+                  <p className="text-sm font-medium text-primary mb-1">پاسخ مدیریت:</p>
                   <p className="text-gray-600 text-sm">{feedback.response}</p>
                 </div>
               )}

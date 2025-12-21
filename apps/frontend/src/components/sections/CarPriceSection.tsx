@@ -65,7 +65,7 @@ export function CarPriceSection({
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-4">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4">
                 {title}
               </h2>
               <p className="text-2xl md:text-3xl text-gray-700 font-semibold mb-6">
@@ -93,7 +93,7 @@ export function CarPriceSection({
               {features.map((feature, index) => (
                 <li key={index} className="flex items-start gap-3">
                   <svg
-                    className="w-6 h-6 text-black mt-1 flex-shrink-0"
+                    className="w-6 h-6 text-primary mt-1 flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

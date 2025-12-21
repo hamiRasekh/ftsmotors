@@ -48,7 +48,7 @@ export function Features() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
             چرا FTS Motors؟
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -64,7 +64,7 @@ export function Features() {
                 className="bg-white border border-gray-200 rounded-lg p-6 hover:bg-gray-50 transition-all duration-300"
               >
                 <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold text-black mb-2">{feature.title}</h3>
+                <h3 className="text-xl font-bold text-primary mb-2">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
               </motion.div>
             </StaggerItem>

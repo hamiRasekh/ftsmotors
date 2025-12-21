@@ -57,7 +57,7 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)]">
       <FadeIn>
-        <h1 className="text-4xl font-bold text-black mb-6">چت آنلاین</h1>
+        <h1 className="text-4xl font-bold text-primary mb-6">چت آنلاین</h1>
       </FadeIn>
 
       <div className="flex-1 bg-white border border-gray-200 rounded-lg p-6 overflow-y-auto mb-4">
@@ -75,7 +75,7 @@ export default function ChatPage() {
                 <div className="text-sm text-gray-600 mb-1">
                   {msg.isAdmin ? 'پشتیبانی' : 'شما'}
                 </div>
-                <p className="text-black">{msg.content}</p>
+                <p className="text-primary">{msg.content}</p>
                 <div className="text-xs text-gray-500 mt-1">
                   {new Date(msg.createdAt).toLocaleTimeString('fa-IR')}
                 </div>
@@ -92,7 +92,7 @@ export default function ChatPage() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="پیام خود را بنویسید..."
-          className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+          className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <AnimatedButton type="submit" variant="primary" size="md" onClick={() => {}}>
           ارسال

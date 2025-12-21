@@ -50,7 +50,7 @@ export default async function CarsPage() {
           <div className="container mx-auto px-4">
             <FadeIn>
               <div className="text-center mb-12 max-w-3xl mx-auto">
-                <h1 className="text-5xl md:text-6xl font-bold text-black mb-6">
+                <h1 className="text-5xl md:text-6xl font-bold text-primary mb-6">
                   خودروهای ما
                 </h1>
                 <p className="text-xl text-gray-600 leading-relaxed">
@@ -66,13 +66,13 @@ export default async function CarsPage() {
           <section className="py-12 bg-white border-b border-gray-200">
             <div className="container mx-auto px-4">
               <FadeIn>
-                <h2 className="text-2xl font-bold text-black mb-6">دسته‌بندی‌ها</h2>
+                <h2 className="text-2xl font-bold text-primary mb-6">دسته‌بندی‌ها</h2>
                 <div className="flex flex-wrap gap-3">
                   {categories.map((category: any) => (
                     <Link
                       key={category.id}
                       href={`/cars/${category.slug}`}
-                      className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-black hover:text-white hover:border-black transition-all duration-300 font-medium"
+                      className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 font-medium"
                     >
                       {category.name}
                     </Link>
@@ -90,7 +90,7 @@ export default async function CarsPage() {
               <>
                 <FadeIn>
                   <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-3xl font-bold text-black">همه خودروها</h2>
+                    <h2 className="text-3xl font-bold text-primary">همه خودروها</h2>
                     <span className="text-gray-600">
                       {carsData.total} خودرو
                     </span>
@@ -110,7 +110,7 @@ export default async function CarsPage() {
                   <p className="text-xl text-gray-600 mb-4">خودرویی یافت نشد.</p>
                   <Link
                     href="/contact"
-                    className="inline-block px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                    className="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:bg-accent transition-colors"
                   >
                     تماس با ما
                   </Link>

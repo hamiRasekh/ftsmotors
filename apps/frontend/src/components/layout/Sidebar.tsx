@@ -47,7 +47,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <div className="p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-black">دسترسی سریع</h2>
+                  <h2 className="text-2xl font-bold text-primary">دسترسی سریع</h2>
                   <button
                     onClick={onClose}
                     className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -65,20 +65,20 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     placeholder="جستجو..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
 
                 {/* Categories */}
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-black mb-4">دسته‌بندی‌ها</h3>
+                  <h3 className="text-lg font-semibold text-primary mb-4">دسته‌بندی‌ها</h3>
                   <ul className="space-y-2">
                     {categories?.data?.map((category: any) => (
                       <li key={category.id}>
                         <Link
                           href={`/cars/${category.slug}`}
                           onClick={onClose}
-                          className="block px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-black transition-colors"
+                          className="block px-4 py-2 rounded-lg hover:bg-muted hover:text-primary transition-colors"
                         >
                           {category.name}
                         </Link>
@@ -89,13 +89,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
                 {/* Quick Links */}
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-black mb-4">لینک‌های سریع</h3>
+                  <h3 className="text-lg font-semibold text-primary mb-4">لینک‌های سریع</h3>
                   <ul className="space-y-2">
                     <li>
                       <Link
                         href="/cars"
                         onClick={onClose}
-                        className="block px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-black transition-colors"
+                        className="block px-4 py-2 rounded-lg hover:bg-muted hover:text-primary transition-colors"
                       >
                         همه خودروها
                       </Link>
@@ -104,7 +104,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                       <Link
                         href="/blog"
                         onClick={onClose}
-                        className="block px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-black transition-colors"
+                        className="block px-4 py-2 rounded-lg hover:bg-muted hover:text-primary transition-colors"
                       >
                         مقالات
                       </Link>
@@ -113,7 +113,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                       <Link
                         href="/news"
                         onClick={onClose}
-                        className="block px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-black transition-colors"
+                        className="block px-4 py-2 rounded-lg hover:bg-muted hover:text-primary transition-colors"
                       >
                         اخبار
                       </Link>
@@ -122,7 +122,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                       <Link
                         href="/contact"
                         onClick={onClose}
-                        className="block px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-black transition-colors"
+                        className="block px-4 py-2 rounded-lg hover:bg-muted hover:text-primary transition-colors"
                       >
                         تماس با ما
                       </Link>
@@ -133,14 +133,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {/* Recent Cars */}
                 {cars?.data && cars.data.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-black mb-4">خودروهای اخیر</h3>
+                    <h3 className="text-lg font-semibold text-primary mb-4">خودروهای اخیر</h3>
                     <ul className="space-y-2">
                       {cars.data.slice(0, 5).map((car: any) => (
                         <li key={car.id}>
                           <Link
                             href={`/cars/${car.category.slug}/${car.slug}`}
                             onClick={onClose}
-                            className="block px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-black transition-colors"
+                            className="block px-4 py-2 rounded-lg hover:bg-muted hover:text-primary transition-colors"
                           >
                             {car.brand} {car.model}
                           </Link>
