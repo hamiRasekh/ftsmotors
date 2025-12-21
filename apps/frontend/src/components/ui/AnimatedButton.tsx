@@ -12,6 +12,7 @@ interface AnimatedButtonProps {
   className?: string;
   size?: 'sm' | 'md' | 'lg';
   type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
 }
 
 export function AnimatedButton({
@@ -22,6 +23,7 @@ export function AnimatedButton({
   className = '',
   size = 'md',
   type = 'button',
+  disabled = false,
 }: AnimatedButtonProps) {
   const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-300 relative overflow-hidden';
   
@@ -37,13 +39,18 @@ export function AnimatedButton({
     lg: 'px-8 py-4 text-lg',
   };
 
+  const disabledStyles = disabled 
+    ? 'opacity-50 cursor-not-allowed pointer-events-none' 
+    : '';
+
   const buttonContent = (
     <motion.button
       type={type}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      disabled={disabled}
+      whileHover={disabled ? {} : { scale: 1.02 }}
+      whileTap={disabled ? {} : { scale: 0.98 }}
+      onClick={disabled ? undefined : onClick}
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${disabledStyles} ${className}`}
     >
       <span className="relative z-10">{children}</span>
     </motion.button>

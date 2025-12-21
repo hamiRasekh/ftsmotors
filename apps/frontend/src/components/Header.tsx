@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 import { Sidebar } from './layout/Sidebar';
 
 interface HeaderProps {
@@ -11,6 +12,7 @@ interface HeaderProps {
 }
 
 export function Header({ isHomePage = false }: HeaderProps = {}) {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -66,7 +68,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
           : 'bg-white/60 backdrop-blur-sm border-b border-gray-200/30'
       } ${scrolled || (isHomePage && isHovered) ? 'shadow-lg' : 'shadow-none'}`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-6 sm:px-6 lg:px-0">
         <nav className="flex items-center justify-between h-12 md:h-14">
           {/* Logo - Left Side */}
           <Link href="/" className="flex items-center flex-shrink-0">
@@ -83,20 +85,75 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
 
           {/* Desktop Menu - Center */}
           <ul className="hidden lg:flex items-center gap-1 xl:gap-2 absolute left-1/2 transform -translate-x-1/2">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`px-3 xl:px-4 py-2 text-sm xl:text-base font-medium transition-colors rounded-lg ${
-                    isHomePage && !scrolled
-                      ? 'text-white hover:text-white hover:bg-white/20'
-                      : 'text-gray-700 hover:text-primary hover:bg-muted'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`relative px-3 xl:px-4 py-2 text-sm xl:text-base font-medium transition-all duration-300 group overflow-hidden ${
+                      isHomePage && !scrolled
+                        ? isActive ? 'text-white' : 'text-white/90'
+                        : isActive ? 'text-primary' : 'text-gray-700'
+                    }`}
+                  >
+                    <span className="relative z-10">{item.label}</span>
+                    
+                    {/* Animated Underline - slides from right to left */}
+                    <motion.div
+                      className={`absolute bottom-0 right-0 h-0.5 ${
+                        isHomePage && !scrolled
+                          ? 'bg-white'
+                          : 'bg-gradient-to-l from-primary via-accent to-primary'
+                      }`}
+                      initial={{ width: isActive ? '100%' : '0%' }}
+                      whileHover={{ width: '100%' }}
+                      transition={{
+                        duration: 0.4,
+                        ease: [0.4, 0, 0.2, 1],
+                      }}
+                    />
+                    
+                    {/* Animated Background Glow */}
+                    <motion.div
+                      className={`absolute inset-0 rounded-lg -z-0 ${
+                        isHomePage && !scrolled
+                          ? 'bg-white/5'
+                          : 'bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5'
+                      }`}
+                      initial={{ opacity: isActive ? 1 : 0, scale: 1 }}
+                      whileHover={{
+                        opacity: 1,
+                        scale: 1.05,
+                      }}
+                      transition={{
+                        duration: 0.3,
+                        ease: 'easeOut',
+                      }}
+                    />
+                    
+                    {/* Shine Effect - sweeps across on hover */}
+                    <motion.div
+                      className={`absolute inset-0 rounded-lg pointer-events-none ${
+                        isHomePage && !scrolled
+                          ? 'bg-gradient-to-r from-transparent via-white/30 to-transparent'
+                          : 'bg-gradient-to-r from-transparent via-primary/30 to-transparent'
+                      }`}
+                      initial={{ x: '-100%', opacity: 0 }}
+                      whileHover={{
+                        x: '200%',
+                        opacity: [0, 1, 0],
+                        transition: {
+                          duration: 0.8,
+                          ease: 'easeInOut',
+                        },
+                      }}
+                    />
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
 
           {/* Desktop Right Side Actions */}
