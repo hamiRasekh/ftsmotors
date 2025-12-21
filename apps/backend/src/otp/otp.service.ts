@@ -1,4 +1,4 @@
-import { Injectable, Logger, TooManyRequestsException } from '@nestjs/common';
+import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 
 interface OTPData {
   code: string;

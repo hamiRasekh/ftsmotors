@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, BadRequestException, TooManyRequestsException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -76,7 +76,7 @@ export class AuthService {
     // Check rate limit
     const canProceed = await this.otpService.checkRateLimit(phone);
     if (!canProceed) {
-      throw new TooManyRequestsException('تعداد درخواست‌های شما بیش از حد مجاز است. لطفاً چند دقیقه صبر کنید.');
+      throw new HttpException('تعداد درخواست‌های شما بیش از حد مجاز است. لطفاً چند دقیقه صبر کنید.', HttpStatus.TOO_MANY_REQUESTS);
     }
 
     // Generate OTP

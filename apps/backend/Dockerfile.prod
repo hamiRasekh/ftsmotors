@@ -19,7 +19,7 @@ COPY packages/shared ./packages/shared
 COPY apps/backend ./apps/backend
 
 # Install all dependencies at root (npm workspaces hoists everything)
-RUN npm ci --legacy-peer-deps --only=production=false
+RUN npm install --legacy-peer-deps
 
 # Generate Prisma Client and Build (from backend directory)
 WORKDIR /app/apps/backend

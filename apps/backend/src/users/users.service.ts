@@ -6,9 +6,24 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findByPhone(phone: string) {
+  async findByPhone(phone: string, includePassword = false) {
+    if (includePassword) {
+      return this.prisma.user.findUnique({
+        where: { phone },
+      });
+    }
     return this.prisma.user.findUnique({
       where: { phone },
+      select: {
+        id: true,
+        phone: true,
+        email: true,
+        name: true,
+        avatar: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
@@ -65,7 +80,20 @@ export class UsersService {
   async createWithoutPassword(phone: string, name?: string, email?: string) {
     const existingUser = await this.findByPhone(phone);
     if (existingUser) {
-      return existingUser;
+      // Return existing user with same select structure
+      return this.prisma.user.findUnique({
+        where: { phone },
+        select: {
+          id: true,
+          phone: true,
+          email: true,
+          name: true,
+          avatar: true,
+          role: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
     }
 
     // Create user with a random password hash (user won't use password login)
