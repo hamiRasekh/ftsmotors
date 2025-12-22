@@ -7,7 +7,8 @@ export class SmsService {
   private readonly username: string;
   private readonly password: string;
   private readonly bodyId: number;
-  private readonly apiUrl = 'https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber';
+  // استفاده از متد SendByBaseNumber3 که از فرمت @bodyId@متغیر استفاده می‌کند
+  private readonly apiUrl = 'https://rest.payamak-panel.com/api/SendSMS/SendByBaseNumber3';
 
   constructor(private configService: ConfigService) {
     this.username = this.configService.get<string>('MELIPAYAMAK_USERNAME') || '989123895285';
@@ -25,13 +26,18 @@ export class SmsService {
         formattedPhone = '98' + formattedPhone;
       }
 
+      // در متد SendByBaseNumber3، باید از فرمت @bodyId@متغیر استفاده کنیم
+      // مثال: @409528@336908 (bodyId=409528, code=336908)
+      const textWithBodyId = `@${this.bodyId}@${code}`;
+      
       const requestBody = {
         username: this.username,
         password: this.password,
-        bodyId: this.bodyId,
-        text: code, // کد OTP به عنوان متغیر
+        text: textWithBodyId, // فرمت: @bodyId@کد
         to: formattedPhone,
       };
+
+      this.logger.log(`Sending OTP to ${formattedPhone} using bodyId ${this.bodyId}, code: ${code}`);
 
       const response = await fetch(this.apiUrl, {
         method: 'POST',
@@ -71,6 +77,8 @@ export class SmsService {
         '4': 'کد متن ارسالی صحیح نمی باشد',
         '18': 'شماره موبایل معتبر نمی باشد',
         '19': 'سقف محدودیت روزانه ارسال از وبسرویس',
+        '-110': 'الزام استفاده از ApiKey به جای رمز عبور',
+        '110': 'الزام استفاده از ApiKey به جای رمز عبور',
       };
 
       const errorMessage = errorMessages[errorCode] || `خطای نامشخص: ${errorCode}`;
