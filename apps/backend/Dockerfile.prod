@@ -54,6 +54,10 @@ COPY --from=base --chown=nestjs:nodejs /app/node_modules ./node_modules
 COPY --chown=nestjs:nodejs apps/backend/docker-entrypoint.prod.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
+# Copy migration script
+COPY --chown=nestjs:nodejs apps/backend/scripts/migrate.sh /app/scripts/migrate.sh
+RUN chmod +x /app/scripts/migrate.sh
+
 USER nestjs
 
 EXPOSE 4000
