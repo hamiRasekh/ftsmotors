@@ -92,6 +92,7 @@ export class AuthService {
       throw new BadRequestException({
         message: 'خطا در ارسال پیامک. لطفاً دوباره تلاش کنید.',
         debug: smsResult.debug,
+        smsResponse: smsResult.smsResponse, // برگرداندن response کامل SMS
       });
     }
 
@@ -99,6 +100,7 @@ export class AuthService {
       success: true,
       message: 'کد تایید به شماره موبایل شما ارسال شد.',
       debug: smsResult.debug,
+      smsResponse: smsResult.smsResponse, // برگرداندن response کامل SMS
     };
   }
 

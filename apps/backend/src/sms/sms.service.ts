@@ -7,16 +7,17 @@ export class SmsService {
   private readonly username: string;
   private readonly password: string;
   private readonly bodyId: number;
-  // استفاده از متد SendByBaseNumber3 که از فرمت @bodyId@متغیر استفاده می‌کند
-  private readonly apiUrl = 'https://rest.payamak-panel.com/api/SendSMS/SendByBaseNumber3';
+  // استفاده از متد BaseServiceNumber که فقط کد OTP را به عنوان ورودی می‌گیرد
+  private readonly apiUrl = 'https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber';
 
   constructor(private configService: ConfigService) {
     this.username = this.configService.get<string>('MELIPAYAMAK_USERNAME') || '989123895285';
-    this.password = this.configService.get<string>('MELIPAYAMAK_PASSWORD') || 'ACLQ$';
+    // استفاده از password جدید که کاربر ارائه داده
+    this.password = this.configService.get<string>('MELIPAYAMAK_PASSWORD') || 'be536d9b-339d-4deb-8cdb-27ce5493c79d';
     this.bodyId = parseInt(this.configService.get<string>('MELIPAYAMAK_BODY_ID') || '409528');
   }
 
-  async sendOTP(phone: string, code: string): Promise<{ success: boolean; debug?: any }> {
+  async sendOTP(phone: string, code: string): Promise<{ success: boolean; debug?: any; smsResponse?: any }> {
     try {
       // Format phone number (remove leading 0 if exists, ensure it starts with 98)
       let formattedPhone = phone.trim();
@@ -26,14 +27,13 @@ export class SmsService {
         formattedPhone = '98' + formattedPhone;
       }
 
-      // در متد SendByBaseNumber3، باید از فرمت @bodyId@متغیر استفاده کنیم
-      // مثال: @409528@336908 (bodyId=409528, code=336908)
-      const textWithBodyId = `@${this.bodyId}@${code}`;
-      
+      // در این API فقط کد OTP به عنوان ورودی ارسال می‌شود
+      // bodyId در پترن تعریف شده است (409528)
       const requestBody = {
         username: this.username,
         password: this.password,
-        text: textWithBodyId, // فرمت: @bodyId@کد
+        bodyId: this.bodyId,
+        text: code, // فقط کد OTP
         to: formattedPhone,
       };
 
@@ -57,6 +57,7 @@ export class SmsService {
           this.logger.log(`OTP sent successfully to ${formattedPhone}`);
           return { 
             success: true,
+            smsResponse: result, // برگرداندن response کامل SMS
             debug: {
               formattedPhone,
               apiResponse: result,
@@ -86,6 +87,7 @@ export class SmsService {
       
       return {
         success: false,
+        smsResponse: result, // برگرداندن response کامل SMS حتی در صورت خطا
         debug: {
           formattedPhone,
           originalPhone: phone,
@@ -103,6 +105,7 @@ export class SmsService {
       this.logger.error(`Error sending OTP to ${phone}:`, error);
       return {
         success: false,
+        smsResponse: null, // در صورت خطای exception
         debug: {
           originalPhone: phone,
           error: error instanceof Error ? error.message : String(error),
