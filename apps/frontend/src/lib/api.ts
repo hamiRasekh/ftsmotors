@@ -364,32 +364,6 @@ export const api = {
         return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
       }
     },
-            return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-          }
-          
-          // Return data with proper structure
-          if (Array.isArray(data)) {
-            return { data, total: data.length, page: 1, limit: 10, totalPages: 1 };
-          }
-          
-          return {
-            data: data.data || [],
-            total: data.total || 0,
-            page: data.page || 1,
-            limit: data.limit || 10,
-            totalPages: data.totalPages || 0,
-          };
-        })
-        .catch((error) => {
-          clearTimeout(timeoutId);
-          if (error.name === 'AbortError') {
-            console.warn('Request timeout for news');
-          } else {
-            console.error('Error fetching news:', error.message || error);
-          }
-          return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-        });
-    },
     getBySlug: async (slug: string) => {
       try {
         const response = await fetch(`${getAPIURL()}/api/news/slug/${slug}`);

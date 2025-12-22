@@ -66,7 +66,7 @@ export class AuthService {
     };
   }
 
-  async sendOTP(phone: string): Promise<{ success: boolean; message?: string; debug?: any }> {
+  async sendOTP(phone: string): Promise<{ success: boolean; message?: string; debug?: any; smsResponse?: any }> {
     // Validate phone number format (Iranian format)
     const phoneRegex = /^09\d{9}$|^9\d{9}$/;
     if (!phoneRegex.test(phone.replace(/\s+/g, ''))) {
