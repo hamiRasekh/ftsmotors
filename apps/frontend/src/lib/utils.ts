@@ -11,13 +11,21 @@ export function getAPIUrl(): string {
   // Server-side: use backend service name in Docker or environment variable
   if (typeof window === 'undefined') {
     // In Docker, use service name for internal communication
-    // Otherwise, use NEXT_PUBLIC_API_URL or default to backend service name
+    // Priority: API_URL > NEXT_PUBLIC_API_URL > default
     const serverUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
     if (serverUrl) {
+      // Log in development to help debug
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[getAPIUrl] Server-side API URL:', serverUrl);
+      }
       return serverUrl;
     }
     // Default to backend service name in Docker, or localhost for development
-    return process.env.NODE_ENV === 'production' ? 'http://backend:4000' : 'http://localhost:4000';
+    const defaultUrl = process.env.NODE_ENV === 'production' ? 'http://backend:4000' : 'http://localhost:4000';
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[getAPIUrl] Using default server-side API URL:', defaultUrl);
+    }
+    return defaultUrl;
   }
   
   // Client-side: ALWAYS use full URL, never relative path

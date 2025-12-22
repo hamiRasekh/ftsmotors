@@ -56,15 +56,27 @@ export const api = {
         const apiUrl = getAPIURL();
         const url = `${apiUrl}/api/categories`;
         
-        const response = await fetch(url, {
+        // For server-side rendering, use Next.js fetch with cache
+        const isServer = typeof window === 'undefined';
+        const fetchOptions: RequestInit = {
           headers: {
             'Content-Type': 'application/json',
           },
-        });
+          // Next.js cache options for server-side
+          ...(isServer && {
+            cache: 'no-store', // Always fetch fresh data on server
+            next: { revalidate: 60 }, // Revalidate every 60 seconds
+          }),
+        };
+        
+        const response = await fetch(url, fetchOptions);
         
         // Check if response is ok
         if (!response.ok) {
-          console.error(`HTTP Error ${response.status}: ${response.statusText} for ${url}`);
+          const errorMsg = `HTTP Error ${response.status}: ${response.statusText} for ${url}`;
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Categories:', errorMsg);
+          }
           let errorData;
           try {
             errorData = await response.json();
@@ -79,20 +91,30 @@ export const api = {
         try {
           data = await response.json();
         } catch (error) {
-          console.error('Error parsing JSON response:', error);
+          const errorMsg = 'Error parsing JSON response';
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Categories:', errorMsg, error);
+          }
           return [];
         }
         
         // Check if response is an error object
         if (data.statusCode && data.statusCode >= 400) {
-          console.error('API Error:', data.message || 'خطا در دریافت دسته‌بندی‌ها');
+          const errorMsg = data.message || 'خطا در دریافت دسته‌بندی‌ها';
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Categories:', errorMsg);
+          }
           return [];
         }
         
         // Return data (could be array or object with data property)
         return Array.isArray(data) ? data : (data.data || []);
       } catch (error: any) {
-        console.error('Error fetching categories:', error.message || error);
+        const isServer = typeof window === 'undefined';
+        const errorMsg = error.message || String(error);
+        if (isServer || process.env.NODE_ENV !== 'production') {
+          console.error('[API] Categories: Error fetching categories:', errorMsg);
+        }
         return [];
       }
     },
@@ -128,15 +150,27 @@ export const api = {
         const apiUrl = getAPIURL();
         const url = `${apiUrl}/api/cars?${searchParams}`;
         
-        const response = await fetch(url, {
+        // For server-side rendering, use Next.js fetch with cache
+        const isServer = typeof window === 'undefined';
+        const fetchOptions: RequestInit = {
           headers: {
             'Content-Type': 'application/json',
           },
-        });
+          // Next.js cache options for server-side
+          ...(isServer && {
+            cache: 'no-store', // Always fetch fresh data on server
+            next: { revalidate: 60 }, // Revalidate every 60 seconds
+          }),
+        };
+        
+        const response = await fetch(url, fetchOptions);
         
         // Check if response is ok
         if (!response.ok) {
-          console.error(`HTTP Error ${response.status}: ${response.statusText} for ${url}`);
+          const errorMsg = `HTTP Error ${response.status}: ${response.statusText} for ${url}`;
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Cars:', errorMsg);
+          }
           let errorData;
           try {
             errorData = await response.json();
@@ -151,13 +185,19 @@ export const api = {
         try {
           data = await response.json();
         } catch (error) {
-          console.error('Error parsing JSON response:', error);
+          const errorMsg = 'Error parsing JSON response';
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Cars:', errorMsg, error);
+          }
           return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
         }
         
         // Check if response is an error object
         if (data.statusCode && data.statusCode >= 400) {
-          console.error('API Error:', data.message || 'خطا در دریافت خودروها');
+          const errorMsg = data.message || 'خطا در دریافت خودروها';
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Cars:', errorMsg);
+          }
           return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
         }
         
@@ -174,7 +214,11 @@ export const api = {
           totalPages: data.totalPages || 0,
         };
       } catch (error: any) {
-        console.error('Error fetching cars:', error.message || error);
+        const isServer = typeof window === 'undefined';
+        const errorMsg = error.message || String(error);
+        if (isServer || process.env.NODE_ENV !== 'production') {
+          console.error('[API] Cars: Error fetching cars:', errorMsg);
+        }
         return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
       }
     },
@@ -210,22 +254,41 @@ export const api = {
         const apiUrl = getAPIURL();
         const url = `${apiUrl}/api/articles?${searchParams}`;
         
-        // Add timeout for fetch (increased to 15 seconds)
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-        
-        const response = await fetch(url, {
-          signal: controller.signal,
+        // For server-side rendering, use Next.js fetch with cache
+        const isServer = typeof window === 'undefined';
+        const fetchOptions: RequestInit = {
           headers: {
             'Content-Type': 'application/json',
           },
-        });
+          // Next.js cache options for server-side
+          ...(isServer && {
+            cache: 'no-store', // Always fetch fresh data on server
+            next: { revalidate: 60 }, // Revalidate every 60 seconds
+          }),
+        };
         
-        clearTimeout(timeoutId);
+        // Add timeout only for client-side (setTimeout doesn't work well in server-side)
+        let controller: AbortController | undefined;
+        let timeoutId: NodeJS.Timeout | undefined;
+        
+        if (!isServer) {
+          controller = new AbortController();
+          timeoutId = setTimeout(() => controller!.abort(), 15000);
+          fetchOptions.signal = controller.signal;
+        }
+        
+        const response = await fetch(url, fetchOptions);
+        
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
         
         // Check if response is ok
         if (!response.ok) {
-          console.error(`HTTP Error ${response.status}: ${response.statusText} for ${url}`);
+          const errorMsg = `HTTP Error ${response.status}: ${response.statusText} for ${url}`;
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Articles:', errorMsg);
+          }
           let errorData;
           try {
             errorData = await response.json();
@@ -240,13 +303,19 @@ export const api = {
         try {
           data = await response.json();
         } catch (error) {
-          console.error('Error parsing JSON response:', error);
+          const errorMsg = 'Error parsing JSON response';
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Articles:', errorMsg, error);
+          }
           return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
         }
         
         // Check if response is an error object
         if (data.statusCode && data.statusCode >= 400) {
-          console.error('API Error:', data.message || 'خطا در دریافت مقالات');
+          const errorMsg = data.message || 'خطا در دریافت مقالات';
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Articles:', errorMsg);
+          }
           return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
         }
         
@@ -263,10 +332,16 @@ export const api = {
           totalPages: data.totalPages || 0,
         };
       } catch (error: any) {
+        const isServer = typeof window === 'undefined';
         if (error.name === 'AbortError') {
-          console.warn('Request timeout for articles');
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.warn('[API] Articles: Request timeout');
+          }
         } else {
-          console.error('Error fetching articles:', error.message || error);
+          const errorMsg = error.message || String(error);
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Articles: Error fetching articles:', errorMsg);
+          }
         }
         return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
       }
@@ -303,22 +378,41 @@ export const api = {
         const apiUrl = getAPIURL();
         const url = `${apiUrl}/api/news?${searchParams}`;
         
-        // Add timeout for fetch (increased to 15 seconds)
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-        
-        const response = await fetch(url, {
-          signal: controller.signal,
+        // For server-side rendering, use Next.js fetch with cache
+        const isServer = typeof window === 'undefined';
+        const fetchOptions: RequestInit = {
           headers: {
             'Content-Type': 'application/json',
           },
-        });
+          // Next.js cache options for server-side
+          ...(isServer && {
+            cache: 'no-store', // Always fetch fresh data on server
+            next: { revalidate: 60 }, // Revalidate every 60 seconds
+          }),
+        };
         
-        clearTimeout(timeoutId);
+        // Add timeout only for client-side (setTimeout doesn't work well in server-side)
+        let controller: AbortController | undefined;
+        let timeoutId: NodeJS.Timeout | undefined;
+        
+        if (!isServer) {
+          controller = new AbortController();
+          timeoutId = setTimeout(() => controller!.abort(), 15000);
+          fetchOptions.signal = controller.signal;
+        }
+        
+        const response = await fetch(url, fetchOptions);
+        
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
         
         // Check if response is ok
         if (!response.ok) {
-          console.error(`HTTP Error ${response.status}: ${response.statusText} for ${url}`);
+          const errorMsg = `HTTP Error ${response.status}: ${response.statusText} for ${url}`;
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] News:', errorMsg);
+          }
           let errorData;
           try {
             errorData = await response.json();
@@ -333,13 +427,19 @@ export const api = {
         try {
           data = await response.json();
         } catch (error) {
-          console.error('Error parsing JSON response:', error);
+          const errorMsg = 'Error parsing JSON response';
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] News:', errorMsg, error);
+          }
           return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
         }
         
         // Check if response is an error object
         if (data.statusCode && data.statusCode >= 400) {
-          console.error('API Error:', data.message || 'خطا در دریافت اخبار');
+          const errorMsg = data.message || 'خطا در دریافت اخبار';
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] News:', errorMsg);
+          }
           return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
         }
         
@@ -356,10 +456,16 @@ export const api = {
           totalPages: data.totalPages || 0,
         };
       } catch (error: any) {
+        const isServer = typeof window === 'undefined';
         if (error.name === 'AbortError') {
-          console.warn('Request timeout for news');
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.warn('[API] News: Request timeout');
+          }
         } else {
-          console.error('Error fetching news:', error.message || error);
+          const errorMsg = error.message || String(error);
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] News: Error fetching news:', errorMsg);
+          }
         }
         return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
       }
