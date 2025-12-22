@@ -51,21 +51,110 @@ export const api = {
       }),
   },
   categories: {
-    getAll: () => fetch(`${getAPIURL()}/api/categories`).then((r) => r.json()),
-    getBySlug: (slug: string) =>
-      fetch(`${getAPIURL()}/api/categories/slug/${slug}`).then((r) => r.json()),
+    getAll: async () => {
+      try {
+        const response = await fetch(`${getAPIURL()}/api/categories`);
+        const data = await response.json();
+        
+        // Check if response is an error object
+        if (data.statusCode && data.statusCode >= 400) {
+          console.error('API Error:', data.message || 'خطا در دریافت دسته‌بندی‌ها');
+          return [];
+        }
+        
+        // Check if response is ok
+        if (!response.ok) {
+          console.error('HTTP Error:', response.status, response.statusText);
+          return [];
+        }
+        
+        // Return data (could be array or object with data property)
+        return Array.isArray(data) ? data : (data.data || []);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        return [];
+      }
+    },
+    getBySlug: async (slug: string) => {
+      try {
+        const response = await fetch(`${getAPIURL()}/api/categories/slug/${slug}`);
+        const data = await response.json();
+        
+        if (data.statusCode && data.statusCode >= 400) {
+          throw new Error(data.message || 'دسته‌بندی یافت نشد');
+        }
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return data;
+      } catch (error) {
+        console.error('Error fetching category:', error);
+        throw error;
+      }
+    },
   },
   cars: {
-    getAll: (params?: { categoryId?: string; page?: number; limit?: number; published?: boolean }) => {
-      const searchParams = new URLSearchParams();
-      if (params?.categoryId) searchParams.append('categoryId', params.categoryId);
-      if (params?.page) searchParams.append('page', params.page.toString());
-      if (params?.limit) searchParams.append('limit', params.limit.toString());
-      if (params?.published !== undefined) searchParams.append('published', params.published.toString());
-      return fetch(`${getAPIURL()}/api/cars?${searchParams}`).then((r) => r.json());
+    getAll: async (params?: { categoryId?: string; page?: number; limit?: number; published?: boolean }) => {
+      try {
+        const searchParams = new URLSearchParams();
+        if (params?.categoryId) searchParams.append('categoryId', params.categoryId);
+        if (params?.page) searchParams.append('page', params.page.toString());
+        if (params?.limit) searchParams.append('limit', params.limit.toString());
+        if (params?.published !== undefined) searchParams.append('published', params.published.toString());
+        
+        const response = await fetch(`${getAPIURL()}/api/cars?${searchParams}`);
+        const data = await response.json();
+        
+        // Check if response is an error object
+        if (data.statusCode && data.statusCode >= 400) {
+          console.error('API Error:', data.message || 'خطا در دریافت خودروها');
+          return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
+        }
+        
+        // Check if response is ok
+        if (!response.ok) {
+          console.error('HTTP Error:', response.status, response.statusText);
+          return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
+        }
+        
+        // Return data with proper structure
+        if (Array.isArray(data)) {
+          return { data, total: data.length, page: 1, limit: params?.limit || 20, totalPages: 1 };
+        }
+        
+        return {
+          data: data.data || [],
+          total: data.total || 0,
+          page: data.page || 1,
+          limit: data.limit || params?.limit || 20,
+          totalPages: data.totalPages || 0,
+        };
+      } catch (error) {
+        console.error('Error fetching cars:', error);
+        return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
+      }
     },
-    getBySlug: (slug: string) =>
-      fetch(`${getAPIURL()}/api/cars/slug/${slug}`).then((r) => r.json()),
+    getBySlug: async (slug: string) => {
+      try {
+        const response = await fetch(`${getAPIURL()}/api/cars/slug/${slug}`);
+        const data = await response.json();
+        
+        if (data.statusCode && data.statusCode >= 400) {
+          throw new Error(data.message || 'خودرو یافت نشد');
+        }
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return data;
+      } catch (error) {
+        console.error('Error fetching car:', error);
+        throw error;
+      }
+    },
   },
   articles: {
     getAll: (params?: { published?: boolean; page?: number; limit?: number }) => {
@@ -82,12 +171,33 @@ export const api = {
       return fetch(`${getAPIURL()}/api/articles?${searchParams}`, {
         signal: controller.signal,
       })
-        .then((r) => {
+        .then(async (r) => {
           clearTimeout(timeoutId);
-          if (!r.ok) {
-            throw new Error(`HTTP error! status: ${r.status}`);
+          const data = await r.json();
+          
+          // Check if response is an error object
+          if (data.statusCode && data.statusCode >= 400) {
+            console.error('API Error:', data.message || 'خطا در دریافت مقالات');
+            return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
           }
-          return r.json();
+          
+          if (!r.ok) {
+            console.error('HTTP Error:', r.status, r.statusText);
+            return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+          }
+          
+          // Return data with proper structure
+          if (Array.isArray(data)) {
+            return { data, total: data.length, page: 1, limit: 10, totalPages: 1 };
+          }
+          
+          return {
+            data: data.data || [],
+            total: data.total || 0,
+            page: data.page || 1,
+            limit: data.limit || 10,
+            totalPages: data.totalPages || 0,
+          };
         })
         .catch((error) => {
           clearTimeout(timeoutId);
@@ -99,8 +209,25 @@ export const api = {
           return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
         });
     },
-    getBySlug: (slug: string) =>
-      fetch(`${getAPIURL()}/api/articles/slug/${slug}`).then((r) => r.json()),
+    getBySlug: async (slug: string) => {
+      try {
+        const response = await fetch(`${getAPIURL()}/api/articles/slug/${slug}`);
+        const data = await response.json();
+        
+        if (data.statusCode && data.statusCode >= 400) {
+          throw new Error(data.message || 'مقاله یافت نشد');
+        }
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return data;
+      } catch (error) {
+        console.error('Error fetching article:', error);
+        throw error;
+      }
+    },
   },
   news: {
     getAll: (params?: { published?: boolean; page?: number; limit?: number }) => {
@@ -117,12 +244,33 @@ export const api = {
       return fetch(`${getAPIURL()}/api/news?${searchParams}`, {
         signal: controller.signal,
       })
-        .then((r) => {
+        .then(async (r) => {
           clearTimeout(timeoutId);
-          if (!r.ok) {
-            throw new Error(`HTTP error! status: ${r.status}`);
+          const data = await r.json();
+          
+          // Check if response is an error object
+          if (data.statusCode && data.statusCode >= 400) {
+            console.error('API Error:', data.message || 'خطا در دریافت اخبار');
+            return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
           }
-          return r.json();
+          
+          if (!r.ok) {
+            console.error('HTTP Error:', r.status, r.statusText);
+            return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+          }
+          
+          // Return data with proper structure
+          if (Array.isArray(data)) {
+            return { data, total: data.length, page: 1, limit: 10, totalPages: 1 };
+          }
+          
+          return {
+            data: data.data || [],
+            total: data.total || 0,
+            page: data.page || 1,
+            limit: data.limit || 10,
+            totalPages: data.totalPages || 0,
+          };
         })
         .catch((error) => {
           clearTimeout(timeoutId);
@@ -134,8 +282,25 @@ export const api = {
           return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
         });
     },
-    getBySlug: (slug: string) =>
-      fetch(`${getAPIURL()}/api/news/slug/${slug}`).then((r) => r.json()),
+    getBySlug: async (slug: string) => {
+      try {
+        const response = await fetch(`${getAPIURL()}/api/news/slug/${slug}`);
+        const data = await response.json();
+        
+        if (data.statusCode && data.statusCode >= 400) {
+          throw new Error(data.message || 'خبر یافت نشد');
+        }
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return data;
+      } catch (error) {
+        console.error('Error fetching news:', error);
+        throw error;
+      }
+    },
   },
   contact: {
     send: (data: {

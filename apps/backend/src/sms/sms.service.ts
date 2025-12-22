@@ -15,7 +15,7 @@ export class SmsService {
     this.bodyId = parseInt(this.configService.get<string>('MELIPAYAMAK_BODY_ID') || '409528');
   }
 
-  async sendOTP(phone: string, code: string): Promise<boolean> {
+  async sendOTP(phone: string, code: string): Promise<{ success: boolean; debug?: any }> {
     try {
       // Format phone number (remove leading 0 if exists, ensure it starts with 98)
       let formattedPhone = phone.trim();
@@ -25,18 +25,20 @@ export class SmsService {
         formattedPhone = '98' + formattedPhone;
       }
 
+      const requestBody = {
+        username: this.username,
+        password: this.password,
+        bodyId: this.bodyId,
+        text: code, // کد OTP به عنوان متغیر
+        to: formattedPhone,
+      };
+
       const response = await fetch(this.apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          username: this.username,
-          password: this.password,
-          bodyId: this.bodyId,
-          text: code, // کد OTP به عنوان متغیر
-          to: formattedPhone,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       const result = await response.json();
@@ -47,7 +49,14 @@ export class SmsService {
         const value = result.Value;
         if (value && value.length > 15) {
           this.logger.log(`OTP sent successfully to ${formattedPhone}`);
-          return true;
+          return { 
+            success: true,
+            debug: {
+              formattedPhone,
+              apiResponse: result,
+              messageId: value,
+            }
+          };
         }
       }
 
@@ -67,10 +76,32 @@ export class SmsService {
       const errorMessage = errorMessages[errorCode] || `خطای نامشخص: ${errorCode}`;
       this.logger.error(errorMessage);
       
-      return false;
+      return {
+        success: false,
+        debug: {
+          formattedPhone,
+          originalPhone: phone,
+          errorCode,
+          errorMessage,
+          apiResponse: result,
+          requestBody: {
+            ...requestBody,
+            password: '***', // Hide password in debug
+          },
+          apiUrl: this.apiUrl,
+        }
+      };
     } catch (error) {
       this.logger.error(`Error sending OTP to ${phone}:`, error);
-      return false;
+      return {
+        success: false,
+        debug: {
+          originalPhone: phone,
+          error: error instanceof Error ? error.message : String(error),
+          errorStack: error instanceof Error ? error.stack : undefined,
+          apiUrl: this.apiUrl,
+        }
+      };
     }
   }
 }

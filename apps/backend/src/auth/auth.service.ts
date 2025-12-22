@@ -86,15 +86,19 @@ export class AuthService {
     await this.otpService.storeOTP(phone, code);
 
     // Send SMS
-    const smsSent = await this.smsService.sendOTP(phone, code);
+    const smsResult = await this.smsService.sendOTP(phone, code);
     
-    if (!smsSent) {
-      throw new BadRequestException('خطا در ارسال پیامک. لطفاً دوباره تلاش کنید.');
+    if (!smsResult.success) {
+      throw new BadRequestException({
+        message: 'خطا در ارسال پیامک. لطفاً دوباره تلاش کنید.',
+        debug: smsResult.debug,
+      });
     }
 
     return {
       success: true,
       message: 'کد تایید به شماره موبایل شما ارسال شد.',
+      debug: smsResult.debug,
     };
   }
 
