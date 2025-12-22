@@ -5,21 +5,28 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// For server-side: use backend service name in Docker, otherwise localhost
+// For server-side: use backend service name in Docker, otherwise use NEXT_PUBLIC_API_URL or default
 // For client-side: ALWAYS use full URL to https://api.ftsmotors.ir (no proxy)
 export function getAPIUrl(): string {
-  // Server-side: use backend service name in Docker
+  // Server-side: use backend service name in Docker or environment variable
   if (typeof window === 'undefined') {
-    return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:4000';
+    // In Docker, use service name for internal communication
+    // Otherwise, use NEXT_PUBLIC_API_URL or default to backend service name
+    const serverUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+    if (serverUrl) {
+      return serverUrl;
+    }
+    // Default to backend service name in Docker, or localhost for development
+    return process.env.NODE_ENV === 'production' ? 'http://backend:4000' : 'http://localhost:4000';
   }
   
   // Client-side: ALWAYS use full URL, never relative path
   // This ensures requests go directly to https://api.ftsmotors.ir, not through Next.js proxy
   const hostname = window.location.hostname;
   
-  // Development: use localhost
+  // Development: use localhost or NEXT_PUBLIC_API_URL
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:4000';
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
   }
   
   // Production: always use https://api.ftsmotors.ir

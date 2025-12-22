@@ -30,24 +30,9 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000',
   },
-  // Proxy API requests to backend
-  async rewrites() {
-    // Determine backend URL:
-    // 1. Use API_URL if set (for Docker server-side)
-    // 2. Use NEXT_PUBLIC_API_URL if set (for client-side or development)
-    // 3. Default to localhost:4000 for development
-    const backendUrl = 
-      process.env.API_URL || 
-      process.env.NEXT_PUBLIC_API_URL || 
-      'http://localhost:4000';
-    
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${backendUrl}/api/:path*`,
-      },
-    ];
-  },
+  // Removed rewrites to prevent proxying API requests to localhost
+  // Frontend should directly call https://api.ftsmotors.ir on client-side
+  // Server-side will use backend service name in Docker or environment variable
   // Performance optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',

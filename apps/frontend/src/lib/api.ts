@@ -53,8 +53,35 @@ export const api = {
   categories: {
     getAll: async () => {
       try {
-        const response = await fetch(`${getAPIURL()}/api/categories`);
-        const data = await response.json();
+        const apiUrl = getAPIURL();
+        const url = `${apiUrl}/api/categories`;
+        
+        const response = await fetch(url, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        // Check if response is ok
+        if (!response.ok) {
+          console.error(`HTTP Error ${response.status}: ${response.statusText} for ${url}`);
+          let errorData;
+          try {
+            errorData = await response.json();
+          } catch {
+            errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+          }
+          return [];
+        }
+        
+        // Parse JSON response
+        let data;
+        try {
+          data = await response.json();
+        } catch (error) {
+          console.error('Error parsing JSON response:', error);
+          return [];
+        }
         
         // Check if response is an error object
         if (data.statusCode && data.statusCode >= 400) {
@@ -62,16 +89,10 @@ export const api = {
           return [];
         }
         
-        // Check if response is ok
-        if (!response.ok) {
-          console.error('HTTP Error:', response.status, response.statusText);
-          return [];
-        }
-        
         // Return data (could be array or object with data property)
         return Array.isArray(data) ? data : (data.data || []);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
+      } catch (error: any) {
+        console.error('Error fetching categories:', error.message || error);
         return [];
       }
     },
@@ -104,18 +125,39 @@ export const api = {
         if (params?.limit) searchParams.append('limit', params.limit.toString());
         if (params?.published !== undefined) searchParams.append('published', params.published.toString());
         
-        const response = await fetch(`${getAPIURL()}/api/cars?${searchParams}`);
-        const data = await response.json();
+        const apiUrl = getAPIURL();
+        const url = `${apiUrl}/api/cars?${searchParams}`;
+        
+        const response = await fetch(url, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        // Check if response is ok
+        if (!response.ok) {
+          console.error(`HTTP Error ${response.status}: ${response.statusText} for ${url}`);
+          let errorData;
+          try {
+            errorData = await response.json();
+          } catch {
+            errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+          }
+          return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
+        }
+        
+        // Parse JSON response
+        let data;
+        try {
+          data = await response.json();
+        } catch (error) {
+          console.error('Error parsing JSON response:', error);
+          return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
+        }
         
         // Check if response is an error object
         if (data.statusCode && data.statusCode >= 400) {
           console.error('API Error:', data.message || 'خطا در دریافت خودروها');
-          return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
-        }
-        
-        // Check if response is ok
-        if (!response.ok) {
-          console.error('HTTP Error:', response.status, response.statusText);
           return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
         }
         
@@ -131,8 +173,8 @@ export const api = {
           limit: data.limit || params?.limit || 20,
           totalPages: data.totalPages || 0,
         };
-      } catch (error) {
-        console.error('Error fetching cars:', error);
+      } catch (error: any) {
+        console.error('Error fetching cars:', error.message || error);
         return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
       }
     },
@@ -157,57 +199,77 @@ export const api = {
     },
   },
   articles: {
-    getAll: (params?: { published?: boolean; page?: number; limit?: number }) => {
-      const searchParams = new URLSearchParams();
-      if (params?.published !== undefined)
-        searchParams.append('published', params.published.toString());
-      if (params?.page) searchParams.append('page', params.page.toString());
-      if (params?.limit) searchParams.append('limit', params.limit.toString());
-      
-      // Add timeout for fetch
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-      
-      return fetch(`${getAPIURL()}/api/articles?${searchParams}`, {
-        signal: controller.signal,
-      })
-        .then(async (r) => {
-          clearTimeout(timeoutId);
-          const data = await r.json();
-          
-          // Check if response is an error object
-          if (data.statusCode && data.statusCode >= 400) {
-            console.error('API Error:', data.message || 'خطا در دریافت مقالات');
-            return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-          }
-          
-          if (!r.ok) {
-            console.error('HTTP Error:', r.status, r.statusText);
-            return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-          }
-          
-          // Return data with proper structure
-          if (Array.isArray(data)) {
-            return { data, total: data.length, page: 1, limit: 10, totalPages: 1 };
-          }
-          
-          return {
-            data: data.data || [],
-            total: data.total || 0,
-            page: data.page || 1,
-            limit: data.limit || 10,
-            totalPages: data.totalPages || 0,
-          };
-        })
-        .catch((error) => {
-          clearTimeout(timeoutId);
-          if (error.name === 'AbortError') {
-            console.warn('Request timeout for articles');
-          } else {
-            console.error('Error fetching articles:', error.message || error);
+    getAll: async (params?: { published?: boolean; page?: number; limit?: number }) => {
+      try {
+        const searchParams = new URLSearchParams();
+        if (params?.published !== undefined)
+          searchParams.append('published', params.published.toString());
+        if (params?.page) searchParams.append('page', params.page.toString());
+        if (params?.limit) searchParams.append('limit', params.limit.toString());
+        
+        const apiUrl = getAPIURL();
+        const url = `${apiUrl}/api/articles?${searchParams}`;
+        
+        // Add timeout for fetch (increased to 15 seconds)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        
+        const response = await fetch(url, {
+          signal: controller.signal,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        clearTimeout(timeoutId);
+        
+        // Check if response is ok
+        if (!response.ok) {
+          console.error(`HTTP Error ${response.status}: ${response.statusText} for ${url}`);
+          let errorData;
+          try {
+            errorData = await response.json();
+          } catch {
+            errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
           }
           return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-        });
+        }
+        
+        // Parse JSON response
+        let data;
+        try {
+          data = await response.json();
+        } catch (error) {
+          console.error('Error parsing JSON response:', error);
+          return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+        }
+        
+        // Check if response is an error object
+        if (data.statusCode && data.statusCode >= 400) {
+          console.error('API Error:', data.message || 'خطا در دریافت مقالات');
+          return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+        }
+        
+        // Return data with proper structure
+        if (Array.isArray(data)) {
+          return { data, total: data.length, page: 1, limit: 10, totalPages: 1 };
+        }
+        
+        return {
+          data: data.data || [],
+          total: data.total || 0,
+          page: data.page || 1,
+          limit: data.limit || 10,
+          totalPages: data.totalPages || 0,
+        };
+      } catch (error: any) {
+        if (error.name === 'AbortError') {
+          console.warn('Request timeout for articles');
+        } else {
+          console.error('Error fetching articles:', error.message || error);
+        }
+        return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+      }
     },
     getBySlug: async (slug: string) => {
       try {
@@ -230,32 +292,78 @@ export const api = {
     },
   },
   news: {
-    getAll: (params?: { published?: boolean; page?: number; limit?: number }) => {
-      const searchParams = new URLSearchParams();
-      if (params?.published !== undefined)
-        searchParams.append('published', params.published.toString());
-      if (params?.page) searchParams.append('page', params.page.toString());
-      if (params?.limit) searchParams.append('limit', params.limit.toString());
-      
-      // Add timeout for fetch
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-      
-      return fetch(`${getAPIURL()}/api/news?${searchParams}`, {
-        signal: controller.signal,
-      })
-        .then(async (r) => {
-          clearTimeout(timeoutId);
-          const data = await r.json();
-          
-          // Check if response is an error object
-          if (data.statusCode && data.statusCode >= 400) {
-            console.error('API Error:', data.message || 'خطا در دریافت اخبار');
-            return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+    getAll: async (params?: { published?: boolean; page?: number; limit?: number }) => {
+      try {
+        const searchParams = new URLSearchParams();
+        if (params?.published !== undefined)
+          searchParams.append('published', params.published.toString());
+        if (params?.page) searchParams.append('page', params.page.toString());
+        if (params?.limit) searchParams.append('limit', params.limit.toString());
+        
+        const apiUrl = getAPIURL();
+        const url = `${apiUrl}/api/news?${searchParams}`;
+        
+        // Add timeout for fetch (increased to 15 seconds)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        
+        const response = await fetch(url, {
+          signal: controller.signal,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        clearTimeout(timeoutId);
+        
+        // Check if response is ok
+        if (!response.ok) {
+          console.error(`HTTP Error ${response.status}: ${response.statusText} for ${url}`);
+          let errorData;
+          try {
+            errorData = await response.json();
+          } catch {
+            errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
           }
-          
-          if (!r.ok) {
-            console.error('HTTP Error:', r.status, r.statusText);
+          return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+        }
+        
+        // Parse JSON response
+        let data;
+        try {
+          data = await response.json();
+        } catch (error) {
+          console.error('Error parsing JSON response:', error);
+          return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+        }
+        
+        // Check if response is an error object
+        if (data.statusCode && data.statusCode >= 400) {
+          console.error('API Error:', data.message || 'خطا در دریافت اخبار');
+          return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+        }
+        
+        // Return data with proper structure
+        if (Array.isArray(data)) {
+          return { data, total: data.length, page: 1, limit: 10, totalPages: 1 };
+        }
+        
+        return {
+          data: data.data || [],
+          total: data.total || 0,
+          page: data.page || 1,
+          limit: data.limit || 10,
+          totalPages: data.totalPages || 0,
+        };
+      } catch (error: any) {
+        if (error.name === 'AbortError') {
+          console.warn('Request timeout for news');
+        } else {
+          console.error('Error fetching news:', error.message || error);
+        }
+        return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+      }
+    },
             return { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
           }
           
