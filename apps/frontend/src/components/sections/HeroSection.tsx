@@ -4,6 +4,21 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const slides = [
+  {
+    image: '/img/slider/download__1_-removebg-preview.png',
+    position: 'left', // از چپ می‌آید
+  },
+  {
+    image: '/img/slider/benz_c300_2016-removebg-preview.png',
+    position: 'right', // از راست می‌آید
+  },
+  {
+    image: '/img/slider/Get_closer_to_the_road_with_available_All-Wheel_Drive___KiaK5-removebg-preview.png',
+    position: 'right', // از راست می‌آید
+  },
+];
+
 const rotatingTexts = [
   'نمایندگی رسمی خودرو',
   'خرید و فروش با تضمین کیفیت',
@@ -12,203 +27,200 @@ const rotatingTexts = [
 ];
 
 export function HeroSection() {
-  const [animationStage, setAnimationStage] = useState<'logo' | 'company' | 'texts'>('logo');
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
 
-  // Handle animation stages
+  // Auto-rotate slides every 5 seconds
   useEffect(() => {
-    // Logo appears first
-    const logoTimer = setTimeout(() => {
-      setAnimationStage('company');
-    }, 2000);
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
 
-    // Company name appears after logo
-    const companyTimer = setTimeout(() => {
-      setAnimationStage('texts');
-    }, 4000);
-
-    return () => {
-      clearTimeout(logoTimer);
-      clearTimeout(companyTimer);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   // Rotate texts every 3.5 seconds
   useEffect(() => {
-    if (animationStage !== 'texts') return;
-
     const interval = setInterval(() => {
       setCurrentTextIndex((prev) => (prev + 1) % rotatingTexts.length);
     }, 3500);
 
     return () => clearInterval(interval);
-  }, [animationStage]);
+  }, []);
+
+  const currentSlideData = slides[currentSlide];
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 -mt-12 md:-mt-14">
-      {/* Smoke/Fog Background Effect */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full opacity-20 blur-3xl"
-            style={{
-              width: `${300 + i * 100}px`,
-              height: `${300 + i * 100}px`,
-              left: `${(i * 15) % 100}%`,
-              top: `${(i * 20) % 100}%`,
-              background: `radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(200,200,200,0.1) 50%, transparent 100%)`,
-              animation: `smokeFloat ${15 + i * 3}s ease-in-out infinite`,
-              animationDelay: `${i * 2}s`,
-            }}
-          />
-        ))}
+    <section className="relative w-full overflow-hidden bg-white" style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+      {/* Smoke Effect Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(12)].map((_, i) => {
+          const isPrimary = i % 3 === 0;
+          const isSecondary = i % 3 === 1;
+          const color = isPrimary 
+            ? 'rgba(14, 47, 62, 0.15)' 
+            : isSecondary 
+            ? 'rgba(154, 124, 100, 0.15)' 
+            : 'rgba(25, 104, 134, 0.12)';
+          
+          return (
+            <div
+              key={i}
+              className="absolute"
+              style={{
+                width: `${150 + i * 60}px`,
+                height: `${300 + i * 100}px`,
+                left: `${(i * 8) % 100}%`,
+                top: `${(i * 10) % 100}%`,
+                background: `radial-gradient(ellipse at center, ${color} 0%, ${color} 30%, transparent 70%)`,
+                borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+                filter: 'blur(40px)',
+                opacity: 0.4,
+                animation: `smokeFloat ${25 + i * 3}s ease-in-out infinite`,
+                animationDelay: `${i * 2}s`,
+                transform: `rotate(${i * 15}deg)`,
+              }}
+            />
+          );
+        })}
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 h-full flex items-center justify-center">
-        <div className="container mx-auto px-4 text-center">
-          {/* Logo Animation */}
-          <AnimatePresence mode="wait">
-            {animationStage === 'logo' && (
-              <motion.div
-                key="logo"
-                initial={{ opacity: 0, scale: 0.3 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.2 }}
-                transition={{
-                  duration: 1.5,
-                  ease: [0.34, 1.56, 0.64, 1],
-                }}
-                className="flex justify-center"
-              >
-                <div className="relative">
-                  <Image
-                    src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-                    alt="فیدار تجارت سوبا"
-                    width={300}
-                    height={300}
-                    className="object-contain drop-shadow-2xl"
-                    priority
-                  />
-                  {/* Glow effect around logo */}
-                  <div className="absolute inset-0 bg-white/20 rounded-full blur-3xl -z-10 scale-150" />
-                </div>
-              </motion.div>
-            )}
+      {/* Car Image - Half out of screen at corners */}
+      <div className="absolute inset-0 overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`car-${currentSlide}`}
+            initial={{ 
+              opacity: 0,
+              x: currentSlideData.position === 'left' ? '-50%' : '50%',
+            }}
+            animate={{ 
+              opacity: 1,
+              x: 0,
+            }}
+            exit={{ 
+              opacity: 0,
+              x: currentSlideData.position === 'left' ? '-50%' : '50%',
+            }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className={`absolute ${
+              currentSlideData.position === 'left' 
+                ? 'left-0' 
+                : 'right-0'
+            } bottom-0`}
+            style={{
+              width: '60vw',
+              height: '80vh',
+              [currentSlideData.position === 'left' ? 'left' : 'right']: 0,
+            }}
+          >
+            <Image
+              src={currentSlideData.image}
+              alt="Car"
+              fill
+              className={`object-contain ${
+                currentSlideData.position === 'left' 
+                  ? 'object-left-bottom' 
+                  : 'object-right-bottom'
+              }`}
+              priority={currentSlide === 0}
+              style={{
+                objectPosition: currentSlideData.position === 'left' 
+                  ? 'left bottom' 
+                  : 'right bottom',
+              }}
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
-            {/* Company Name */}
-            {animationStage === 'company' && (
-              <motion.div
-                key="company"
-                initial={{ opacity: 0, y: 50 }}
+      {/* Logo and Text - Center positioned */}
+      <div className="absolute top-12 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-4xl px-4">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col items-center gap-6 text-center"
+          dir="rtl"
+        >
+          {/* Logo - Bigger */}
+          <Image
+            src="/photo_2025-12-08_17-46-46-removebg-preview.png"
+            alt="فیدار تجارت سوبا"
+            width={180}
+            height={180}
+            className="object-contain"
+            priority
+          />
+
+          {/* Company Name */}
+          <h1 className="text-4xl md:text-6xl font-bold text-primary" style={{ fontFamily: 'inherit' }}>
+            فیدار تجارت سوبا
+          </h1>
+
+          {/* Rotating Text - Centered, better font, different color */}
+          <div className="h-12 md:h-16 flex items-center justify-center min-w-[250px] md:min-w-[400px]">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={`text-${currentTextIndex}`}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="space-y-8"
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                className="text-xl md:text-3xl font-semibold text-primary"
+                style={{ 
+                  fontFamily: 'inherit',
+                  letterSpacing: '0.5px',
+                }}
               >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2, duration: 0.6 }}
-                  className="flex justify-center mb-8"
-                >
-                  <Image
-                    src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-                    alt="فیدار تجارت سوبا"
-                    width={200}
-                    height={200}
-                    className="object-contain drop-shadow-2xl"
-                  />
-                </motion.div>
-                <motion.h1
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.8 }}
-                  className="text-5xl md:text-7xl font-bold text-white mb-4"
-                >
-                  فیدار تجارت سوبا
-                </motion.h1>
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.8 }}
-                  className="text-xl md:text-2xl text-white/80"
-                >
-                  نمایندگی رسمی خودرو
-                </motion.p>
-              </motion.div>
-            )}
+                {rotatingTexts[currentTextIndex]}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </div>
 
-            {/* Rotating Texts */}
-            {animationStage === 'texts' && (
-              <motion.div
-                key="texts"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-8"
-              >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6 }}
-                  className="flex justify-center mb-8"
-                >
-                  <Image
-                    src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-                    alt="فیدار تجارت سوبا"
-                    width={180}
-                    height={180}
-                    className="object-contain drop-shadow-2xl"
-                  />
-                </motion.div>
-                <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="text-4xl md:text-6xl font-bold text-white mb-6"
-                >
-                  فیدار تجارت سوبا
-                </motion.h1>
-                <div className="h-20 md:h-24 flex items-center justify-center">
-                  <AnimatePresence mode="wait">
-                    <motion.p
-                      key={currentTextIndex}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.6, ease: 'easeInOut' }}
-                      className="text-xl md:text-3xl text-white/90 font-medium"
-                    >
-                      {rotatingTexts[currentTextIndex]}
-                    </motion.p>
-                  </AnimatePresence>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+      {/* Slide Indicators */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              index === currentSlide
+                ? 'w-8 bg-primary'
+                : 'w-2 bg-gray-300 hover:bg-secondary'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
 
       {/* CSS for smoke animation */}
       <style jsx>{`
         @keyframes smokeFloat {
-          0%, 100% {
-            transform: translate(0, 0) scale(1);
-            opacity: 0.1;
+          0% {
+            transform: translate(0, 0) scale(1) rotate(0deg);
+            opacity: 0.3;
           }
-          25% {
-            transform: translate(30px, -30px) scale(1.1);
-            opacity: 0.2;
+          20% {
+            transform: translate(60px, -80px) scale(1.2) rotate(10deg);
+            opacity: 0.5;
           }
-          50% {
-            transform: translate(-20px, -50px) scale(0.9);
-            opacity: 0.15;
+          40% {
+            transform: translate(-40px, -120px) scale(0.9) rotate(-8deg);
+            opacity: 0.4;
           }
-          75% {
-            transform: translate(40px, -20px) scale(1.05);
+          60% {
+            transform: translate(80px, -100px) scale(1.15) rotate(12deg);
+            opacity: 0.45;
+          }
+          80% {
+            transform: translate(-20px, -140px) scale(0.95) rotate(-5deg);
+            opacity: 0.35;
+          }
+          100% {
+            transform: translate(0, -160px) scale(1) rotate(0deg);
             opacity: 0.2;
           }
         }
@@ -216,4 +228,3 @@ export function HeroSection() {
     </section>
   );
 }
-
