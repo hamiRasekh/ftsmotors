@@ -82,7 +82,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+    <section className="relative w-full overflow-hidden" style={{ minHeight: '100vh' }}>
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image

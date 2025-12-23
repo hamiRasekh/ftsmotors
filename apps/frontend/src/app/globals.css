@@ -1,9 +1,11 @@
-@import url('/fonts/iranyekan.css');
-@import url('/fonts/vazir.css');
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Font imports with fallback */
+@import url('/fonts/iranyekan.css');
+@import url('/fonts/vazir.css');
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @layer base {
   :root {

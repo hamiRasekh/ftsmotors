@@ -17,11 +17,7 @@ const Car3DSlider = dynamic(
   () => import('@/components/sections/Car3DSlider').then(mod => ({ default: mod.Car3DSlider })).catch(() => ({ default: () => null })),
   {
     ssr: false,
-    loading: () => (
-      <section className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-gray-400">در حال بارگذاری...</div>
-      </section>
-    ),
+    loading: () => null, // No loading component - let HeroSection show
   }
 );
 
@@ -66,7 +62,7 @@ export default async function HomePage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-white pt-12 md:pt-14">
+      <main className="min-h-screen bg-white">
         {/* Hero Section */}
         <section className="relative">
           <HeroSection />

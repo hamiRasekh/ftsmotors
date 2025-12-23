@@ -49,14 +49,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="canonical" href={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'} />
         <link rel="icon" type="image/png" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
         <link rel="shortcut icon" type="image/png" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
         <link rel="apple-touch-icon" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
       </head>
-      <body>
+      <body suppressHydrationWarning className="antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>

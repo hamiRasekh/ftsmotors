@@ -6,9 +6,10 @@ import { PageLoader } from './PageLoader';
 
 export function NavigationLoader() {
   const pathname = usePathname();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Start with false - don't show loader on initial load
   const prevPathnameRef = useRef(pathname);
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialMount = useRef(true);
 
   // Clear any existing timeout
   const clearLoadingTimeout = () => {
@@ -18,20 +19,19 @@ export function NavigationLoader() {
     }
   };
 
-  // Handle initial page load
+  // Handle initial page load - don't show loader
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-    loadingTimeoutRef.current = timer;
-    
-    return () => {
-      clearTimeout(timer);
-    };
+    isInitialMount.current = false;
   }, []);
 
   // Handle route changes
   useEffect(() => {
+    // Skip on initial mount
+    if (isInitialMount.current) {
+      prevPathnameRef.current = pathname;
+      return;
+    }
+
     // Only show loader if pathname actually changed
     if (prevPathnameRef.current !== pathname) {
       // Clear any existing timeout
