@@ -6,6 +6,8 @@ import {
   UploadedFile,
   UseGuards,
   BadRequestException,
+  InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
@@ -23,12 +25,15 @@ import { Role } from '@prisma/client';
 @Roles(Role.ADMIN)
 @ApiBearerAuth()
 export class UploadController {
+  private readonly logger = new Logger(UploadController.name);
   @Get('images')
   @ApiOperation({ summary: 'Get list of uploaded images (Admin only)' })
   async getImages() {
     try {
       const imagesPath = join(process.cwd(), 'uploads', 'images');
       if (!existsSync(imagesPath)) {
+        // Create directory if it doesn't exist
+        mkdirSync(imagesPath, { recursive: true });
         return [];
       }
 
@@ -38,20 +43,27 @@ export class UploadController {
           return ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
         })
         .map((file) => {
-          const filePath = join(imagesPath, file);
-          const stats = statSync(filePath);
-          return {
-            url: `/uploads/images/${file}`,
-            filename: file,
-            size: stats.size,
-            createdAt: stats.birthtime,
-          };
+          try {
+            const filePath = join(imagesPath, file);
+            const stats = statSync(filePath);
+            return {
+              url: `/uploads/images/${file}`,
+              filename: file,
+              size: stats.size,
+              createdAt: stats.birthtime,
+            };
+          } catch (fileError) {
+            this.logger.warn(`Error reading file ${file}: ${fileError.message}`);
+            return null;
+          }
         })
+        .filter((file) => file !== null)
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
       return files;
     } catch (error) {
-      return [];
+      this.logger.error(`Error getting images: ${error.message}`, error.stack);
+      throw new InternalServerErrorException('خطا در دریافت لیست تصاویر');
     }
   }
 
@@ -61,25 +73,34 @@ export class UploadController {
     try {
       const filesPath = join(process.cwd(), 'uploads', 'files');
       if (!existsSync(filesPath)) {
+        // Create directory if it doesn't exist
+        mkdirSync(filesPath, { recursive: true });
         return [];
       }
 
       const files = readdirSync(filesPath)
         .map((file) => {
-          const filePath = join(filesPath, file);
-          const stats = statSync(filePath);
-          return {
-            url: `/uploads/files/${file}`,
-            filename: file,
-            size: stats.size,
-            createdAt: stats.birthtime,
-          };
+          try {
+            const filePath = join(filesPath, file);
+            const stats = statSync(filePath);
+            return {
+              url: `/uploads/files/${file}`,
+              filename: file,
+              size: stats.size,
+              createdAt: stats.birthtime,
+            };
+          } catch (fileError) {
+            this.logger.warn(`Error reading file ${file}: ${fileError.message}`);
+            return null;
+          }
         })
+        .filter((file) => file !== null)
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
       return files;
     } catch (error) {
-      return [];
+      this.logger.error(`Error getting files: ${error.message}`, error.stack);
+      throw new InternalServerErrorException('خطا در دریافت لیست فایل‌ها');
     }
   }
 
@@ -127,17 +148,28 @@ export class UploadController {
     }),
   )
   uploadImage(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('فایل ارسال نشده است');
-    }
+    try {
+      if (!file) {
+        this.logger.warn('Upload attempt without file');
+        throw new BadRequestException('فایل ارسال نشده است');
+      }
 
-    return {
-      url: `/uploads/images/${file.filename}`,
-      filename: file.filename,
-      originalName: file.originalname,
-      size: file.size,
-      mimetype: file.mimetype,
-    };
+      this.logger.log(`Image uploaded: ${file.filename} (${file.size} bytes)`);
+
+      return {
+        url: `/uploads/images/${file.filename}`,
+        filename: file.filename,
+        originalName: file.originalname,
+        size: file.size,
+        mimetype: file.mimetype,
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      this.logger.error(`Error uploading image: ${error.message}`, error.stack);
+      throw new InternalServerErrorException('خطا در آپلود تصویر');
+    }
   }
 
   @Post('file')
@@ -176,16 +208,27 @@ export class UploadController {
     }),
   )
   uploadFile(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('فایل ارسال نشده است');
-    }
+    try {
+      if (!file) {
+        this.logger.warn('Upload attempt without file');
+        throw new BadRequestException('فایل ارسال نشده است');
+      }
 
-    return {
-      url: `/uploads/files/${file.filename}`,
-      filename: file.filename,
-      originalName: file.originalname,
-      size: file.size,
-      mimetype: file.mimetype,
-    };
+      this.logger.log(`File uploaded: ${file.filename} (${file.size} bytes)`);
+
+      return {
+        url: `/uploads/files/${file.filename}`,
+        filename: file.filename,
+        originalName: file.originalname,
+        size: file.size,
+        mimetype: file.mimetype,
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      this.logger.error(`Error uploading file: ${error.message}`, error.stack);
+      throw new InternalServerErrorException('خطا در آپلود فایل');
+    }
   }
 }

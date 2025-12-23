@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { API_URL } from '@/lib/utils';
+import { getAPIUrl } from '@/lib/utils';
 import Image from 'next/image';
 
 interface MediaLibraryProps {
@@ -42,8 +42,9 @@ export function MediaLibrary({
       setLoading(true);
       const token = localStorage.getItem('token');
       const endpoint = type === 'image' ? '/api/upload/images' : '/api/upload/files';
+      const apiUrl = getAPIUrl();
       
-      const response = await fetch(`${API_URL}${endpoint}`, {
+      const response = await fetch(`${apiUrl}${endpoint}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -52,6 +53,9 @@ export function MediaLibrary({
       if (response.ok) {
         const files = await response.json();
         setLibraryFiles(files);
+      } else {
+        const errorData = await response.json().catch(() => ({ message: 'خطا در دریافت فایل‌ها' }));
+        console.error('Error fetching library files:', errorData);
       }
     } catch (error) {
       console.error('Error fetching library files:', error);
@@ -64,6 +68,7 @@ export function MediaLibrary({
     async (acceptedFiles: File[]) => {
       setUploading(true);
       const token = localStorage.getItem('token');
+      const apiUrl = getAPIUrl();
 
       try {
         const uploadPromises = acceptedFiles.map(async (file) => {
@@ -71,16 +76,18 @@ export function MediaLibrary({
           formData.append('file', file);
 
           const endpoint = type === 'image' ? '/api/upload/image' : '/api/upload/file';
-          const response = await fetch(`${API_URL}${endpoint}`, {
+          const response = await fetch(`${apiUrl}${endpoint}`, {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${token}`,
+              // Don't set Content-Type header - browser will set it with boundary for FormData
             },
             body: formData,
           });
 
           if (!response.ok) {
-            throw new Error('خطا در آپلود فایل');
+            const errorData = await response.json().catch(() => ({ message: 'خطا در آپلود فایل' }));
+            throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
           }
 
           return response.json();
@@ -90,18 +97,21 @@ export function MediaLibrary({
         setUploadedFiles((prev) => [...prev, ...results]);
         setLibraryFiles((prev) => [...results, ...prev]); // Add to library immediately
         
+        // Refresh library to get updated list
+        await fetchLibraryFiles();
+        
         if (results.length === 1 && onSelect) {
           onSelect(results[0].url);
           setSelectedUrl(results[0].url);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error uploading files:', error);
-        alert('خطا در آپلود فایل‌ها');
+        alert(error.message || 'خطا در آپلود فایل‌ها');
       } finally {
         setUploading(false);
       }
     },
-    [onSelect, type],
+    [onSelect, type, fetchLibraryFiles],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -216,7 +226,7 @@ export function MediaLibrary({
                 >
                   {type === 'image' ? (
                     <Image
-                      src={`${API_URL}${file.url}`}
+                      src={file.url.startsWith('http') ? file.url : `${getAPIUrl()}${file.url}`}
                       alt={file.filename}
                       fill
                       className="object-cover"
@@ -266,7 +276,7 @@ export function MediaLibrary({
               >
                 {type === 'image' ? (
                   <Image
-                    src={`${API_URL}${file.url}`}
+                    src={file.url.startsWith('http') ? file.url : `${getAPIUrl()}${file.url}`}
                     alt={file.filename}
                     fill
                     className="object-cover"

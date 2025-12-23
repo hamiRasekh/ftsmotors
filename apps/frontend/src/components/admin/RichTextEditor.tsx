@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { getAPIUrl } from '@/lib/utils';
 import 'react-quill/dist/quill.snow.css';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -62,22 +63,27 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
 
               try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/upload/image`, {
+                const apiUrl = getAPIUrl();
+                const response = await fetch(`${apiUrl}/api/upload/image`, {
                   method: 'POST',
                   headers: {
                     Authorization: `Bearer ${token}`,
+                    // Don't set Content-Type header - browser will set it with boundary for FormData
                   },
                   body: formData,
                 });
 
                 if (response.ok) {
                   const data = await response.json();
+                  // Ensure URL is absolute
+                  const imageUrl = data.url.startsWith('http') ? data.url : `${apiUrl}${data.url}`;
+                  
                   // Get quill instance from ref
                   const quill = quillRef.current;
                   if (quill) {
                     const range = quill.getSelection();
                     const index = range ? range.index : 0;
-                    quill.insertEmbed(index, 'image', data.url);
+                    quill.insertEmbed(index, 'image', imageUrl);
                   } else {
                     // Fallback: try to get from DOM
                     const quillEditor = containerRef.current?.querySelector('.ql-editor');
@@ -86,15 +92,18 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
                       const quillInstance = (quillContainer as any)?.__quill || (quillEditor as any)?.__quill;
                       if (quillInstance) {
                         const range = quillInstance.getSelection();
-                  const index = range ? range.index : 0;
-                        quillInstance.insertEmbed(index, 'image', data.url);
+                        const index = range ? range.index : 0;
+                        quillInstance.insertEmbed(index, 'image', imageUrl);
                       }
                     }
                   }
+                } else {
+                  const errorData = await response.json().catch(() => ({ message: 'خطا در آپلود تصویر' }));
+                  throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
                 }
-              } catch (error) {
+              } catch (error: any) {
                 console.error('Error uploading image:', error);
-                alert('خطا در آپلود تصویر');
+                alert(error.message || 'خطا در آپلود تصویر');
               }
             };
           },
