@@ -57,6 +57,28 @@ export default function RootLayout({
         <link rel="icon" type="image/png" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
         <link rel="shortcut icon" type="image/png" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
         <link rel="apple-touch-icon" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
+        {/* Preload fonts for better performance */}
+        <link
+          rel="preload"
+          href="/fonts/iranyekanwebregularfanum.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/iranyekanwebboldfanum.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/iranyekanwebextraboldfanum.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
       </head>
       <body suppressHydrationWarning className="antialiased">
         <Providers>{children}</Providers>

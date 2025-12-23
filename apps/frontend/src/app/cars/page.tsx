@@ -20,11 +20,27 @@ export const metadata: Metadata = {
   },
 };
 
+// Force dynamic rendering to always fetch fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getCars() {
   try {
-    const data = await api.cars.getAll({ published: true, limit: 20 });
+    // Get all cars (both published and unpublished) to show all registered cars
+    const data = await api.cars.getAll({ limit: 100 });
+    
+    // Log in development
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[CarsPage] Cars fetched:', {
+        total: data.total,
+        count: data.data?.length || 0,
+        cars: data.data?.map((c: any) => ({ id: c.id, title: c.title, published: c.published })) || []
+      });
+    }
+    
     return data;
   } catch (error) {
+    console.error('[CarsPage] Error fetching cars:', error);
     return { data: [], total: 0, page: 1, limit: 20, totalPages: 0 };
   }
 }

@@ -2,9 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Font imports with fallback */
-@import url('/fonts/iranyekan.css');
-@import url('/fonts/vazir.css');
+/* Font face definitions - direct loading for better performance */
+@font-face {
+  font-family: 'IranYekan';
+  src: url('/fonts/iranyekanwebthinfanum.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IranYekan';
+  src: url('/fonts/iranyekanweblightfanum.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IranYekan';
+  src: url('/fonts/iranyekanwebregularfanum.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IranYekan';
+  src: url('/fonts/iranyekanwebmediumfanum.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IranYekan';
+  src: url('/fonts/iranyekanwebboldfanum.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IranYekan';
+  src: url('/fonts/iranyekanwebextraboldfanum.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IranYekan';
+  src: url('/fonts/iranyekanwebblackfanum.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IranYekan';
+  src: url('/fonts/iranyekanwebextrablackfanum.ttf') format('truetype');
+  font-weight: 950;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Vazir font from CDN */
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirfont@v30.1.0/dist/font-face.css');
+
+/* Vazirmatn from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @layer base {
@@ -68,7 +134,11 @@
   
   body {
     @apply bg-background text-foreground;
-    font-family: 'Vazirmatn', 'Vazir', 'IranYekan', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'IranYekan', 'Vazirmatn', 'Vazir', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-feature-settings: 'kern' 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   /* Smooth scrolling */

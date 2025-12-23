@@ -19,6 +19,10 @@ export const metadata: Metadata = {
   },
 };
 
+// Force dynamic rendering to always fetch fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getArticles() {
   try {
     const data = await api.articles.getAll({ published: true, limit: 20 });

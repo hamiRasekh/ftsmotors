@@ -95,7 +95,7 @@ export function HeroSection() {
         />
       </div>
 
-      {/* Car Image - Half out of screen at corners, only from left or right */}
+      {/* Car Image - Responsive for mobile */}
       <div className="absolute inset-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
@@ -112,10 +112,8 @@ export function HeroSection() {
               currentSlideData.position === 'left' 
                 ? 'left-0' 
                 : 'right-0'
-            } bottom-0`}
+            } bottom-0 w-[85vw] h-[50vh] sm:h-[55vh] md:w-[60vw] md:h-[80vh]`}
             style={{
-              width: '60vw',
-              height: '80vh',
               [currentSlideData.position === 'left' ? 'left' : 'right']: 0,
             }}
           >
@@ -139,11 +137,9 @@ export function HeroSection() {
         </AnimatePresence>
       </div>
 
-      {/* Logo and Text - Opposite side of car, center-aligned */}
+      {/* Logo and Text - Responsive for mobile, centered, higher on mobile */}
       <div 
-        className={`absolute top-1/2 transform -translate-y-1/2 z-20 w-full max-w-5xl px-4 ${
-          textPosition === 'right' ? 'right-4 md:right-16' : 'left-4 md:left-16'
-        }`}
+        className="absolute top-[15%] sm:top-[20%] md:top-1/2 left-1/2 transform -translate-x-1/2 md:-translate-y-1/2 z-20 w-full max-w-[90vw] md:max-w-5xl px-4"
         dir="rtl"
       >
         <AnimatePresence mode="wait">
@@ -153,25 +149,25 @@ export function HeroSection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
-            className="flex flex-col gap-4 md:gap-6 items-center text-center"
+            className="flex flex-col gap-2 sm:gap-3 md:gap-6 items-center text-center w-full"
           >
-            {/* Logo - Responsive size */}
+            {/* Logo - Responsive size for mobile */}
             <Image
               src="/photo_2025-12-08_17-46-46-removebg-preview.png"
               alt="فیدار تجارت سوبا"
               width={120}
               height={120}
-              className="object-contain w-24 h-24 md:w-48 md:h-48"
+              className="object-contain w-20 h-20 sm:w-24 sm:h-24 md:w-48 md:h-48"
               priority
             />
 
-            {/* Company Name - Responsive, center-aligned */}
-            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold text-primary text-center" style={{ fontFamily: 'inherit' }}>
+            {/* Company Name - Responsive for mobile, bolder and bigger */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold md:font-bold text-primary text-center leading-tight" style={{ fontFamily: 'inherit' }}>
               فیدار تجارت سوبا
             </h1>
 
-            {/* Rotating Text - Responsive, center-aligned, fade only (no slide) */}
-            <div className="h-8 md:h-12 lg:h-16 flex items-center justify-center min-w-[200px] md:min-w-[300px] lg:min-w-[400px]">
+            {/* Rotating Text - Responsive for mobile, bolder and bigger */}
+            <div className="h-10 sm:h-12 md:h-12 lg:h-16 flex items-center justify-center w-full">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={`text-${currentTextIndex}`}
@@ -179,7 +175,7 @@ export function HeroSection() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
-                  className="text-base md:text-xl lg:text-3xl font-semibold text-primary text-center"
+                  className="text-lg sm:text-xl md:text-xl lg:text-3xl font-bold md:font-semibold text-primary text-center px-2"
                   style={{ 
                     fontFamily: 'inherit',
                     letterSpacing: '0.5px',
@@ -193,16 +189,16 @@ export function HeroSection() {
         </AnimatePresence>
       </div>
 
-      {/* Slide Indicators - Responsive */}
-      <div className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
+      {/* Slide Indicators - Responsive for mobile */}
+      <div className="absolute bottom-2 sm:bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
+            className={`h-1 sm:h-1.5 md:h-2 rounded-full transition-all duration-300 ${
               index === currentSlide
-                ? 'w-6 md:w-8 bg-primary'
-                : 'w-1.5 md:w-2 bg-gray-300 hover:bg-secondary'
+                ? 'w-4 sm:w-6 md:w-8 bg-primary'
+                : 'w-1 sm:w-1.5 md:w-2 bg-gray-300 hover:bg-secondary'
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />

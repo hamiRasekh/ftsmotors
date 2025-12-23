@@ -69,9 +69,9 @@ export const api = {
             'Content-Type': 'application/json',
           },
           // Next.js cache options for server-side
-          // Use revalidate instead of no-store to allow static generation during build
+          // Force dynamic to always fetch fresh data
           ...(isServer && {
-            next: { revalidate: 60 }, // Revalidate every 60 seconds
+            next: { revalidate: 0 }, // Always fetch fresh data
           }),
         };
         
@@ -183,9 +183,9 @@ export const api = {
             'Content-Type': 'application/json',
           },
           // Next.js cache options for server-side
-          // Use revalidate instead of no-store to allow static generation during build
+          // Force dynamic to always fetch fresh data
           ...(isServer && {
-            next: { revalidate: 60 }, // Revalidate every 60 seconds
+            next: { revalidate: 0 }, // Always fetch fresh data
           }),
         };
         
@@ -235,18 +235,37 @@ export const api = {
           return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
         }
         
+        // Log response structure in development
+        if (isServer && (process.env.NODE_ENV !== 'production' || process.env.DEBUG_API === 'true')) {
+          console.log('[API] Cars: Response structure:', {
+            isArray: Array.isArray(data),
+            hasData: !!data.data,
+            dataLength: Array.isArray(data) ? data.length : (data.data?.length || 0),
+            total: data.total,
+            keys: Object.keys(data),
+          });
+        }
+        
         // Return data with proper structure
         if (Array.isArray(data)) {
           return { data, total: data.length, page: 1, limit: params?.limit || 20, totalPages: 1 };
         }
         
-        return {
-          data: data.data || [],
-          total: data.total || 0,
+        // Handle different response structures
+        const result = {
+          data: data.data || data.items || (Array.isArray(data) ? data : []),
+          total: data.total || data.count || (Array.isArray(data) ? data.length : 0),
           page: data.page || 1,
           limit: data.limit || params?.limit || 20,
-          totalPages: data.totalPages || 0,
+          totalPages: data.totalPages || Math.ceil((data.total || 0) / (data.limit || params?.limit || 20)),
         };
+        
+        // Log final result in development
+        if (isServer && (process.env.NODE_ENV !== 'production' || process.env.DEBUG_API === 'true')) {
+          console.log('[API] Cars: Final result:', result);
+        }
+        
+        return result;
       } catch (error: any) {
         const isServer = typeof window === 'undefined';
         if (error.name === 'AbortError') {
@@ -307,9 +326,9 @@ export const api = {
             'Content-Type': 'application/json',
           },
           // Next.js cache options for server-side
-          // Use revalidate instead of no-store to allow static generation during build
+          // Force dynamic to always fetch fresh data
           ...(isServer && {
-            next: { revalidate: 60 }, // Revalidate every 60 seconds
+            next: { revalidate: 0 }, // Always fetch fresh data
           }),
         };
         
@@ -432,9 +451,9 @@ export const api = {
             'Content-Type': 'application/json',
           },
           // Next.js cache options for server-side
-          // Use revalidate instead of no-store to allow static generation during build
+          // Force dynamic to always fetch fresh data
           ...(isServer && {
-            next: { revalidate: 60 }, // Revalidate every 60 seconds
+            next: { revalidate: 0 }, // Always fetch fresh data
           }),
         };
         
