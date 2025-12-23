@@ -69,13 +69,21 @@ export const api = {
             'Content-Type': 'application/json',
           },
           // Next.js cache options for server-side
+          // Use revalidate instead of no-store to allow static generation during build
           ...(isServer && {
-            cache: 'no-store', // Always fetch fresh data on server
             next: { revalidate: 60 }, // Revalidate every 60 seconds
           }),
         };
         
+        // Add timeout for both client and server-side
+        const controller = new AbortController();
+        const timeout = isServer ? 5000 : 15000; // 5s for server (build), 15s for client
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        fetchOptions.signal = controller.signal;
+        
         const response = await fetch(url, fetchOptions);
+        
+        clearTimeout(timeoutId);
         
         // Check if response is ok
         if (!response.ok) {
@@ -117,9 +125,15 @@ export const api = {
         return Array.isArray(data) ? data : (data.data || []);
       } catch (error: any) {
         const isServer = typeof window === 'undefined';
-        const errorMsg = error.message || String(error);
-        if (isServer || process.env.NODE_ENV !== 'production') {
-          console.error('[API] Categories: Error fetching categories:', errorMsg);
+        if (error.name === 'AbortError') {
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.warn('[API] Categories: Request timeout');
+          }
+        } else {
+          const errorMsg = error.message || String(error);
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Categories: Error fetching categories:', errorMsg);
+          }
         }
         return [];
       }
@@ -169,13 +183,21 @@ export const api = {
             'Content-Type': 'application/json',
           },
           // Next.js cache options for server-side
+          // Use revalidate instead of no-store to allow static generation during build
           ...(isServer && {
-            cache: 'no-store', // Always fetch fresh data on server
             next: { revalidate: 60 }, // Revalidate every 60 seconds
           }),
         };
         
+        // Add timeout for both client and server-side
+        const controller = new AbortController();
+        const timeout = isServer ? 5000 : 15000; // 5s for server (build), 15s for client
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        fetchOptions.signal = controller.signal;
+        
         const response = await fetch(url, fetchOptions);
+        
+        clearTimeout(timeoutId);
         
         // Check if response is ok
         if (!response.ok) {
@@ -227,9 +249,15 @@ export const api = {
         };
       } catch (error: any) {
         const isServer = typeof window === 'undefined';
-        const errorMsg = error.message || String(error);
-        if (isServer || process.env.NODE_ENV !== 'production') {
-          console.error('[API] Cars: Error fetching cars:', errorMsg);
+        if (error.name === 'AbortError') {
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.warn('[API] Cars: Request timeout');
+          }
+        } else {
+          const errorMsg = error.message || String(error);
+          if (isServer || process.env.NODE_ENV !== 'production') {
+            console.error('[API] Cars: Error fetching cars:', errorMsg);
+          }
         }
         return { data: [], total: 0, page: 1, limit: params?.limit || 20, totalPages: 0 };
       }
@@ -279,27 +307,22 @@ export const api = {
             'Content-Type': 'application/json',
           },
           // Next.js cache options for server-side
+          // Use revalidate instead of no-store to allow static generation during build
           ...(isServer && {
-            cache: 'no-store', // Always fetch fresh data on server
             next: { revalidate: 60 }, // Revalidate every 60 seconds
           }),
         };
         
-        // Add timeout only for client-side (setTimeout doesn't work well in server-side)
-        let controller: AbortController | undefined;
-        let timeoutId: NodeJS.Timeout | undefined;
-        
-        if (!isServer) {
-          controller = new AbortController();
-          timeoutId = setTimeout(() => controller!.abort(), 15000);
-          fetchOptions.signal = controller.signal;
-        }
+        // Add timeout for both client and server-side
+        // Shorter timeout for server-side to prevent build timeouts
+        const controller = new AbortController();
+        const timeout = isServer ? 5000 : 15000; // 5s for server (build), 15s for client
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        fetchOptions.signal = controller.signal;
         
         const response = await fetch(url, fetchOptions);
         
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
+        clearTimeout(timeoutId);
         
         // Check if response is ok
         if (!response.ok) {
@@ -409,27 +432,22 @@ export const api = {
             'Content-Type': 'application/json',
           },
           // Next.js cache options for server-side
+          // Use revalidate instead of no-store to allow static generation during build
           ...(isServer && {
-            cache: 'no-store', // Always fetch fresh data on server
             next: { revalidate: 60 }, // Revalidate every 60 seconds
           }),
         };
         
-        // Add timeout only for client-side (setTimeout doesn't work well in server-side)
-        let controller: AbortController | undefined;
-        let timeoutId: NodeJS.Timeout | undefined;
-        
-        if (!isServer) {
-          controller = new AbortController();
-          timeoutId = setTimeout(() => controller!.abort(), 15000);
-          fetchOptions.signal = controller.signal;
-        }
+        // Add timeout for both client and server-side
+        // Shorter timeout for server-side to prevent build timeouts
+        const controller = new AbortController();
+        const timeout = isServer ? 5000 : 15000; // 5s for server (build), 15s for client
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        fetchOptions.signal = controller.signal;
         
         const response = await fetch(url, fetchOptions);
         
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
+        clearTimeout(timeoutId);
         
         // Check if response is ok
         if (!response.ok) {
