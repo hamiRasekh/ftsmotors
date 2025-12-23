@@ -7,15 +7,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 const slides = [
   {
     image: '/img/slider/download__1_-removebg-preview.png',
-    position: 'left', // از چپ می‌آید
+    position: 'left', // عکس در چپ
+    entryDirection: 'left', // از چپ می‌آید
   },
   {
     image: '/img/slider/benz_c300_2016-removebg-preview.png',
-    position: 'right', // از راست می‌آید
+    position: 'right', // عکس در راست
+    entryDirection: 'right', // از راست می‌آید
   },
   {
     image: '/img/slider/Get_closer_to_the_road_with_available_All-Wheel_Drive___KiaK5-removebg-preview.png',
-    position: 'right', // از راست می‌آید
+    position: 'right', // عکس در راست
+    entryDirection: 'right', // از راست می‌آید
   },
 ];
 
@@ -30,11 +33,11 @@ export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
 
-  // Auto-rotate slides every 5 seconds
+  // Auto-rotate slides every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 30000);
 
     return () => clearInterval(interval);
   }, []);
@@ -49,60 +52,62 @@ export function HeroSection() {
   }, []);
 
   const currentSlideData = slides[currentSlide];
+  const isLeftPosition = currentSlideData.position === 'left';
+  // متن باید سمت مخالف عکس باشد: اگر عکس چپ است، متن راست باشد
+  const textPosition = isLeftPosition ? 'right' : 'left';
+
+  // محاسبه جهت انیمیشن عکس - فقط از چپ و راست
+  const getCarInitialPosition = () => {
+    const direction = currentSlideData.entryDirection;
+    // فقط از چپ یا راست می‌آید
+    if (direction === 'left') {
+      return { x: '-50%', y: 0, opacity: 0 };
+    } else if (direction === 'right') {
+      return { x: '50%', y: 0, opacity: 0 };
+    }
+    // به صورت پیش‌فرض از همان طرف position
+    return { x: currentSlideData.position === 'left' ? '-50%' : '50%', y: 0, opacity: 0 };
+  };
+
+  const getCarExitPosition = () => {
+    const direction = currentSlideData.entryDirection;
+    // فقط از چپ یا راست می‌رود
+    if (direction === 'left') {
+      return { x: '-50%', y: 0, opacity: 0 };
+    } else if (direction === 'right') {
+      return { x: '50%', y: 0, opacity: 0 };
+    }
+    // به صورت پیش‌فرض به همان طرف position
+    return { x: currentSlideData.position === 'left' ? '-50%' : '50%', y: 0, opacity: 0 };
+  };
 
   return (
-    <section className="relative w-full overflow-hidden bg-white" style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
-      {/* Smoke Effect Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(12)].map((_, i) => {
-          const isPrimary = i % 3 === 0;
-          const isSecondary = i % 3 === 1;
-          const color = isPrimary 
-            ? 'rgba(14, 47, 62, 0.15)' 
-            : isSecondary 
-            ? 'rgba(154, 124, 100, 0.15)' 
-            : 'rgba(25, 104, 134, 0.12)';
-          
-          return (
-            <div
-              key={i}
-              className="absolute"
-              style={{
-                width: `${150 + i * 60}px`,
-                height: `${300 + i * 100}px`,
-                left: `${(i * 8) % 100}%`,
-                top: `${(i * 10) % 100}%`,
-                background: `radial-gradient(ellipse at center, ${color} 0%, ${color} 30%, transparent 70%)`,
-                borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
-                filter: 'blur(40px)',
-                opacity: 0.4,
-                animation: `smokeFloat ${25 + i * 3}s ease-in-out infinite`,
-                animationDelay: `${i * 2}s`,
-                transform: `rotate(${i * 15}deg)`,
-              }}
-            />
-          );
-        })}
+    <section className="relative w-full overflow-hidden" style={{ minHeight: 'calc(100vh - 3.5rem)' }}>
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/Download Beautiful green color gradient background for free.jpeg"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
+          quality={90}
+        />
       </div>
 
-      {/* Car Image - Half out of screen at corners */}
+      {/* Car Image - Half out of screen at corners, only from left or right */}
       <div className="absolute inset-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={`car-${currentSlide}`}
-            initial={{ 
-              opacity: 0,
-              x: currentSlideData.position === 'left' ? '-50%' : '50%',
-            }}
+            initial={getCarInitialPosition()}
             animate={{ 
               opacity: 1,
               x: 0,
+              y: 0,
             }}
-            exit={{ 
-              opacity: 0,
-              x: currentSlideData.position === 'left' ? '-50%' : '50%',
-            }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            exit={getCarExitPosition()}
+            transition={{ duration: 1.5, ease: 'easeInOut' }}
             className={`absolute ${
               currentSlideData.position === 'left' 
                 ? 'left-0' 
@@ -134,97 +139,75 @@ export function HeroSection() {
         </AnimatePresence>
       </div>
 
-      {/* Logo and Text - Center positioned */}
-      <div className="absolute top-12 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-4xl px-4">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="flex flex-col items-center gap-6 text-center"
-          dir="rtl"
-        >
-          {/* Logo - Bigger */}
-          <Image
-            src="/photo_2025-12-08_17-46-46-removebg-preview.png"
-            alt="فیدار تجارت سوبا"
-            width={180}
-            height={180}
-            className="object-contain"
-            priority
-          />
+      {/* Logo and Text - Opposite side of car, center-aligned */}
+      <div 
+        className={`absolute top-1/2 transform -translate-y-1/2 z-20 w-full max-w-5xl px-4 ${
+          textPosition === 'right' ? 'right-4 md:right-16' : 'left-4 md:left-16'
+        }`}
+        dir="rtl"
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`content-${currentSlide}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            className="flex flex-col gap-4 md:gap-6 items-center text-center"
+          >
+            {/* Logo - Responsive size */}
+            <Image
+              src="/photo_2025-12-08_17-46-46-removebg-preview.png"
+              alt="فیدار تجارت سوبا"
+              width={120}
+              height={120}
+              className="object-contain w-24 h-24 md:w-48 md:h-48"
+              priority
+            />
 
-          {/* Company Name */}
-          <h1 className="text-4xl md:text-6xl font-bold text-primary" style={{ fontFamily: 'inherit' }}>
-            فیدار تجارت سوبا
-          </h1>
+            {/* Company Name - Responsive, center-aligned */}
+            <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold text-primary text-center" style={{ fontFamily: 'inherit' }}>
+              فیدار تجارت سوبا
+            </h1>
 
-          {/* Rotating Text - Centered, better font, different color */}
-          <div className="h-12 md:h-16 flex items-center justify-center min-w-[250px] md:min-w-[400px]">
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={`text-${currentTextIndex}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5, ease: 'easeInOut' }}
-                className="text-xl md:text-3xl font-semibold text-primary"
-                style={{ 
-                  fontFamily: 'inherit',
-                  letterSpacing: '0.5px',
-                }}
-              >
-                {rotatingTexts[currentTextIndex]}
-              </motion.p>
-            </AnimatePresence>
-          </div>
-        </motion.div>
+            {/* Rotating Text - Responsive, center-aligned, fade only (no slide) */}
+            <div className="h-8 md:h-12 lg:h-16 flex items-center justify-center min-w-[200px] md:min-w-[300px] lg:min-w-[400px]">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={`text-${currentTextIndex}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  className="text-base md:text-xl lg:text-3xl font-semibold text-primary text-center"
+                  style={{ 
+                    fontFamily: 'inherit',
+                    letterSpacing: '0.5px',
+                  }}
+                >
+                  {rotatingTexts[currentTextIndex]}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
+      {/* Slide Indicators - Responsive */}
+      <div className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`h-2 rounded-full transition-all duration-300 ${
+            className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
               index === currentSlide
-                ? 'w-8 bg-primary'
-                : 'w-2 bg-gray-300 hover:bg-secondary'
+                ? 'w-6 md:w-8 bg-primary'
+                : 'w-1.5 md:w-2 bg-gray-300 hover:bg-secondary'
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
-
-      {/* CSS for smoke animation */}
-      <style jsx>{`
-        @keyframes smokeFloat {
-          0% {
-            transform: translate(0, 0) scale(1) rotate(0deg);
-            opacity: 0.3;
-          }
-          20% {
-            transform: translate(60px, -80px) scale(1.2) rotate(10deg);
-            opacity: 0.5;
-          }
-          40% {
-            transform: translate(-40px, -120px) scale(0.9) rotate(-8deg);
-            opacity: 0.4;
-          }
-          60% {
-            transform: translate(80px, -100px) scale(1.15) rotate(12deg);
-            opacity: 0.45;
-          }
-          80% {
-            transform: translate(-20px, -140px) scale(0.95) rotate(-5deg);
-            opacity: 0.35;
-          }
-          100% {
-            transform: translate(0, -160px) scale(1) rotate(0deg);
-            opacity: 0.2;
-          }
-        }
-      `}</style>
     </section>
   );
 }
