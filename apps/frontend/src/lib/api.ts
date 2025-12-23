@@ -58,6 +58,12 @@ export const api = {
         
         // For server-side rendering, use Next.js fetch with cache
         const isServer = typeof window === 'undefined';
+        
+        // Log API URL in development or when debugging
+        if (isServer && (process.env.NODE_ENV !== 'production' || process.env.DEBUG_API === 'true')) {
+          console.log('[API] Categories: Fetching from URL:', url);
+        }
+        
         const fetchOptions: RequestInit = {
           headers: {
             'Content-Type': 'application/json',
@@ -152,6 +158,12 @@ export const api = {
         
         // For server-side rendering, use Next.js fetch with cache
         const isServer = typeof window === 'undefined';
+        
+        // Log API URL in development or when debugging
+        if (isServer && (process.env.NODE_ENV !== 'production' || process.env.DEBUG_API === 'true')) {
+          console.log('[API] Cars: Fetching from URL:', url);
+        }
+        
         const fetchOptions: RequestInit = {
           headers: {
             'Content-Type': 'application/json',
@@ -256,6 +268,12 @@ export const api = {
         
         // For server-side rendering, use Next.js fetch with cache
         const isServer = typeof window === 'undefined';
+        
+        // Log API URL in development or when debugging
+        if (isServer && (process.env.NODE_ENV !== 'production' || process.env.DEBUG_API === 'true')) {
+          console.log('[API] Articles: Fetching from URL:', url);
+        }
+        
         const fetchOptions: RequestInit = {
           headers: {
             'Content-Type': 'application/json',
@@ -380,6 +398,12 @@ export const api = {
         
         // For server-side rendering, use Next.js fetch with cache
         const isServer = typeof window === 'undefined';
+        
+        // Log API URL in development or when debugging
+        if (isServer && (process.env.NODE_ENV !== 'production' || process.env.DEBUG_API === 'true')) {
+          console.log('[API] News: Fetching from URL:', url);
+        }
+        
         const fetchOptions: RequestInit = {
           headers: {
             'Content-Type': 'application/json',

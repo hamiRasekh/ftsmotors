@@ -11,7 +11,7 @@ export function getAPIUrl(): string {
   // Server-side: use backend service name in Docker or environment variable
   if (typeof window === 'undefined') {
     // In Docker, use service name for internal communication
-    // Priority: API_URL > NEXT_PUBLIC_API_URL > default
+    // Priority: API_URL > NEXT_PUBLIC_API_URL > production default
     const serverUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
     if (serverUrl) {
       // Log in development to help debug
@@ -20,11 +20,20 @@ export function getAPIUrl(): string {
       }
       return serverUrl;
     }
-    // Default to backend service name in Docker, or localhost for development
-    const defaultUrl = process.env.NODE_ENV === 'production' ? 'http://backend:4000' : 'http://localhost:4000';
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[getAPIUrl] Using default server-side API URL:', defaultUrl);
+    
+    // For production, if no env var is set, use the production API URL
+    // This handles cases where the app is deployed but env vars aren't set correctly
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    if (isProduction) {
+      // Check if we're in Docker (backend service available) or standalone production
+      // In standalone production, use the public API URL
+      return 'https://api.ftsmotors.ir';
     }
+    
+    // Development: use localhost
+    const defaultUrl = 'http://localhost:4000';
+    console.log('[getAPIUrl] Using default server-side API URL:', defaultUrl);
     return defaultUrl;
   }
   
