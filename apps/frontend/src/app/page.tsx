@@ -3,7 +3,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { HeroSlider } from '@/components/sections/HeroSlider';
+import { HeroSection } from '@/components/sections/HeroSection';
 import LogoLoop from '@/components/sections/LogoLoop';
 import { Features } from '@/components/sections/Features';
 import { Stats } from '@/components/sections/Stats';
@@ -65,11 +65,11 @@ export default async function HomePage() {
 
   return (
     <>
-      <Header isHomePage={true} />
-      <main className="min-h-screen bg-white">
-        {/* Hero Slider */}
+      <Header />
+      <main className="min-h-screen bg-white pt-12 md:pt-14">
+        {/* Hero Section */}
         <section className="relative">
-          <HeroSlider />
+          <HeroSection />
         </section>
 
         {/* 3D Car Slider with Scroll Animation */}

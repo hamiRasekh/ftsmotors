@@ -8,11 +8,7 @@ import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { Sidebar } from './layout/Sidebar';
 
-interface HeaderProps {
-  isHomePage?: boolean;
-}
-
-export function Header({ isHomePage = false }: HeaderProps = {}) {
+export function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -65,14 +61,10 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isHomePage
-          ? isHovered || scrolled
-            ? 'bg-white/20 backdrop-blur-md border-b border-white/10'
-            : 'bg-transparent backdrop-blur-sm border-b border-transparent'
-          : isHovered || !scrolled
+        isHovered || !scrolled
           ? 'bg-white/80 backdrop-blur-md border-b border-gray-200/50'
           : 'bg-white/60 backdrop-blur-sm border-b border-gray-200/30'
-      } ${scrolled || (isHomePage && isHovered) ? 'shadow-lg' : 'shadow-none'}`}
+      } ${scrolled ? 'shadow-lg' : 'shadow-none'}`}
     >
       <div className="px-6 sm:px-6 lg:px-0">
         <nav className="flex items-center justify-between h-12 md:h-14">
@@ -83,9 +75,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
               alt="فیدار تجارت سوبا"
               width={40}
               height={40}
-              className={`object-contain w-8 h-8 sm:w-10 sm:h-10 transition-all ${
-                isHomePage && !scrolled ? 'brightness-0 invert' : ''
-              }`}
+              className="object-contain w-8 h-8 sm:w-10 sm:h-10 transition-all"
             />
           </Link>
 
@@ -104,20 +94,14 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
                     <Link
                       href={item.href}
                       className={`relative px-3 xl:px-4 py-2 text-sm xl:text-base font-medium transition-all duration-300 block overflow-hidden ${
-                        isHomePage && !scrolled
-                          ? isActive ? 'text-white' : 'text-white/90'
-                          : isActive ? 'text-primary' : 'text-gray-700'
+                        isActive ? 'text-primary' : 'text-gray-700'
                       }`}
                     >
                       <span className="relative z-10">{item.label}</span>
                       
                       {/* Animated Underline - slides from right to left */}
                       <motion.div
-                        className={`absolute bottom-0 right-0 h-0.5 ${
-                          isHomePage && !scrolled
-                            ? 'bg-white'
-                            : 'bg-gradient-to-l from-primary via-accent to-primary'
-                        }`}
+                        className="absolute bottom-0 right-0 h-0.5 bg-gradient-to-l from-primary via-accent to-primary"
                         variants={{
                           initial: { width: isActive ? '100%' : '0%' },
                           hover: { width: '100%' },
@@ -130,11 +114,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
                       
                       {/* Animated Background Glow */}
                       <motion.div
-                        className={`absolute inset-0 rounded-lg pointer-events-none ${
-                          isHomePage && !scrolled
-                            ? 'bg-white/5'
-                            : 'bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5'
-                        }`}
+                        className="absolute inset-0 rounded-lg pointer-events-none bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5"
                         variants={{
                           initial: { opacity: isActive ? 1 : 0, scale: 1 },
                           hover: { opacity: 1, scale: 1.05 },
@@ -147,11 +127,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
                       
                       {/* Shine Effect - sweeps across on hover */}
                       <motion.div
-                        className={`absolute inset-0 rounded-lg pointer-events-none ${
-                          isHomePage && !scrolled
-                            ? 'bg-gradient-to-r from-transparent via-white/30 to-transparent'
-                            : 'bg-gradient-to-r from-transparent via-primary/30 to-transparent'
-                        }`}
+                        className="absolute inset-0 rounded-lg pointer-events-none bg-gradient-to-r from-transparent via-primary/30 to-transparent"
                         variants={{
                           initial: { x: '-100%', opacity: 0 },
                           hover: {
@@ -175,11 +151,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
             <Link
               href="/contact"
-              className={`px-4 xl:px-5 py-2 xl:py-2.5 rounded-lg transition-colors font-medium text-sm xl:text-base ${
-                isHomePage && !scrolled
-                  ? 'bg-white/20 text-white backdrop-blur-sm border border-white/30 hover:bg-white/30'
-                  : 'bg-primary text-white hover:bg-accent'
-              }`}
+              className="px-4 xl:px-5 py-2 xl:py-2.5 rounded-lg transition-colors font-medium text-sm xl:text-base bg-primary text-white hover:bg-accent"
             >
               دریافت مشاوره
             </Link>
@@ -188,11 +160,7 @@ export function Header({ isHomePage = false }: HeaderProps = {}) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`lg:hidden p-2 rounded-lg transition-colors ${
-              isHomePage && !scrolled
-                ? 'text-white hover:bg-white/20'
-                : 'text-gray-700 hover:bg-gray-100'
-            }`}
+            className="lg:hidden p-2 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
             aria-label="منو"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
