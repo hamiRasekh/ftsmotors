@@ -1,44 +1,84 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
 
 @Injectable()
 export class CarsService {
+  private readonly logger = new Logger(CarsService.name);
+
   constructor(private prisma: PrismaService) {}
 
   async findAll(categoryId?: string, published?: boolean, page = 1, limit = 10) {
-    const skip = (page - 1) * limit;
-    const where: any = {};
-    
-    if (categoryId) {
-      where.categoryId = categoryId;
-    }
-    
-    if (published !== undefined) {
-      where.published = published;
-    }
+    try {
+      const skip = (page - 1) * limit;
+      const where: any = {};
+      
+      if (categoryId) {
+        where.categoryId = categoryId;
+      }
+      
+      if (published !== undefined) {
+        where.published = published;
+      }
 
-    const [data, total] = await Promise.all([
-      this.prisma.car.findMany({
+      this.logger.log(`Finding cars with filters: categoryId=${categoryId}, published=${published}, page=${page}, limit=${limit}`);
+
+      // First check if there are any cars matching the criteria
+      const total = await this.prisma.car.count({ where });
+      
+      if (total === 0) {
+        this.logger.log('No cars found matching criteria');
+        return {
+          data: [],
+          total: 0,
+          page,
+          limit,
+          totalPages: 0,
+        };
+      }
+
+      // Fetch cars with category
+      const data = await this.prisma.car.findMany({
         where,
         include: {
-          category: true,
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              description: true,
+              image: true,
+            },
+          },
         },
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
-      }),
-      this.prisma.car.count({ where }),
-    ]);
+      });
 
-    return {
-      data,
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    };
+      this.logger.log(`Found ${data.length} cars out of ${total} total`);
+
+      return {
+        data,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      };
+    } catch (error: any) {
+      this.logger.error(`Error in findAll: ${error.message}`, error.stack);
+      
+      // Handle Prisma errors
+      if (error.code === 'P2002') {
+        throw new InternalServerErrorException('Database constraint violation');
+      }
+      if (error.code === 'P2025') {
+        throw new NotFoundException('Resource not found');
+      }
+      
+      throw new InternalServerErrorException(`Failed to fetch cars: ${error.message}`);
+    }
   }
 
   async findOne(id: string) {

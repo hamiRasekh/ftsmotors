@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { CarsService } from './cars.service';
@@ -22,6 +23,8 @@ import { Role } from '@prisma/client';
 @ApiTags('cars')
 @Controller('cars')
 export class CarsController {
+  private readonly logger = new Logger(CarsController.name);
+
   constructor(private readonly carsService: CarsService) {}
 
   @Public()
@@ -31,18 +34,28 @@ export class CarsController {
   @ApiQuery({ name: 'published', required: false, type: Boolean })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  findAll(
+  async findAll(
     @Query('categoryId') categoryId?: string,
     @Query('published') published?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
-    return this.carsService.findAll(
-      categoryId,
-      published === 'true' ? true : published === 'false' ? false : undefined,
-      page ? parseInt(page) : 1,
-      limit ? parseInt(limit) : 10,
-    );
+    try {
+      this.logger.log(`GET /cars - categoryId: ${categoryId}, published: ${published}, page: ${page}, limit: ${limit}`);
+      
+      const result = await this.carsService.findAll(
+        categoryId,
+        published === 'true' ? true : published === 'false' ? false : undefined,
+        page ? parseInt(page, 10) : 1,
+        limit ? parseInt(limit, 10) : 10,
+      );
+      
+      this.logger.log(`GET /cars - Success: ${result.data.length} cars returned`);
+      return result;
+    } catch (error: any) {
+      this.logger.error(`GET /cars - Error: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   @Public()
