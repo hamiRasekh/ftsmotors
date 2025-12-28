@@ -171,7 +171,7 @@ export function Header() {
             className={`lg:hidden p-2 rounded-lg transition-colors ${
               isHomePage && !scrolled
                 ? 'text-white hover:bg-white/20'
-                : 'text-gray-700 hover:bg-gray-100'
+                : 'text-foreground hover:bg-muted/50'
             }`}
             aria-label="منو"
           >
@@ -233,7 +233,7 @@ export function Header() {
                 }}
               >
               {/* Sidebar Header */}
-              <div className="sticky top-0 bg-primary text-white p-4 flex items-center justify-between border-b border-primary/20 z-10">
+              <div className="sticky top-0 bg-secondary text-white p-4 flex items-center justify-between border-b border-secondary/20 z-10">
                 <div className="flex items-center gap-3">
                   <Image
                     src="/logos/loho.png"
@@ -273,10 +273,8 @@ export function Header() {
                           onClick={() => setMobileMenuOpen(false)}
                           className={`relative block px-4 py-3 rounded-lg transition-all duration-300 font-medium group overflow-hidden ${
                             isActive
-                              ? 'bg-primary text-white shadow-md'
-                              : isHomePage && !scrolled
-                              ? 'text-white/90 hover:text-white hover:bg-white/10'
-                              : 'text-gray-700 hover:text-primary hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10'
+                              ? 'bg-secondary text-white shadow-md'
+                              : 'text-foreground hover:text-secondary hover:bg-gradient-to-r hover:from-secondary/10 hover:to-accent/10'
                           }`}
                         >
                           <span className="relative z-10 flex items-center gap-3">
@@ -284,7 +282,7 @@ export function Header() {
                               className={`w-1 h-6 rounded-full ${
                                 isActive
                                   ? 'bg-white'
-                                  : 'bg-transparent group-hover:bg-primary'
+                                  : 'bg-transparent group-hover:bg-secondary'
                               }`}
                               animate={{
                                 height: isActive ? '100%' : '1.5rem',
@@ -302,7 +300,7 @@ export function Header() {
                           {/* Active indicator background */}
                           {isActive && (
                             <motion.div
-                              className="absolute inset-0 bg-gradient-to-r from-primary to-accent"
+                              className="absolute inset-0 bg-gradient-to-r from-secondary to-secondary/80"
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
                               transition={{ duration: 0.3 }}
@@ -311,7 +309,7 @@ export function Header() {
                           
                           {/* Hover effect */}
                           <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 opacity-0 group-hover:opacity-100"
+                            className="absolute inset-0 bg-gradient-to-r from-secondary/20 via-accent/20 to-secondary/20 opacity-0 group-hover:opacity-100"
                             initial={{ x: '-100%' }}
                             whileHover={{ x: 0 }}
                             transition={{ duration: 0.3 }}
@@ -327,12 +325,12 @@ export function Header() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: navItems.length * 0.05, duration: 0.3 }}
-                  className="mt-6 pt-6 border-t border-gray-200"
+                  className="mt-6 pt-6 border-t border-muted"
                 >
                   <Link
                     href="/contact"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full px-4 py-3 bg-primary text-white rounded-lg hover:bg-accent transition-colors font-semibold text-center shadow-lg"
+                    className="block w-full px-4 py-3 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors font-semibold text-center shadow-lg"
                   >
                     دریافت مشاوره
                   </Link>

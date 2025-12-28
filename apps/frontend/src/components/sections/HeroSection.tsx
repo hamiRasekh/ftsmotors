@@ -22,27 +22,27 @@ export function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 h-screen flex items-center">
-        <div className="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 sm:gap-8 lg:gap-12">
-          {/* Logo - Left Side */}
+      <div className="relative z-10 w-full h-screen flex items-center" dir="ltr">
+        <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto flex flex-col items-start justify-start gap-4 sm:gap-6">
+          {/* Logo - Top Left */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="flex justify-start lg:justify-start lg:flex-shrink-0"
+            className="flex justify-start items-start self-start"
           >
             <Image
               src="/logos/loho.png"
               alt="فیدار تجارت سوبا"
               width={200}
               height={200}
-              className="object-contain h-24 w-auto sm:h-32 md:h-36 lg:h-44"
+              className="object-contain h-16 w-auto sm:h-20 md:h-24 lg:h-28"
               priority
             />
           </motion.div>
 
-          {/* Text Content - Right Side */}
-          <div className="max-w-xl w-full lg:w-auto lg:mr-0 flex-1">
+          {/* Text Content - Below Logo */}
+          <div className="max-w-xl w-full" dir="rtl">
             {/* Main Heading */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
