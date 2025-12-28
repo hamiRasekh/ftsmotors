@@ -68,7 +68,7 @@ export default function LoginPage() {
             <div className="text-center mb-8">
               <Link href="/" className="inline-block mb-4">
                 <Image
-                  src="/photo_2025-12-08_17-46-46-removebg-preview.png"
+                  src="/logos/loho.png"
                   alt="فیدار تجارت سوبا"
                   width={64}
                   height={64}

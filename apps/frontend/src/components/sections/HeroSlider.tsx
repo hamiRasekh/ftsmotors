@@ -114,7 +114,7 @@ export function HeroSlider() {
       {/* Custom Pagination Styles */}
       <style jsx global>{`
         .swiper-pagination-bullet {
-          background: white;
+          background: hsl(var(--background));
           opacity: 0.5;
           width: 12px;
           height: 12px;
@@ -124,7 +124,7 @@ export function HeroSlider() {
           opacity: 1;
           width: 30px;
           border-radius: 6px;
-          background: white;
+          background: hsl(var(--background));
         }
       `}</style>
     </div>

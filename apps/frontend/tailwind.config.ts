@@ -23,11 +23,11 @@ const config: Config = {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: '#0E2F3E', // Dark blue
+          DEFAULT: '#1A365D', // Deep Navy
           foreground: '#ffffff',
         },
         secondary: {
-          DEFAULT: '#9A7C64', // Brown/bronze
+          DEFAULT: '#00AEEF', // Electric Blue
           foreground: '#ffffff',
         },
         destructive: {
@@ -35,27 +35,27 @@ const config: Config = {
           foreground: '#ffffff',
         },
         muted: {
-          DEFAULT: '#D9C6B8', // Light beige
-          foreground: '#0E2F3E',
+          DEFAULT: '#CBD5E0', // Silver Metallic
+          foreground: '#2D3748',
         },
         accent: {
-          DEFAULT: '#196886', // Medium blue
-          foreground: '#ffffff',
+          DEFAULT: '#CBD5E0', // Silver Metallic
+          foreground: '#2D3748',
         },
         popover: {
-          DEFAULT: '#ffffff',
-          foreground: '#0E2F3E',
+          DEFAULT: '#F7FAFC',
+          foreground: '#2D3748',
         },
         card: {
-          DEFAULT: '#ffffff',
-          foreground: '#0E2F3E',
+          DEFAULT: '#F7FAFC',
+          foreground: '#2D3748',
         },
         // Custom color palette
         brand: {
-          dark: '#0E2F3E',
-          medium: '#196886',
-          brown: '#9A7C64',
-          beige: '#D9C6B8',
+          dark: '#1A365D', // Deep Navy
+          medium: '#00AEEF', // Electric Blue
+          brown: '#2D3748', // Charcoal Grey
+          beige: '#CBD5E0', // Silver Metallic
         },
         // Grayscale palette (kept for compatibility)
         gray: {

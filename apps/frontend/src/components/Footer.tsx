@@ -11,7 +11,7 @@ export function Footer() {
             <div>
               <Link href="/" className="flex items-center gap-3 mb-4">
                 <Image
-                  src="/photo_2025-12-08_17-46-46-removebg-preview.png"
+                  src="/logos/loho.png"
                   alt="فیدار تجارت سوبا"
                   width={40}
                   height={40}

@@ -17,10 +17,10 @@ const statusLabels: Record<string, string> = {
 };
 
 const statusColors: Record<string, string> = {
-  OPEN: 'bg-gray-200 text-gray-800',
-  IN_PROGRESS: 'bg-blue-100 text-blue-800',
-  CLOSED: 'bg-gray-100 text-gray-600',
-  RESOLVED: 'bg-green-100 text-green-800',
+  OPEN: 'bg-muted text-muted-foreground',
+  IN_PROGRESS: 'bg-secondary/20 text-secondary',
+  CLOSED: 'bg-muted/50 text-muted-foreground',
+  RESOLVED: 'bg-primary/20 text-primary',
 };
 
 export default function FeedbackPage() {

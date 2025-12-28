@@ -56,7 +56,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
         <div className="p-6 border-b border-gray-200">
           <Link href="/user/dashboard" className="flex items-center gap-3">
             <Image
-              src="/photo_2025-12-08_17-46-46-removebg-preview.png"
+              src="/logos/loho.png"
               alt="فیدار تجارت سوبا"
               width={32}
               height={32}

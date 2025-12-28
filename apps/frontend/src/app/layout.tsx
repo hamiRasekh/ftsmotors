@@ -13,9 +13,9 @@ export const metadata: Metadata = {
   authors: [{ name: 'فیدار تجارت سوبا' }],
   creator: 'فیدار تجارت سوبا',
   icons: {
-    icon: '/photo_2025-12-08_17-46-46-removebg-preview.png',
-    shortcut: '/photo_2025-12-08_17-46-46-removebg-preview.png',
-    apple: '/photo_2025-12-08_17-46-46-removebg-preview.png',
+    icon: '/logos/loho.png',
+    shortcut: '/logos/loho.png',
+    apple: '/logos/loho.png',
   },
   openGraph: {
     type: 'website',
@@ -54,9 +54,9 @@ export default function RootLayout({
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="canonical" href={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'} />
-        <link rel="icon" type="image/png" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
-        <link rel="shortcut icon" type="image/png" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
-        <link rel="apple-touch-icon" href="/photo_2025-12-08_17-46-46-removebg-preview.png" />
+        <link rel="icon" type="image/png" href="/logos/loho.png" />
+        <link rel="shortcut icon" type="image/png" href="/logos/loho.png" />
+        <link rel="apple-touch-icon" href="/logos/loho.png" />
         {/* Preload fonts for better performance */}
         <link
           rel="preload"

@@ -86,7 +86,7 @@ export default async function HomePage() {
                 logoHeight={60}
                 gap={40}
                 fadeOut
-                fadeOutColor="#ffffff"
+fadeOutColor={undefined}
                 scaleOnHover
                 pauseOnHover
                 ariaLabel="برندهای خودرو"

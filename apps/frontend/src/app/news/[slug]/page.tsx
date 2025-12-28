@@ -53,8 +53,8 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
           <div className="container mx-auto px-4 py-16">
             <FadeIn>
               <div className="text-center">
-                <h1 className="text-4xl font-bold text-black mb-4">خبر یافت نشد</h1>
-                <Link href="/news" className="text-black hover:text-gray-700 underline">
+                <h1 className="text-4xl font-bold text-foreground mb-4">خبر یافت نشد</h1>
+                <Link href="/news" className="text-primary hover:text-secondary underline">
                   بازگشت به لیست اخبار
                 </Link>
               </div>
@@ -72,24 +72,24 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
       <main className="min-h-screen bg-white pt-16">
         <div className="container mx-auto px-4 py-8">
           {/* Breadcrumb */}
-          <nav className="mb-8 text-sm text-gray-600">
-            <Link href="/" className="hover:text-black transition-colors">خانه</Link>
+          <nav className="mb-8 text-sm text-foreground/70">
+            <Link href="/" className="hover:text-foreground transition-colors">خانه</Link>
             {' / '}
-            <Link href="/news" className="hover:text-black transition-colors">اخبار</Link>
+            <Link href="/news" className="hover:text-foreground transition-colors">اخبار</Link>
             {' / '}
-            <span className="text-black">{news.title}</span>
+            <span className="text-foreground">{news.title}</span>
           </nav>
 
           <article className="max-w-4xl mx-auto">
             <FadeIn>
               <header className="mb-8">
-                <h1 className="text-4xl md:text-5xl font-bold text-black mb-4 leading-tight">
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
                   {news.title}
                 </h1>
                 {news.excerpt && (
-                  <p className="text-xl text-gray-600 mb-6 leading-relaxed">{news.excerpt}</p>
+                  <p className="text-xl text-foreground/80 mb-6 leading-relaxed">{news.excerpt}</p>
                 )}
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
+                <div className="flex items-center gap-4 text-sm text-foreground/60 mb-6">
                   {news.publishedAt && (
                     <span>
                       📅 {new Date(news.publishedAt).toLocaleDateString('fa-IR', {
@@ -122,16 +122,16 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
             <div className="prose prose-lg max-w-none mb-8">
               <ReactMarkdown
                 components={{
-                  h1: ({ children }) => <h1 className="text-3xl font-bold text-black mb-4 mt-8">{children}</h1>,
-                  h2: ({ children }) => <h2 className="text-2xl font-bold text-black mb-3 mt-6">{children}</h2>,
-                  h3: ({ children }) => <h3 className="text-xl font-bold text-black mb-2 mt-4">{children}</h3>,
-                  p: ({ children }) => <p className="text-gray-700 leading-relaxed mb-4">{children}</p>,
-                  ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-2 text-gray-700">{children}</ul>,
-                  ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-2 text-gray-700">{children}</ol>,
-                  li: ({ children }) => <li className="text-gray-700">{children}</li>,
-                  strong: ({ children }) => <strong className="font-bold text-black">{children}</strong>,
+                  h1: ({ children }) => <h1 className="text-3xl font-bold text-foreground mb-4 mt-8">{children}</h1>,
+                  h2: ({ children }) => <h2 className="text-2xl font-bold text-foreground mb-3 mt-6">{children}</h2>,
+                  h3: ({ children }) => <h3 className="text-xl font-bold text-foreground mb-2 mt-4">{children}</h3>,
+                  p: ({ children }) => <p className="text-foreground/90 leading-relaxed mb-4">{children}</p>,
+                  ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-2 text-foreground/90">{children}</ul>,
+                  ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-2 text-foreground/90">{children}</ol>,
+                  li: ({ children }) => <li className="text-foreground/90">{children}</li>,
+                  strong: ({ children }) => <strong className="font-bold text-foreground">{children}</strong>,
                   a: ({ href, children }) => (
-                    <a href={href} className="text-black underline hover:text-gray-700">
+                    <a href={href} className="text-primary underline hover:text-secondary">
                       {children}
                     </a>
                   ),

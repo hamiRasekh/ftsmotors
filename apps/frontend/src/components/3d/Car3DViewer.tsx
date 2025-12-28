@@ -154,7 +154,7 @@ export function Car3DViewer({
           ) : (
             <mesh>
               <boxGeometry args={[2, 1, 4]} />
-              <meshStandardMaterial color="#888888" />
+              <meshStandardMaterial color="hsl(var(--muted-foreground))" />
             </mesh>
           )}
           {enableControls && OrbitControls && (

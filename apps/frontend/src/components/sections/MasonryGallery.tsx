@@ -297,11 +297,11 @@ export function MasonryGallery({ articles, news, className = '' }: MasonryGaller
         .swiper-pagination-bullet {
           width: 12px;
           height: 12px;
-          background: #d1d5db;
+          background: hsl(var(--muted));
           opacity: 1;
         }
         .swiper-pagination-bullet-active {
-          background: #000;
+          background: hsl(var(--foreground));
         }
       `}</style>
     </section>

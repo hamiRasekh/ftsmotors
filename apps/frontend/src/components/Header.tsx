@@ -53,6 +53,8 @@ export function Header() {
     { href: '/feedback', label: 'انتقادات و پیشنهادات' },
   ];
 
+  const isHomePage = pathname === '/';
+
   return (
     <motion.header
       initial={{ y: 0 }}
@@ -61,7 +63,9 @@ export function Header() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isHovered || !scrolled
+        isHomePage && !scrolled
+          ? 'bg-transparent border-transparent'
+          : isHovered || !scrolled
           ? 'bg-white/80 backdrop-blur-md border-b border-gray-200/50'
           : 'bg-white/60 backdrop-blur-sm border-b border-gray-200/30'
       } ${scrolled ? 'shadow-lg' : 'shadow-none'}`}
@@ -69,13 +73,15 @@ export function Header() {
       <div className="px-6 sm:px-6 lg:px-0">
         <nav className="flex items-center justify-between h-12 md:h-14">
           {/* Logo - Left Side */}
-          <Link href="/" className="flex items-center flex-shrink-0">
+          <Link href="/" className="flex items-center flex-shrink-0 mr-2 sm:mr-3">
             <Image
-              src="/photo_2025-12-08_17-46-46-removebg-preview.png"
+              src="/logos/loho.png"
               alt="فیدار تجارت سوبا"
-              width={40}
-              height={40}
-              className="object-contain w-8 h-8 sm:w-10 sm:h-10 transition-all"
+              width={60}
+              height={60}
+              className={`object-contain w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 transition-all ${
+                isHomePage && !scrolled ? 'brightness-0 invert' : ''
+              }`}
             />
           </Link>
 
@@ -94,14 +100,16 @@ export function Header() {
                     <Link
                       href={item.href}
                       className={`relative px-3 xl:px-4 py-2 text-sm xl:text-base font-medium transition-all duration-300 block overflow-hidden ${
-                        isActive ? 'text-primary' : 'text-gray-700'
+                        isHomePage && !scrolled
+                          ? isActive ? 'text-white' : 'text-white/90 hover:text-white'
+                          : isActive ? 'text-secondary' : 'text-primary hover:text-secondary'
                       }`}
                     >
                       <span className="relative z-10">{item.label}</span>
                       
                       {/* Animated Underline - slides from right to left */}
                       <motion.div
-                        className="absolute bottom-0 right-0 h-0.5 bg-gradient-to-l from-primary via-accent to-primary"
+                        className="absolute bottom-0 right-0 h-0.5 bg-gradient-to-l from-secondary to-secondary"
                         variants={{
                           initial: { width: isActive ? '100%' : '0%' },
                           hover: { width: '100%' },
@@ -114,7 +122,7 @@ export function Header() {
                       
                       {/* Animated Background Glow */}
                       <motion.div
-                        className="absolute inset-0 rounded-lg pointer-events-none bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5"
+                        className="absolute inset-0 rounded-lg pointer-events-none bg-gradient-to-r from-secondary/5 via-secondary/5 to-secondary/5"
                         variants={{
                           initial: { opacity: isActive ? 1 : 0, scale: 1 },
                           hover: { opacity: 1, scale: 1.05 },
@@ -127,7 +135,7 @@ export function Header() {
                       
                       {/* Shine Effect - sweeps across on hover */}
                       <motion.div
-                        className="absolute inset-0 rounded-lg pointer-events-none bg-gradient-to-r from-transparent via-primary/30 to-transparent"
+                        className="absolute inset-0 rounded-lg pointer-events-none bg-gradient-to-r from-transparent via-secondary/30 to-transparent"
                         variants={{
                           initial: { x: '-100%', opacity: 0 },
                           hover: {
@@ -148,10 +156,10 @@ export function Header() {
           </ul>
 
           {/* Desktop Right Side Actions */}
-          <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+          <div className="hidden lg:flex items-center gap-3 flex-shrink-0 ml-2 sm:ml-3">
             <Link
               href="/contact"
-              className="px-4 xl:px-5 py-2 xl:py-2.5 rounded-lg transition-colors font-medium text-sm xl:text-base bg-primary text-white hover:bg-accent"
+              className="px-4 xl:px-5 py-2 xl:py-2.5 rounded-lg transition-colors font-medium text-sm xl:text-base bg-secondary text-white hover:bg-secondary/90"
             >
               دریافت مشاوره
             </Link>
@@ -160,7 +168,11 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
+            className={`lg:hidden p-2 rounded-lg transition-colors ${
+              isHomePage && !scrolled
+                ? 'text-white hover:bg-white/20'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
             aria-label="منو"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,7 +236,7 @@ export function Header() {
               <div className="sticky top-0 bg-primary text-white p-4 flex items-center justify-between border-b border-primary/20 z-10">
                 <div className="flex items-center gap-3">
                   <Image
-                    src="/photo_2025-12-08_17-46-46-removebg-preview.png"
+                    src="/logos/loho.png"
                     alt="فیدار تجارت سوبا"
                     width={32}
                     height={32}
@@ -262,6 +274,8 @@ export function Header() {
                           className={`relative block px-4 py-3 rounded-lg transition-all duration-300 font-medium group overflow-hidden ${
                             isActive
                               ? 'bg-primary text-white shadow-md'
+                              : isHomePage && !scrolled
+                              ? 'text-white/90 hover:text-white hover:bg-white/10'
                               : 'text-gray-700 hover:text-primary hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10'
                           }`}
                         >

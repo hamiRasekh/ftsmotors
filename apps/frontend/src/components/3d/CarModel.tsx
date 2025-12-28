@@ -67,7 +67,7 @@ export function CarModel({
     return (
       <mesh scale={scale} position={position}>
         <boxGeometry args={[2, 1, 4]} />
-        <meshStandardMaterial color="#888888" />
+        <meshStandardMaterial color="hsl(var(--muted-foreground))" />
       </mesh>
     );
   }
@@ -76,7 +76,7 @@ export function CarModel({
     return (
       <mesh scale={scale} position={position}>
         <boxGeometry args={[2, 1, 4]} />
-        <meshStandardMaterial color="#888888" />
+        <meshStandardMaterial color="hsl(var(--muted-foreground))" />
       </mesh>
     );
   }
