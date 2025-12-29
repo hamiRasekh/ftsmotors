@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Car" ADD COLUMN "published" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "Car" ADD COLUMN "publishedAt" TIMESTAMP(3);
+
