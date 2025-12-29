@@ -93,20 +93,7 @@ export function HeroSection() {
 
           {/* Text Content - Below Logo */}
           <div className="max-w-xl w-full" dir="rtl">
-            {/* Tagline */}
-            {content.tagline && (
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.15 }}
-                className="text-base sm:text-lg md:text-xl text-white/90 mb-2 sm:mb-3 leading-relaxed text-left"
-                dir="rtl"
-              >
-                {content.tagline}
-              </motion.p>
-            )}
-
-            {/* Main Heading */}
+            {/* Main Heading (Tagline/Title) */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -114,7 +101,7 @@ export function HeroSection() {
               className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight text-left"
               dir="rtl"
             >
-              {content.title}
+              {content.title || content.tagline}
             </motion.h1>
 
             {/* Subtitle */}
