@@ -21,7 +21,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "ts-node prisma/seed.ts",
+    "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:seed:alt": "npx prisma db seed",
     "create:admin": "ts-node src/scripts/create-admin.ts"
   },
   "dependencies": {
@@ -80,6 +81,7 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   },
   "jest": {
@@ -100,6 +102,6 @@
     "testEnvironment": "node"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   }
 }
