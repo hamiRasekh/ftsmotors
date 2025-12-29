@@ -755,45 +755,52 @@ FTS Motors یک نمایندگی رسمی خودرو است که با بیش ا�
 
   // 7. ایجاد پیام‌های تماس نمونه
   console.log('\n📧 در حال ایجاد پیام‌های تماس نمونه...');
-  const contactMessages = [
-    {
-      name: 'علی احمدی',
-      email: 'ali.ahmadi@example.com',
-      phone: '09123456780',
-      subject: 'سوال درباره BMW X2',
-      message: 'سلام، می‌خواستم درباره BMW X2 اطلاعات بیشتری بگیرم. قیمت و شرایط خرید چطور است؟',
-      read: false,
-    },
-    {
-      name: 'مریم رضایی',
-      email: 'maryam.rezaei@example.com',
-      phone: '09123456781',
-      subject: 'مشاوره خرید خودرو',
-      message: 'سلام، می‌خواستم برای خرید خودروی خانوادگی مشاوره بگیرم. چه خودروهایی را پیشنهاد می‌دهید؟',
-      read: false,
-    },
-    {
-      name: 'حسین کریمی',
-      email: 'hossein.karimi@example.com',
-      phone: '09123456782',
-      subject: 'فروش خودروی دست دوم',
-      message: 'سلام، می‌خواستم خودروی دست دوم خود را بفروشم. آیا شما خریدار هستید؟',
-      read: true,
-    },
-  ];
+  const existingContactMessagesCount = await prisma.contactMessage.count();
+  
+  if (existingContactMessagesCount === 0) {
+    const contactMessages = [
+      {
+        name: 'علی احمدی',
+        email: 'ali.ahmadi@example.com',
+        phone: '09123456780',
+        subject: 'سوال درباره BMW X2',
+        message: 'سلام، می‌خواستم درباره BMW X2 اطلاعات بیشتری بگیرم. قیمت و شرایط خرید چطور است؟',
+        read: false,
+      },
+      {
+        name: 'مریم رضایی',
+        email: 'maryam.rezaei@example.com',
+        phone: '09123456781',
+        subject: 'مشاوره خرید خودرو',
+        message: 'سلام، می‌خواستم برای خرید خودروی خانوادگی مشاوره بگیرم. چه خودروهایی را پیشنهاد می‌دهید؟',
+        read: false,
+      },
+      {
+        name: 'حسین کریمی',
+        email: 'hossein.karimi@example.com',
+        phone: '09123456782',
+        subject: 'فروش خودروی دست دوم',
+        message: 'سلام، می‌خواستم خودروی دست دوم خود را بفروشم. آیا شما خریدار هستید؟',
+        read: true,
+      },
+    ];
 
-  for (const message of contactMessages) {
-    await prisma.contactMessage.create({
-      data: message,
-    });
-    console.log(`✅ پیام تماس از "${message.name}" ایجاد شد`);
+    for (const message of contactMessages) {
+      await prisma.contactMessage.create({
+        data: message,
+      });
+      console.log(`✅ پیام تماس از "${message.name}" ایجاد شد`);
+    }
+  } else {
+    console.log(`⏭️  پیام‌های تماس از قبل وجود دارند (${existingContactMessagesCount} پیام). از ایجاد مجدد صرف نظر شد.`);
   }
 
   // 8. ایجاد تیکت‌های نمونه
   console.log('\n🎫 در حال ایجاد تیکت‌های نمونه...');
   const testUser = await prisma.user.findUnique({ where: { phone: '09111111111' } });
+  const existingTicketsCount = await prisma.ticket.count();
   
-  if (testUser) {
+  if (testUser && existingTicketsCount === 0) {
     const tickets = [
       {
         title: 'مشکل در سیستم رزرو',
@@ -861,11 +868,15 @@ FTS Motors یک نمایندگی رسمی خودرو است که با بیش ا�
       }
       console.log(`✅ تیکت "${createdTicket.title}" ایجاد شد`);
     }
+  } else if (existingTicketsCount > 0) {
+    console.log(`⏭️  تیکت‌ها از قبل وجود دارند (${existingTicketsCount} تیکت). از ایجاد مجدد صرف نظر شد.`);
   }
 
   // 9. ایجاد پیام‌های چت نمونه
   console.log('\n💬 در حال ایجاد پیام‌های چت نمونه...');
-  if (testUser) {
+  const existingChatMessagesCount = await prisma.chatMessage.count();
+  
+  if (testUser && existingChatMessagesCount === 0) {
     const chatMessages = [
       {
         content: 'سلام، می‌خواستم درباره خودروهای موجود سوال کنم.',
@@ -895,11 +906,15 @@ FTS Motors یک نمایندگی رسمی خودرو است که با بیش ا�
       });
     }
     console.log(`✅ ${chatMessages.length} پیام چت ایجاد شد`);
+  } else if (existingChatMessagesCount > 0) {
+    console.log(`⏭️  پیام‌های چت از قبل وجود دارند (${existingChatMessagesCount} پیام). از ایجاد مجدد صرف نظر شد.`);
   }
 
   // 10. ایجاد فیدبک‌های نمونه
   console.log('\n💡 در حال ایجاد فیدبک‌های نمونه...');
-  if (testUser) {
+  const existingFeedbacksCount = await prisma.feedback.count();
+  
+  if (testUser && existingFeedbacksCount === 0) {
     const feedbacks = [
       {
         type: 'SUGGESTION' as const,
@@ -927,6 +942,8 @@ FTS Motors یک نمایندگی رسمی خودرو است که با بیش ا�
       });
     }
     console.log(`✅ ${feedbacks.length} فیدبک ایجاد شد`);
+  } else if (existingFeedbacksCount > 0) {
+    console.log(`⏭️  فیدبک‌ها از قبل وجود دارند (${existingFeedbacksCount} فیدبک). از ایجاد مجدد صرف نظر شد.`);
   }
 
   // 11. ایجاد محتوای صفحه خانه
@@ -935,32 +952,26 @@ FTS Motors یک نمایندگی رسمی خودرو است که با بیش ا�
     where: { isActive: true },
   });
   
+  const homeContentData = {
+    tagline: 'تحقق یک رویا',
+    title: 'شریک شما در تجارت خودرو',
+    subtitle: 'شما را با بهترین خودروهای لوکس آلمانی و کره‌ای متصل می‌کنیم',
+    backgroundImage: '/photo_2025-12-28_18-06-14.jpg',
+    logo: '/logos/loho.png',
+    ctaText: 'دریافت مشاوره',
+    ctaLink: '/contact',
+    isActive: true,
+  };
+  
   if (existingHomeContent) {
     await prisma.homeContent.update({
       where: { id: existingHomeContent.id },
-      data: {
-        tagline: 'تحقق یک رویا',
-        title: 'شریک شما در تجارت خودرو',
-        subtitle: 'شما را با بهترین خودروهای لوکس آلمانی و کره‌ای متصل می‌کنیم',
-        backgroundImage: '/photo_2025-12-28_18-06-14.jpg',
-        logo: '/logos/loho.png',
-        ctaText: 'دریافت مشاوره',
-        ctaLink: '/contact',
-      },
+      data: homeContentData,
     });
-    console.log('✅ محتوای صفحه خانه به‌روزرسانی شد');
+    console.log('✅ محتوای صفحه خانه به‌روزرسانی شد (داده موجود بود)');
   } else {
     await prisma.homeContent.create({
-      data: {
-        tagline: 'تحقق یک رویا',
-        title: 'شریک شما در تجارت خودرو',
-        subtitle: 'شما را با بهترین خودروهای لوکس آلمانی و کره‌ای متصل می‌کنیم',
-        backgroundImage: '/photo_2025-12-28_18-06-14.jpg',
-        logo: '/logos/loho.png',
-        ctaText: 'دریافت مشاوره',
-        ctaLink: '/contact',
-        isActive: true,
-      },
+      data: homeContentData,
     });
     console.log('✅ محتوای صفحه خانه ایجاد شد');
   }
@@ -981,28 +992,24 @@ FTS Motors یک نمایندگی رسمی خودرو است که با بیش ا�
     { href: '/feedback', label: 'انتقادات و پیشنهادات' },
   ];
   
+  const headerContentData = {
+    logo: '/logos/loho.png',
+    logoAlt: 'فیدار تجارت سوبا',
+    navItems: headerNavItems as any,
+    ctaText: 'دریافت مشاوره',
+    ctaLink: '/contact',
+    isActive: true,
+  };
+  
   if (existingHeaderContent) {
     await prisma.headerContent.update({
       where: { id: existingHeaderContent.id },
-      data: {
-        logo: '/logos/loho.png',
-        logoAlt: 'فیدار تجارت سوبا',
-        navItems: headerNavItems as any,
-        ctaText: 'دریافت مشاوره',
-        ctaLink: '/contact',
-      },
+      data: headerContentData,
     });
-    console.log('✅ محتوای هدر به‌روزرسانی شد');
+    console.log('✅ محتوای هدر به‌روزرسانی شد (داده موجود بود)');
   } else {
     await prisma.headerContent.create({
-      data: {
-        logo: '/logos/loho.png',
-        logoAlt: 'فیدار تجارت سوبا',
-        navItems: headerNavItems as any,
-        ctaText: 'دریافت مشاوره',
-        ctaLink: '/contact',
-        isActive: true,
-      },
+      data: headerContentData,
     });
     console.log('✅ محتوای هدر ایجاد شد');
   }
@@ -1025,40 +1032,30 @@ FTS Motors یک نمایندگی رسمی خودرو است که با بیش ا�
     { href: '/contact', label: 'تماس با ما' },
   ];
   
+  const footerContentData = {
+    logo: '/logos/loho.png',
+    logoAlt: 'فیدار تجارت سوبا',
+    companyName: 'فیدار تجارت سوبا',
+    description: 'نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده با بهترین کیفیت و خدمات',
+    quickLinks: footerQuickLinks as any,
+    infoLinks: footerInfoLinks as any,
+    address: 'تهران-بلوار آیت الله کاشانی-خیابان حسن آباد-کوچه اول الف-پلاک ۲ ساختمان مهرگان-طبقه دوم واحد۴',
+    phone: '021-12345678',
+    phones: ['02144026696', '02144979483'] as any,
+    email: 'info@ftsmotors.com',
+    copyrightText: `© ${new Date().getFullYear()} فیدار تجارت سوبا. تمامی حقوق محفوظ است.`,
+    isActive: true,
+  };
+  
   if (existingFooterContent) {
     await prisma.footerContent.update({
       where: { id: existingFooterContent.id },
-      data: {
-        logo: '/logos/loho.png',
-        logoAlt: 'فیدار تجارت سوبا',
-        companyName: 'فیدار تجارت سوبا',
-        description: 'نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده با بهترین کیفیت و خدمات',
-        quickLinks: footerQuickLinks as any,
-        infoLinks: footerInfoLinks as any,
-        address: 'تهران-بلوار آیت الله کاشانی-خیابان حسن آباد-کوچه اول الف-پلاک ۲ ساختمان مهرگان-طبقه دوم واحد۴',
-        phone: '021-12345678',
-        phones: ['02144026696', '02144979483'] as any,
-        email: 'info@ftsmotors.com',
-        copyrightText: `© ${new Date().getFullYear()} فیدار تجارت سوبا. تمامی حقوق محفوظ است.`,
-      },
+      data: footerContentData,
     });
-    console.log('✅ محتوای فوتر به‌روزرسانی شد');
+    console.log('✅ محتوای فوتر به‌روزرسانی شد (داده موجود بود)');
   } else {
     await prisma.footerContent.create({
-      data: {
-        logo: '/logos/loho.png',
-        logoAlt: 'فیدار تجارت سوبا',
-        companyName: 'فیدار تجارت سوبا',
-        description: 'نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده با بهترین کیفیت و خدمات',
-        quickLinks: footerQuickLinks as any,
-        infoLinks: footerInfoLinks as any,
-        address: 'تهران-بلوار آیت الله کاشانی-خیابان حسن آباد-کوچه اول الف-پلاک ۲ ساختمان مهرگان-طبقه دوم واحد۴',
-        phone: '021-12345678',
-        phones: ['02144026696', '02144979483'] as any,
-        email: 'info@ftsmotors.com',
-        copyrightText: `© ${new Date().getFullYear()} فیدار تجارت سوبا. تمامی حقوق محفوظ است.`,
-        isActive: true,
-      },
+      data: footerContentData,
     });
     console.log('✅ محتوای فوتر ایجاد شد');
   }
