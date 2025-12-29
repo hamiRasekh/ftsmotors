@@ -663,6 +663,105 @@ export const api = {
       fetch(`${getAPIURL()}/api/users/profile`, {
         headers: getAuthHeaders(),
       }).then((r) => r.json()),
+  },
+  homeContent: {
+    getPublic: () => fetch(`${getAPIURL()}/api/home-content/public`).then((r) => r.json()),
+    getAll: () =>
+      fetch(`${getAPIURL()}/api/home-content`, {
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+    getOne: (id: string) =>
+      fetch(`${getAPIURL()}/api/home-content/${id}`, {
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+    create: (data: any) =>
+      fetch(`${getAPIURL()}/api/home-content`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      }).then((r) => r.json()),
+    update: (id: string, data: any) =>
+      fetch(`${getAPIURL()}/api/home-content/${id}`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      }).then((r) => r.json()),
+    activate: (id: string) =>
+      fetch(`${getAPIURL()}/api/home-content/${id}/activate`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+    delete: (id: string) =>
+      fetch(`${getAPIURL()}/api/home-content/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+  },
+  headerContent: {
+    getPublic: () => fetch(`${getAPIURL()}/api/header-content/public`).then((r) => r.json()),
+    getAll: () =>
+      fetch(`${getAPIURL()}/api/header-content`, {
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+    getOne: (id: string) =>
+      fetch(`${getAPIURL()}/api/header-content/${id}`, {
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+    create: (data: any) =>
+      fetch(`${getAPIURL()}/api/header-content`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      }).then((r) => r.json()),
+    update: (id: string, data: any) =>
+      fetch(`${getAPIURL()}/api/header-content/${id}`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      }).then((r) => r.json()),
+    activate: (id: string) =>
+      fetch(`${getAPIURL()}/api/header-content/${id}/activate`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+    delete: (id: string) =>
+      fetch(`${getAPIURL()}/api/header-content/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+  },
+  footerContent: {
+    getPublic: () => fetch(`${getAPIURL()}/api/footer-content/public`).then((r) => r.json()),
+    getAll: () =>
+      fetch(`${getAPIURL()}/api/footer-content`, {
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+    getOne: (id: string) =>
+      fetch(`${getAPIURL()}/api/footer-content/${id}`, {
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+    create: (data: any) =>
+      fetch(`${getAPIURL()}/api/footer-content`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      }).then((r) => r.json()),
+    update: (id: string, data: any) =>
+      fetch(`${getAPIURL()}/api/footer-content/${id}`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      }).then((r) => r.json()),
+    activate: (id: string) =>
+      fetch(`${getAPIURL()}/api/footer-content/${id}/activate`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
+    delete: (id: string) =>
+      fetch(`${getAPIURL()}/api/footer-content/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      }).then((r) => r.json()),
     update: (data: { name?: string; email?: string; avatar?: string }) =>
       fetch(`${getAPIURL()}/api/users/profile`, {
         method: 'PATCH',

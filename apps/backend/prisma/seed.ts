@@ -929,6 +929,140 @@ FTS Motors یک نمایندگی رسمی خودرو است که با بیش ا�
     console.log(`✅ ${feedbacks.length} فیدبک ایجاد شد`);
   }
 
+  // 11. ایجاد محتوای صفحه خانه
+  console.log('\n🏠 در حال ایجاد محتوای صفحه خانه...');
+  const existingHomeContent = await prisma.homeContent.findFirst({
+    where: { isActive: true },
+  });
+  
+  if (existingHomeContent) {
+    await prisma.homeContent.update({
+      where: { id: existingHomeContent.id },
+      data: {
+        tagline: 'تحقق یک رویا',
+        title: 'شریک شما در تجارت خودرو',
+        subtitle: 'شما را با بهترین خودروهای لوکس آلمانی و کره‌ای متصل می‌کنیم',
+        backgroundImage: '/photo_2025-12-28_18-06-14.jpg',
+        logo: '/logos/loho.png',
+        ctaText: 'دریافت مشاوره',
+        ctaLink: '/contact',
+      },
+    });
+    console.log('✅ محتوای صفحه خانه به‌روزرسانی شد');
+  } else {
+    await prisma.homeContent.create({
+      data: {
+        tagline: 'تحقق یک رویا',
+        title: 'شریک شما در تجارت خودرو',
+        subtitle: 'شما را با بهترین خودروهای لوکس آلمانی و کره‌ای متصل می‌کنیم',
+        backgroundImage: '/photo_2025-12-28_18-06-14.jpg',
+        logo: '/logos/loho.png',
+        ctaText: 'دریافت مشاوره',
+        ctaLink: '/contact',
+        isActive: true,
+      },
+    });
+    console.log('✅ محتوای صفحه خانه ایجاد شد');
+  }
+
+  // 12. ایجاد محتوای هدر
+  console.log('\n📋 در حال ایجاد محتوای هدر...');
+  const existingHeaderContent = await prisma.headerContent.findFirst({
+    where: { isActive: true },
+  });
+  
+  const headerNavItems = [
+    { href: '/', label: 'خانه' },
+    { href: '/cars', label: 'خودروها' },
+    { href: '/blog', label: 'مقالات' },
+    { href: '/news', label: 'اخبار' },
+    { href: '/about', label: 'درباره ما' },
+    { href: '/contact', label: 'تماس با ما' },
+    { href: '/feedback', label: 'انتقادات و پیشنهادات' },
+  ];
+  
+  if (existingHeaderContent) {
+    await prisma.headerContent.update({
+      where: { id: existingHeaderContent.id },
+      data: {
+        logo: '/logos/loho.png',
+        logoAlt: 'فیدار تجارت سوبا',
+        navItems: headerNavItems as any,
+        ctaText: 'دریافت مشاوره',
+        ctaLink: '/contact',
+      },
+    });
+    console.log('✅ محتوای هدر به‌روزرسانی شد');
+  } else {
+    await prisma.headerContent.create({
+      data: {
+        logo: '/logos/loho.png',
+        logoAlt: 'فیدار تجارت سوبا',
+        navItems: headerNavItems as any,
+        ctaText: 'دریافت مشاوره',
+        ctaLink: '/contact',
+        isActive: true,
+      },
+    });
+    console.log('✅ محتوای هدر ایجاد شد');
+  }
+
+  // 13. ایجاد محتوای فوتر
+  console.log('\n📄 در حال ایجاد محتوای فوتر...');
+  const existingFooterContent = await prisma.footerContent.findFirst({
+    where: { isActive: true },
+  });
+  
+  const footerQuickLinks = [
+    { href: '/', label: 'خانه' },
+    { href: '/cars', label: 'خودروها' },
+    { href: '/blog', label: 'مقالات' },
+    { href: '/news', label: 'اخبار' },
+  ];
+  
+  const footerInfoLinks = [
+    { href: '/about', label: 'درباره ما' },
+    { href: '/contact', label: 'تماس با ما' },
+  ];
+  
+  if (existingFooterContent) {
+    await prisma.footerContent.update({
+      where: { id: existingFooterContent.id },
+      data: {
+        logo: '/logos/loho.png',
+        logoAlt: 'فیدار تجارت سوبا',
+        companyName: 'فیدار تجارت سوبا',
+        description: 'نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده با بهترین کیفیت و خدمات',
+        quickLinks: footerQuickLinks as any,
+        infoLinks: footerInfoLinks as any,
+        address: 'تهران-بلوار آیت الله کاشانی-خیابان حسن آباد-کوچه اول الف-پلاک ۲ ساختمان مهرگان-طبقه دوم واحد۴',
+        phone: '021-12345678',
+        phones: ['02144026696', '02144979483'] as any,
+        email: 'info@ftsmotors.com',
+        copyrightText: `© ${new Date().getFullYear()} فیدار تجارت سوبا. تمامی حقوق محفوظ است.`,
+      },
+    });
+    console.log('✅ محتوای فوتر به‌روزرسانی شد');
+  } else {
+    await prisma.footerContent.create({
+      data: {
+        logo: '/logos/loho.png',
+        logoAlt: 'فیدار تجارت سوبا',
+        companyName: 'فیدار تجارت سوبا',
+        description: 'نمایندگی رسمی خودرو - خرید و فروش خودروهای جدید و کارکرده با بهترین کیفیت و خدمات',
+        quickLinks: footerQuickLinks as any,
+        infoLinks: footerInfoLinks as any,
+        address: 'تهران-بلوار آیت الله کاشانی-خیابان حسن آباد-کوچه اول الف-پلاک ۲ ساختمان مهرگان-طبقه دوم واحد۴',
+        phone: '021-12345678',
+        phones: ['02144026696', '02144979483'] as any,
+        email: 'info@ftsmotors.com',
+        copyrightText: `© ${new Date().getFullYear()} فیدار تجارت سوبا. تمامی حقوق محفوظ است.`,
+        isActive: true,
+      },
+    });
+    console.log('✅ محتوای فوتر ایجاد شد');
+  }
+
   console.log('\n✅ Seeding با موفقیت انجام شد!');
   console.log('\n📊 خلاصه داده‌های ایجاد شده:');
   console.log(`   👤 کاربران: ${await prisma.user.count()}`);
@@ -941,6 +1075,9 @@ FTS Motors یک نمایندگی رسمی خودرو است که با بیش ا�
   console.log(`   🎫 تیکت‌ها: ${await prisma.ticket.count()}`);
   console.log(`   💬 پیام‌های چت: ${await prisma.chatMessage.count()}`);
   console.log(`   💡 فیدبک‌ها: ${await prisma.feedback.count()}`);
+  console.log(`   🏠 محتوای خانه: ${await prisma.homeContent.count()}`);
+  console.log(`   📋 محتوای هدر: ${await prisma.headerContent.count()}`);
+  console.log(`   📄 محتوای فوتر: ${await prisma.footerContent.count()}`);
 }
 
 main()

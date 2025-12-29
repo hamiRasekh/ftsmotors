@@ -9,6 +9,7 @@ import { Features } from '@/components/sections/Features';
 import { Stats } from '@/components/sections/Stats';
 import { Testimonials } from '@/components/sections/Testimonials';
 import { MasonryGallery } from '@/components/sections/MasonryGallery';
+import { VeteranCars } from '@/components/sections/VeteranCars';
 import { FadeIn } from '@/components/animations/FadeIn';
 import { api } from '@/lib/api';
 
@@ -104,6 +105,9 @@ fadeOutColor={undefined}
 
         {/* Testimonials */}
         <Testimonials />
+
+        {/* Veteran Cars Section */}
+        <VeteranCars />
 
         {/* Latest Articles and News */}
         {(articles.data && articles.data.length > 0) || (news.data && news.data.length > 0) ? (

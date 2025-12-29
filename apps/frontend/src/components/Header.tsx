@@ -7,6 +7,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { Sidebar } from './layout/Sidebar';
+import { api } from '@/lib/api';
+
+interface NavItem {
+  href: string;
+  label: string;
+}
+
+interface HeaderContent {
+  logo?: string;
+  logoAlt?: string;
+  navItems: NavItem[];
+  ctaText?: string;
+  ctaLink?: string;
+}
 
 export function Header() {
   const pathname = usePathname();
@@ -16,10 +30,43 @@ export function Header() {
   const [isVisible, setIsVisible] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [content, setContent] = useState<HeaderContent | null>(null);
+  const [loading, setLoading] = useState(true);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const data = await api.headerContent.getPublic();
+        setContent(data);
+      } catch (error) {
+        console.error('Error fetching header content:', error);
+        // Fallback to default content
+        setContent({
+          logo: '/logos/loho.png',
+          logoAlt: 'فیدار تجارت سوبا',
+          navItems: [
+            { href: '/', label: 'خانه' },
+            { href: '/cars', label: 'خودروها' },
+            { href: '/blog', label: 'مقالات' },
+            { href: '/news', label: 'اخبار' },
+            { href: '/about', label: 'درباره ما' },
+            { href: '/contact', label: 'تماس با ما' },
+            { href: '/feedback', label: 'انتقادات و پیشنهادات' },
+          ],
+          ctaText: 'دریافت مشاوره',
+          ctaLink: '/contact',
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContent();
   }, []);
 
   useEffect(() => {
@@ -43,7 +90,7 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = [
+  const navItems = content?.navItems || [
     { href: '/', label: 'خانه' },
     { href: '/cars', label: 'خودروها' },
     { href: '/blog', label: 'مقالات' },
@@ -54,6 +101,10 @@ export function Header() {
   ];
 
   const isHomePage = pathname === '/';
+
+  if (loading || !content) {
+    return null; // Don't show header while loading
+  }
 
   return (
     <motion.header
@@ -75,8 +126,8 @@ export function Header() {
           {/* Logo - Left Side */}
           <Link href="/" className="flex items-center flex-shrink-0 mr-2 sm:mr-3">
             <Image
-              src="/logos/loho.png"
-              alt="فیدار تجارت سوبا"
+              src={content.logo || '/logos/loho.png'}
+              alt={content.logoAlt || 'فیدار تجارت سوبا'}
               width={60}
               height={60}
               className={`object-contain w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 transition-all ${
@@ -156,14 +207,16 @@ export function Header() {
           </ul>
 
           {/* Desktop Right Side Actions */}
-          <div className="hidden lg:flex items-center gap-3 flex-shrink-0 ml-2 sm:ml-3">
-            <Link
-              href="/contact"
-              className="px-4 xl:px-5 py-2 xl:py-2.5 rounded-lg transition-colors font-medium text-sm xl:text-base bg-secondary text-white hover:bg-secondary/90"
-            >
-              دریافت مشاوره
-            </Link>
-          </div>
+          {content.ctaText && content.ctaLink && (
+            <div className="hidden lg:flex items-center gap-3 flex-shrink-0 ml-2 sm:ml-3">
+              <Link
+                href={content.ctaLink}
+                className="px-4 xl:px-5 py-2 xl:py-2.5 rounded-lg transition-colors font-medium text-sm xl:text-base bg-secondary text-white hover:bg-secondary/90"
+              >
+                {content.ctaText}
+              </Link>
+            </div>
+          )}
 
           {/* Mobile Menu Button */}
           <button
@@ -236,8 +289,8 @@ export function Header() {
               <div className="sticky top-0 bg-secondary text-white p-4 flex items-center justify-between border-b border-secondary/20 z-10">
                 <div className="flex items-center gap-3">
                   <Image
-                    src="/logos/loho.png"
-                    alt="فیدار تجارت سوبا"
+                    src={content.logo || '/logos/loho.png'}
+                    alt={content.logoAlt || 'فیدار تجارت سوبا'}
                     width={32}
                     height={32}
                     className="object-contain brightness-0 invert"
@@ -321,20 +374,22 @@ export function Header() {
                 </ul>
 
                 {/* CTA Button */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: navItems.length * 0.05, duration: 0.3 }}
-                  className="mt-6 pt-6 border-t border-muted"
-                >
-                  <Link
-                    href="/contact"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full px-4 py-3 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors font-semibold text-center shadow-lg"
+                {content.ctaText && content.ctaLink && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: navItems.length * 0.05, duration: 0.3 }}
+                    className="mt-6 pt-6 border-t border-muted"
                   >
-                    دریافت مشاوره
-                  </Link>
-                </motion.div>
+                    <Link
+                      href={content.ctaLink}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full px-4 py-3 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors font-semibold text-center shadow-lg"
+                    >
+                      {content.ctaText}
+                    </Link>
+                  </motion.div>
+                )}
               </nav>
               </motion.aside>
             </>

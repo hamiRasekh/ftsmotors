@@ -179,3 +179,47 @@ model Page {
   updatedAt      DateTime @updatedAt
 }
 
+model HomeContent {
+  id             String   @id @default(uuid())
+  tagline        String
+  title          String
+  subtitle       String?  @db.Text
+  backgroundImage String?
+  logo           String?
+  ctaText        String?
+  ctaLink        String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model HeaderContent {
+  id             String   @id @default(uuid())
+  logo           String?
+  logoAlt        String?
+  navItems       Json     // Array of {href: string, label: string}
+  ctaText        String?
+  ctaLink        String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model FooterContent {
+  id             String   @id @default(uuid())
+  logo           String?
+  logoAlt        String?
+  companyName    String?
+  description    String?  @db.Text
+  quickLinks     Json?    // Array of {href: string, label: string}
+  infoLinks      Json?    // Array of {href: string, label: string}
+  address        String?
+  phone          String?
+  phones         Json?    // Array of phone numbers
+  email          String?
+  copyrightText  String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+

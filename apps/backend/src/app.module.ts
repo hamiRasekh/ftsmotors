@@ -16,6 +16,9 @@ import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { PagesModule } from './pages/pages.module';
 import { HealthModule } from './health/health.module';
 import { UploadModule } from './upload/upload.module';
+import { HomeContentModule } from './home-content/home-content.module';
+import { HeaderContentModule } from './header-content/header-content.module';
+import { FooterContentModule } from './footer-content/footer-content.module';
 
 @Module({
   imports: [
@@ -46,6 +49,9 @@ import { UploadModule } from './upload/upload.module';
     PagesModule,
     HealthModule,
     UploadModule,
+    HomeContentModule,
+    HeaderContentModule,
+    FooterContentModule,
   ],
 })
 export class AppModule {}
