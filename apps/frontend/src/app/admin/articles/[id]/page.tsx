@@ -87,7 +87,9 @@ export default function EditArticlePage() {
       const token = localStorage.getItem('token');
       const payload = {
         ...formData,
-        publishedAt: formData.published && formData.publishedAt ? formData.publishedAt : null,
+        publishedAt: formData.published && formData.publishedAt 
+          ? new Date(formData.publishedAt).toISOString() 
+          : null,
       };
       const response = await fetch(`${API_URL}/api/articles/${id}`, {
         method: 'PATCH',
