@@ -663,6 +663,18 @@ export const api = {
       fetch(`${getAPIURL()}/api/users/profile`, {
         headers: getAuthHeaders(),
       }).then((r) => r.json()),
+    update: (data: { name?: string; email?: string; avatar?: string }) =>
+      fetch(`${getAPIURL()}/api/users/profile`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      }).then((r) => r.json()),
+    changePassword: (data: { oldPassword: string; newPassword: string }) =>
+      fetch(`${getAPIURL()}/api/users/change-password`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data),
+      }).then((r) => r.json()),
   },
   homeContent: {
     getPublic: () => fetch(`${getAPIURL()}/api/home-content/public`).then((r) => r.json()),
@@ -761,18 +773,6 @@ export const api = {
       fetch(`${getAPIURL()}/api/footer-content/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
-      }).then((r) => r.json()),
-    update: (data: { name?: string; email?: string; avatar?: string }) =>
-      fetch(`${getAPIURL()}/api/users/profile`, {
-        method: 'PATCH',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(data),
-      }).then((r) => r.json()),
-    changePassword: (data: { oldPassword: string; newPassword: string }) =>
-      fetch(`${getAPIURL()}/api/users/change-password`, {
-        method: 'PATCH',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(data),
       }).then((r) => r.json()),
   },
 };
