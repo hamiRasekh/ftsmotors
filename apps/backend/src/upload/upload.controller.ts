@@ -148,44 +148,47 @@ export class UploadController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: (req, file, cb) => {
+          const logger = new Logger(UploadController.name);
           try {
             const uploadPath = join(process.cwd(), 'uploads', 'images');
-            this.logger.debug(`Upload destination: ${uploadPath}`);
+            logger.debug(`Upload destination: ${uploadPath}`);
             if (!existsSync(uploadPath)) {
-              this.logger.log(`Creating upload directory: ${uploadPath}`);
+              logger.log(`Creating upload directory: ${uploadPath}`);
               mkdirSync(uploadPath, { recursive: true });
             }
             cb(null, uploadPath);
           } catch (error) {
-            this.logger.error(`Error setting upload destination: ${error.message}`, error.stack);
+            logger.error(`Error setting upload destination: ${error.message}`, error.stack);
             cb(error, null);
           }
         },
         filename: (req, file, cb) => {
+          const logger = new Logger(UploadController.name);
           try {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
             const ext = extname(file.originalname);
             const filename = `${uniqueSuffix}${ext}`;
-            this.logger.debug(`Generated filename: ${filename}`);
+            logger.debug(`Generated filename: ${filename}`);
             cb(null, filename);
           } catch (error) {
-            this.logger.error(`Error generating filename: ${error.message}`, error.stack);
+            logger.error(`Error generating filename: ${error.message}`, error.stack);
             cb(error, null);
           }
         },
       }),
       fileFilter: (req, file, cb) => {
+        const logger = new Logger(UploadController.name);
         try {
           const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-          this.logger.debug(`File MIME type: ${file.mimetype}`);
+          logger.debug(`File MIME type: ${file.mimetype}`);
           if (allowedMimes.includes(file.mimetype)) {
             cb(null, true);
           } else {
-            this.logger.warn(`Invalid file type: ${file.mimetype}`);
+            logger.warn(`Invalid file type: ${file.mimetype}`);
             cb(new BadRequestException('فقط فایل‌های تصویری مجاز هستند'), false);
           }
         } catch (error) {
-          this.logger.error(`Error in file filter: ${error.message}`, error.stack);
+          logger.error(`Error in file filter: ${error.message}`, error.stack);
           cb(error, false);
         }
       },
