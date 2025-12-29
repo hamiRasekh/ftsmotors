@@ -37,14 +37,26 @@ echo "✅ Database ready"
 
 # Generate Prisma Client
 echo "📦 Generating Prisma Client..."
-npx prisma generate || echo "⚠️  Prisma generate warning"
+npx prisma generate || {
+  echo "⚠️  Prisma generate warning"
+  echo "⚠️  Continuing anyway..."
+}
 
-# Run migrations
+# Run migrations (this will apply all pending migrations)
 echo "🔄 Running migrations..."
+echo "📋 Checking for pending migrations..."
 npx prisma migrate deploy || {
   echo "❌ Migration failed"
-  exit 1
+  echo "💡 Trying to resolve migration issues..."
+  # Try to mark migrations as applied if they already exist in DB
+  npx prisma migrate resolve --applied || echo "⚠️  Could not resolve migrations"
+  # Try deploy again
+  npx prisma migrate deploy || {
+    echo "❌ Migration failed after retry"
+    exit 1
+  }
 }
+echo "✅ Migrations completed successfully"
 
 # Run seed (only if no data exists or to update existing data)
 echo "🌱 Running database seed..."

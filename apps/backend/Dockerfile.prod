@@ -57,6 +57,8 @@ COPY --from=base --chown=nestjs:nodejs /app/apps/backend/dist ./dist
 COPY --from=base --chown=nestjs:nodejs /app/apps/backend/package*.json ./
 COPY --from=base --chown=nestjs:nodejs /app/apps/backend/prisma ./prisma
 COPY --from=base --chown=nestjs:nodejs /app/packages/shared ./packages/shared
+# Ensure migrations directory exists and has correct permissions
+RUN chown -R nestjs:nodejs /app/prisma
 
 # Copy root node_modules (npm workspaces hoists all dependencies here)
 COPY --from=base --chown=nestjs:nodejs /app/node_modules ./node_modules
