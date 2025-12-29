@@ -38,6 +38,8 @@ services:
       PORT: 4000
       NODE_ENV: production
       FRONTEND_URL: ${FRONTEND_URL:-https://ftsmotors.ir}
+    volumes:
+      - uploads_data:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -85,4 +87,6 @@ networks:
 
 volumes:
   postgres_data:
+    driver: local
+  uploads_data:
     driver: local

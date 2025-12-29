@@ -25,6 +25,17 @@ RUN npm install --legacy-peer-deps
 WORKDIR /app/apps/backend
 RUN npx prisma generate
 RUN npm run build
+# Compile seed.ts for production use (ensure tsx is available for runtime)
+RUN mkdir -p dist/prisma && \
+    npx tsc prisma/seed.ts \
+      --outDir dist/prisma \
+      --module commonjs \
+      --esModuleInterop \
+      --resolveJsonModule \
+      --skipLibCheck \
+      --target ES2021 \
+      --moduleResolution node \
+      --allowSyntheticDefaultImports || echo "⚠️  Seed compilation warning (will use prisma db seed as fallback)"
 
 # Production stage
 FROM node:18-alpine AS runner
@@ -57,6 +68,10 @@ RUN chmod +x /docker-entrypoint.sh
 # Copy migration script
 COPY --chown=nestjs:nodejs apps/backend/scripts/migrate.sh /app/scripts/migrate.sh
 RUN chmod +x /app/scripts/migrate.sh
+
+# Create uploads directory with proper permissions
+RUN mkdir -p /app/uploads/images /app/uploads/files && \
+    chown -R nestjs:nodejs /app/uploads
 
 USER nestjs
 

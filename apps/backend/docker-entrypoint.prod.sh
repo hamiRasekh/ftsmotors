@@ -46,6 +46,27 @@ npx prisma migrate deploy || {
   exit 1
 }
 
+# Run seed (only if no data exists or to update existing data)
+echo "🌱 Running database seed..."
+# Change to correct directory for seed execution (prisma files are in /app)
+cd /app 2>/dev/null || true
+
+# Try using prisma db seed first (uses package.json seed config)
+echo "📦 Attempting to run seed with prisma db seed..."
+if npx prisma db seed 2>&1; then
+  echo "✅ Seed completed successfully"
+else
+  echo "⚠️  prisma db seed failed, trying compiled version..."
+  # Fallback: try compiled version if available
+  if [ -f "/app/dist/prisma/seed.js" ]; then
+    echo "📦 Using compiled seed file..."
+    node dist/prisma/seed.js || echo "⚠️  Compiled seed failed, but continuing..."
+  else
+    echo "⚠️  Seed skipped (tsx/ts-node not available and compiled version not found)"
+    echo "💡 To run seed manually, use: docker-compose exec backend npx prisma db seed"
+  fi
+fi
+
 # Start the application - main.js is in dist/src/main.js
 echo "🎉 Starting application..."
 exec node dist/src/main.js
